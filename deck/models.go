@@ -65,11 +65,18 @@ func New(file string) (*Deck, error) {
 	}
 
 	// Initialise all count from 0 to 1
+	cards := []Card{}
 	for idx, card := range deck.Spec.Cards {
 		if 0 == card.Count {
 			deck.Spec.Cards[idx].Count = 1
 		}
+		for i := 0; i < int(deck.Spec.Cards[idx].Count); i++ {
+			c := deck.Spec.Cards[idx]
+			cards = append(cards, c)
+		}
 	}
+
+	deck.Spec.Cards = cards
 
 	return &deck, nil
 }
