@@ -1,8 +1,8 @@
 apiVersion: deck/v1
 kind: Deck
 metadata:
-  name: Standard52Deck
-  description: Standard deck of 52 playing cards
+  name: Standard52DeckWith2Jokers
+  description: Standard deck of 52 playing cards with 2 Jokers
 spec:
   cards:
   - code: AS
@@ -369,3 +369,17 @@ spec:
       png: https://deckofcardsapi.com/static/img/KH.png
     value: K
     suit: HEARTS
+  - code: X1
+    image: https://deckofcardsapi.com/static/img/X1.png
+    images:
+      svg: https://deckofcardsapi.com/static/img/X1.svg
+      png: https://deckofcardsapi.com/static/img/X1.png
+    value: JOKER
+    suit: BLACK
+  - code: X2
+    image: https://deckofcardsapi.com/static/img/X2.png
+    images:
+      svg: https://deckofcardsapi.com/static/img/X2.svg
+      png: https://deckofcardsapi.com/static/img/X2.png
+    value: JOKER
+    suit: RED

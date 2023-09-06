@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	var doc, err = deck.New("./assets/standarddeck.yaml")
+	var doc, err = deck.New("./assets/standarddeckwithjokers.yaml")
 	if nil != err {
 		panic(err)
 	}
