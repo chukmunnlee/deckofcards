@@ -36,5 +36,5 @@ func main() {
 	fmt.Printf("ulid: %s\n", deckInst.DeckId)
 	fmt.Printf("count: %d\n", len(deckInst.Remaining))
 	fmt.Printf("AS count: %d\n", count)
-
+	fmt.Printf("Back Image: %s\n", doc.Spec.BackImage)
 }

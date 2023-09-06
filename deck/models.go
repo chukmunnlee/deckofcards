@@ -22,7 +22,8 @@ type Card struct {
 }
 
 type Spec struct {
-	Cards []Card `yaml:"cards"`
+	BackImage string `yaml:"backImage"`
+	Cards     []Card `yaml:"cards"`
 }
 
 type Deck struct {

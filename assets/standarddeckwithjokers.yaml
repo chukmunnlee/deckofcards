@@ -4,6 +4,7 @@ metadata:
   name: Standard52DeckWith2Jokers
   description: Standard deck of 52 playing cards with 2 Jokers
 spec:
+  backImage: https://www.deckofcardsapi.com/static/img/back.png
   cards:
   - code: AS
     image: https://deckofcardsapi.com/static/img/AS.png
