@@ -1,0 +1,8 @@
+apiVersion: deck/v1
+kind: Deck
+metadata:
+  name: Uno
+  description: Uno cards
+spec:
+  backImage: https://acme.sgp1.digitaloceanspaces.com/uno/back.png
+  cards:
