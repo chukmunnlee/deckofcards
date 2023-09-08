@@ -17,6 +17,10 @@ func main() {
 		fmt.Printf("%s: %s\n", k, e.Metadata.Description)
 	}
 
+	if opts.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 
 	r.Run(fmt.Sprintf(":%d", opts.Port))
