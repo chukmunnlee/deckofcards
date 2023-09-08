@@ -3,14 +3,19 @@ package main
 import "flag"
 
 type CLIOptions struct {
-	port uint
+	Port     uint
+	DeckRoot string
 }
 
 func parseCLI() CLIOptions {
 
 	port := flag.Uint("port", 3000, "Port to bind to")
+	deckRoot := flag.String("deckRoot", "assets", "Location of the decks")
+
+	flag.Parse()
 
 	return CLIOptions{
-		port: *port,
+		Port:     *port,
+		DeckRoot: *deckRoot,
 	}
 }
