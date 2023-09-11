@@ -1,6 +1,7 @@
 apiVersion: deck/v1
 kind: Deck
 metadata:
+  id: 01ha1dcg8t3khf1h8bemsc5jk3
   name: Uno
   description: Uno cards
 spec:

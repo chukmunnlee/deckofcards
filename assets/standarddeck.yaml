@@ -1,6 +1,7 @@
 apiVersion: deck/v1
 kind: Deck
 metadata:
+  id: 01ha1dabwkf58aafmddnsm7qw8
   name: Standard52Deck
   description: Standard deck of 52 playing cards
 spec:

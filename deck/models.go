@@ -8,6 +8,7 @@ import (
 )
 
 type Metadata struct {
+	Id          string `yaml:"id"`
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
 }
@@ -34,14 +35,22 @@ type Deck struct {
 }
 
 type DeckInstance struct {
+	Id        string
 	Name      string
 	DeckId    string
 	Shuffled  bool
 	Remaining []Card
 }
 
+type DeckInfo struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	var deckInst = &DeckInstance{
+		Id:        deck.Metadata.Id,
 		Name:      deck.Metadata.Name,
 		DeckId:    ulid.Make().String(),
 		Shuffled:  false,
