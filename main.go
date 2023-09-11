@@ -31,9 +31,3 @@ func main() {
 
 	r.Run(fmt.Sprintf(":%d", opts.Port))
 }
-
-func register(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
-	log.Printf("Endpoint: %s", endpoint)
-	app.GET(endpoint, handler)
-	app.POST(endpoint, handler)
-}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -20,4 +21,10 @@ func mkApiDecks(deckMap map[string]*deck.Deck) func(*gin.Context) {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, decks)
 	}
+}
+
+func register(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: %s", endpoint)
+	app.GET(endpoint, handler)
+	app.POST(endpoint, handler)
 }
