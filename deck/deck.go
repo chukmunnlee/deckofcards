@@ -5,9 +5,28 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
-func LoadDecks(deckRoot string) map[string]*Deck {
+type CardDecks struct {
+	decks map[string]*Deck
+}
+
+func (cd CardDecks) GetAllDecks() map[string]*Deck {
+	return cd.decks
+}
+
+func (cd CardDecks) FindDeckByName(name string) (*Deck, error) {
+	_n := strings.ToLower(name)
+	for k, d := range cd.decks {
+		if k == strings.ToLower(_n) {
+			return d, nil
+		}
+	}
+	return nil, fmt.Errorf("Cannot find deck: %s", name)
+}
+
+func LoadDecks(deckRoot string) CardDecks {
 	files, err := ioutil.ReadDir(deckRoot)
 	if nil != err {
 		log.Fatal(err)
@@ -30,8 +49,8 @@ func LoadDecks(deckRoot string) map[string]*Deck {
 			log.Printf("Error parsing deck: %s\n", def)
 			continue
 		}
-		deckMap[deck.Metadata.Name] = deck
+		deckMap[strings.ToLower(deck.Metadata.Name)] = deck
 	}
 
-	return deckMap
+	return CardDecks{decks: deckMap}
 }

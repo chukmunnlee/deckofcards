@@ -13,7 +13,7 @@ func main() {
 
 	opts := parseCLI()
 
-	deckMap := deck.LoadDecks(opts.DeckRoot)
+	cardDecks := deck.LoadDecks(opts.DeckRoot)
 
 	if opts.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode)
@@ -22,9 +22,10 @@ func main() {
 	r := gin.Default()
 
 	// return a list of registered decks
-	register("/api/decks", mkApiDecks(deckMap), r)
+	register("/api/decks", mkApiDecks(cardDecks), r)
 
-	// /api/deck/new
+	// /api/deck/new?jokers_enabled=true&deck_name=DeckName
+	register("/api/deck/new", mkApiDeckNew(cardDecks), r)
 
 	log.Printf("Starting deckofcards on port %d on %s",
 		opts.Port, time.Now().Format("01-02-2006 15:04:05 MST"))
