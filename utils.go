@@ -10,9 +10,9 @@ type CLIOptions struct {
 
 func parseCLI() CLIOptions {
 
-	port := flag.Uint("port", 3000, "Port to bind to")
-	deckRoot := flag.String("deckRoot", "assets", "Location of the decks")
-	releaseMode := flag.Bool("release", true, "Disable Gin release mode")
+	port := flag.Uint(OPT_PORT, 3000, "Port to bind to")
+	deckRoot := flag.String(OPT_DECK_ROOT, "assets", "Location of the decks")
+	releaseMode := flag.Bool(OPT_RELEASE, true, "Disable Gin release mode")
 
 	flag.Parse()
 

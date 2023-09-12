@@ -29,7 +29,7 @@ func mkApiDecks(cardDecks deck.CardDecks) func(*gin.Context) {
 func mkApiDeckNew(cardDecks deck.CardDecks) func(*gin.Context) {
 
 	return func(c *gin.Context) {
-		jokers, err := readField("jokers_enabled", "false", c)
+		jokers, err := readField(PARAM_JOKERS_ENABLED, "false", c)
 		if nil != err {
 			mkResponseNotImplemented(c)
 			return
@@ -39,12 +39,12 @@ func mkApiDeckNew(cardDecks deck.CardDecks) func(*gin.Context) {
 		if nil != err {
 			boolVal = false
 		}
-		deckName, _ := readField("deck_name", "", c)
+		deckName, _ := readField(PARAM_DECK_NAME, "", c)
 		if "" == deckName {
 			if boolVal {
-				deckName = "Standard52DeckWith2Jokers"
+				deckName = DECK_STANDARD_52_WITH_2_JOKERS
 			} else {
-				deckName = "Standard52Deck"
+				deckName = DECK_STANDARD_52
 			}
 		}
 
