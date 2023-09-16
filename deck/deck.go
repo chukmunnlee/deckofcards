@@ -16,14 +16,23 @@ func (cd CardDecks) GetAllDecks() map[string]*Deck {
 	return cd.decks
 }
 
-func (cd CardDecks) FindDeckByName(name string) (*Deck, error) {
-	_n := strings.ToLower(name)
-	for k, d := range cd.decks {
-		if k == strings.ToLower(_n) {
+func (cd CardDecks) FindDeckById(id string) (*Deck, error) {
+	_n := strings.ToLower(id)
+	for _, d := range cd.decks {
+		if _n == strings.ToLower(d.Metadata.Id) {
 			return d, nil
 		}
 	}
-	return nil, fmt.Errorf("Cannot find deck: %s", name)
+	return nil, fmt.Errorf("Cannot find deck with id: %s", id)
+}
+func (cd CardDecks) FindDeckByName(name string) (*Deck, error) {
+	_n := strings.ToLower(name)
+	for k, d := range cd.decks {
+		if _n == strings.ToLower(k) {
+			return d, nil
+		}
+	}
+	return nil, fmt.Errorf("Cannot find deck with name: %s", name)
 }
 
 func LoadDecks(deckRoot string) CardDecks {

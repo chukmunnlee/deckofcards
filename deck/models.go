@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/oklog/ulid/v2"
@@ -49,14 +50,14 @@ type DeckInfo struct {
 }
 
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
+	fmt.Printf("in create instance: %d\n", count)
 	var deckInst = &DeckInstance{
-		Id:        deck.Metadata.Id,
-		Name:      deck.Metadata.Name,
-		DeckId:    ulid.Make().String(),
-		Shuffled:  false,
-		Remaining: append(deck.Spec.Cards),
+		Id:       deck.Metadata.Id,
+		Name:     deck.Metadata.Name,
+		DeckId:   ulid.Make().String(),
+		Shuffled: false,
 	}
-	for i := uint(1); i < count; i++ {
+	for i := uint(0); i < count; i++ {
 		deckInst.Remaining = append(deckInst.Remaining, deck.Spec.Cards...)
 	}
 	return deckInst
