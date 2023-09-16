@@ -1,7 +1,6 @@
 package deck
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/oklog/ulid/v2"
@@ -50,7 +49,6 @@ type DeckInfo struct {
 }
 
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
-	fmt.Printf("in create instance: %d\n", count)
 	var deckInst = &DeckInstance{
 		Id:       deck.Metadata.Id,
 		Name:     deck.Metadata.Name,

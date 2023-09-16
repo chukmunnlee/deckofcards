@@ -35,8 +35,6 @@ func mkApiDeckNew(cardDecks deck.CardDecks) func(*gin.Context) {
 
 	return func(c *gin.Context) {
 
-		fmt.Printf(">>>>> in new deck\n")
-
 		if !validMethod(c) {
 			mkResponseNotImplemented(c)
 			return
@@ -55,7 +53,8 @@ func mkApiDeckNew(cardDecks deck.CardDecks) func(*gin.Context) {
 		}
 
 		deckInstance := deck.CreateInstance(uint(deckCount))
-		shuffled := strings.HasSuffix(c.Request.URL.Path, "/shuffle")
+		shuffled := strings.HasSuffix(c.Request.URL.Path, "/shuffle") ||
+			strings.HasSuffix(c.Request.URL.Path, "/shuffle/")
 
 		if shuffled {
 			shuffleDeck(&deckInstance.Remaining, r)
@@ -150,6 +149,13 @@ func register(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
 	log.Printf("Endpoint: %s", endpoint)
 	app.GET(endpoint, handler)
 	app.POST(endpoint, handler)
+	if strings.HasSuffix(endpoint, "/") {
+		app.GET(endpoint[:len(endpoint)-1], handler)
+		app.POST(endpoint[:len(endpoint)-1], handler)
+	} else {
+		app.GET(fmt.Sprintf("%s/", endpoint), handler)
+		app.POST(fmt.Sprintf("%s/", endpoint), handler)
+	}
 }
 
 func dumpDeck(deckInstance *deck.DeckInstance) {
