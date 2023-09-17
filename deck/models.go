@@ -1,10 +1,16 @@
 package deck
 
 import (
+	"math/rand"
 	"os"
+	"slices"
 
 	"github.com/oklog/ulid/v2"
 	"gopkg.in/yaml.v3"
+)
+
+const (
+	PILE_DISCARD = "discard"
 )
 
 type Metadata struct {
@@ -40,6 +46,7 @@ type DeckInstance struct {
 	DeckId    string
 	Shuffled  bool
 	Remaining []Card
+	Piles     map[string][]Card
 }
 
 type DeckInfo struct {
@@ -48,6 +55,7 @@ type DeckInfo struct {
 	Description string `json:"description"`
 }
 
+// Deck
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	var deckInst = &DeckInstance{
 		Id:       deck.Metadata.Id,
@@ -58,6 +66,9 @@ func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	for i := uint(0); i < count; i++ {
 		deckInst.Remaining = append(deckInst.Remaining, deck.Spec.Cards...)
 	}
+	deckInst.Piles = make(map[string][]Card)
+	deckInst.Piles[PILE_DISCARD] = make([]Card, 0)
+
 	return deckInst
 }
 
@@ -88,4 +99,51 @@ func New(file string) (*Deck, error) {
 	deck.Spec.Cards = cards
 
 	return &deck, nil
+}
+
+// DeckInstance
+func (deckInst *DeckInstance) Draw(count int, pileName string) []Card {
+	drawn, remaining := draw(count, deckInst.Remaining)
+	deckInst.Remaining = *remaining
+	deckInst.Piles[pileName] = append(deckInst.Piles[pileName], *drawn...)
+	return *drawn
+}
+
+func draw(count int, deck []Card) (*[]Card, *[]Card) {
+	if len(deck) < count {
+		count = len(deck)
+	}
+
+	drawn := deck[0:count]
+	remainder := slices.Delete(deck, 0, count)
+
+	return &drawn, &remainder
+}
+
+func drawBottom(count int, deck []Card) (*[]Card, *[]Card) {
+	start := len(deck) - count
+	if start < 0 {
+		start = 0
+	}
+
+	drawn := deck[start : start+count]
+	remainder := slices.Delete(deck, start, start+count)
+
+	return &drawn, &remainder
+}
+
+func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
+	drawn := make([]Card, 0)
+	remainder := deck
+	if len(deck) < count {
+		count = len(deck)
+	}
+
+	for i := 0; i < count; i++ {
+		idx := rand.Intn(len(deck))
+		drawn = append(drawn, deck[idx])
+		remainder = slices.Delete(remainder, idx, 1)
+	}
+
+	return &drawn, &remainder
 }
