@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -39,13 +38,31 @@ func mkApiDecks(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.C
 	}
 }
 
+func mkApiDeck(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		deckInstance, err := storage.Get(deckId)
+		if nil != err {
+			mkError(http.StatusNotFound, err.Error(), c)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":   true,
+			"deck_id":   deckInstance.DeckId,
+			"shuffled":  deckInstance.Shuffled,
+			"remaining": len(deckInstance.Remaining),
+		})
+	}
+}
+
 func mkApiDeckNew(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	return func(c *gin.Context) {
 
-		deck, err := getDeck(cardDecks, c)
+		deck, err := createDeck(cardDecks, c)
 		if nil != err {
 			mkError(http.StatusNotFound, err.Error(), c)
 			return
@@ -75,7 +92,7 @@ func mkApiDeckNew(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 
 		c.JSON(http.StatusOK, gin.H{
 			"success":   true,
-			"deck_id":   deckInstance.Id,
+			"deck_id":   deckInstance.DeckId,
 			"shuffled":  deckInstance.Shuffled,
 			"remaining": len(deckInstance.Remaining),
 		})
@@ -101,13 +118,9 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 		drawn := deckInstance.Draw(count, deck.PILE_DISCARD)
 		storage.Update(deckInstance)
 
-		fmt.Printf("deckId: %s, count: %d\n", deckId, count)
-		fmt.Printf("remain: %d\n", len(deckInstance.Remaining))
-
-		//data, _ := json.Marshal(drawn)
 		c.JSON(http.StatusOK, gin.H{
 			"success":   true,
-			"deck_id":   deckInstance.Id,
+			"deck_id":   deckInstance.DeckId,
 			"cards":     drawn,
 			"shuffled":  deckInstance.Shuffled,
 			"remaining": len(deckInstance.Remaining),

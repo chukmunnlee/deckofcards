@@ -47,7 +47,7 @@ func shuffleDeck(cards *[]deck.Card, r *rand.Rand) {
 	}
 }
 
-func getDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, error) {
+func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, error) {
 
 	var err error
 	var deck *deck.Deck

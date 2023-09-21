@@ -40,6 +40,10 @@ func main() {
 	register(fmt.Sprintf("/api/deck/:%s/draw", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
 
+	// /api/deck/:deck_id
+	register(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeck(cardDecks, storage), r)
+
 	log.Printf("Starting deckofcards on port %d on %s",
 		opts.Port, time.Now().Format("01-02-2006 15:04:05 MST"))
 

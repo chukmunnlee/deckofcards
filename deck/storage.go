@@ -30,10 +30,12 @@ func (ds *DeckStorage) Init(config map[string]string) {
 }
 
 func (ds *DeckStorage) Get(deckId string) (*DeckInstance, error) {
+
 	entry, exists := ds.entries[deckId]
 	if !exists {
-		return &entry.Instance, nil
+		return nil, fmt.Errorf("Cannot find deckId %s", deckId)
 	}
+
 	return &entry.Instance, nil
 }
 
@@ -44,7 +46,7 @@ func (ds *DeckStorage) Add(deckInst *DeckInstance) error {
 	}
 
 	entry := DeckEntry{
-		DeckId:    deckInst.Id,
+		DeckId:    deckInst.DeckId,
 		Instance:  *deckInst,
 		CreatedOn: time.Now(),
 		UpdatedOn: time.Now(),
@@ -57,10 +59,11 @@ func (ds *DeckStorage) Add(deckInst *DeckInstance) error {
 func (ds *DeckStorage) Update(deckInst *DeckInstance) error {
 	entry, exists := ds.entries[deckInst.DeckId]
 	if !exists {
-		return fmt.Errorf("Deck id %s does exists", deckInst.DeckId)
+		return fmt.Errorf("Deck id %s does exists", deckInst.Id)
 	}
 
 	entry.UpdatedOn = time.Now()
+	entry.Instance = *deckInst
 	ds.entries[deckInst.DeckId] = entry
 
 	return nil
