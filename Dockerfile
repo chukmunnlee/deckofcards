@@ -1,4 +1,4 @@
-ARG GIT_COMMIT=a07959c
+ARG GIT_COMMIT=abcd1234
 
 FROM golang:1.21 AS builder
 
