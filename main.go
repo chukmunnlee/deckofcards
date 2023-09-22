@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +26,13 @@ func main() {
 	storage.Init(make(map[string]string))
 
 	r := gin.Default()
+
+	if opts.EnableCORS {
+		log.Printf("Enabling CORS")
+		config := cors.DefaultConfig()
+		config.AllowOrigins = []string{"*"}
+		r.Use(cors.New(config))
+	}
 
 	// Check request is GET or POST method
 	r.Use(mkApiCheckMethod())
@@ -54,5 +62,6 @@ func main() {
 	log.Printf("Starting deckofcards on port %d on %s",
 		opts.Port, time.Now().Format("01-02-2006 15:04:05 MST"))
 
-	r.Run(fmt.Sprintf(":%d", opts.Port))
+	if err := r.Run(fmt.Sprintf(":%d", opts.Port)); nil != err {
+	}
 }

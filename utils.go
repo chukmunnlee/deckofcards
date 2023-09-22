@@ -17,6 +17,7 @@ type CLIOptions struct {
 	Port        uint
 	DeckRoot    string
 	ReleaseMode bool
+	EnableCORS  bool
 }
 
 func parseCLI() CLIOptions {
@@ -24,6 +25,7 @@ func parseCLI() CLIOptions {
 	port := flag.Uint(OPT_PORT, 3000, "Port to bind to")
 	deckRoot := flag.String(OPT_DECK_ROOT, "assets", "Location of the decks")
 	releaseMode := flag.Bool(OPT_RELEASE, true, "Disable Gin release mode")
+	enableCors := flag.Bool(OPT_ENABLE_CORS, false, "Enable CORS")
 
 	flag.Parse()
 
@@ -31,6 +33,7 @@ func parseCLI() CLIOptions {
 		Port:        *port,
 		DeckRoot:    *deckRoot,
 		ReleaseMode: *releaseMode,
+		EnableCORS:  *enableCors,
 	}
 }
 

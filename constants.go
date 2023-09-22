@@ -12,7 +12,8 @@ const (
 	DECK_STANDARD_52_WITH_2_JOKERS = "Standard52DeckWith2Jokers"
 	DECK_STANDARD_52               = "Standard52Deck"
 
-	OPT_PORT      = "port"
-	OPT_DECK_ROOT = "deckRoot"
-	OPT_RELEASE   = "release"
+	OPT_PORT        = "port"
+	OPT_DECK_ROOT   = "deckRoot"
+	OPT_RELEASE     = "release"
+	OPT_ENABLE_CORS = "enableCORS"
 )
