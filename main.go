@@ -54,6 +54,9 @@ func main() {
 	register(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeck(cardDecks, storage), r)
 
+	// /api/deck/:deck_id/shuffle
+	// /api/deck/:deck_id/shuffle?remaining=true
+
 	// /version
 	register("/version", mkVersion(GitCommit), r)
 	// /health
