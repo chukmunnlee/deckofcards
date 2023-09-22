@@ -30,7 +30,7 @@ COPY assets assets
 
 ENV PORT=3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=1m --timeout=5s --start-period=5s --retries=3 \
 	CMD curl -s -o /dev/null http://localhost:${PORT}/health || exit 1
 
-ENTRYPOINT /app/deckofcards --port=${PORT}
+ENTRYPOINT /app/deckofcards --port=${PORT} --enableCORS

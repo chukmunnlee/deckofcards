@@ -20,12 +20,12 @@ type Metadata struct {
 }
 
 type Card struct {
-	Code   string            `yaml:"code"`
-	Image  string            `yaml:"image"`
-	Value  string            `yaml:"value"`
-	Suit   string            `yaml:"suit"`
-	Count  uint              `yaml:"count"`
-	Images map[string]string `yaml:",flow"`
+	Code   string            `yaml:"code" json:"code"`
+	Image  string            `yaml:"image" json:"image"`
+	Value  string            `yaml:"value" json:"value"`
+	Suit   string            `yaml:"suit" json:"suit"`
+	Count  uint              `yaml:"count" json:"count"`
+	Images map[string]string `yaml:",flow" json:"images,flow"`
 }
 
 type Spec struct {
