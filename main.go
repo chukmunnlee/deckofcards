@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var GitCommit string
+
 func main() {
 
 	opts := parseCLI()
@@ -43,6 +45,11 @@ func main() {
 	// /api/deck/:deck_id
 	register(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeck(cardDecks, storage), r)
+
+	// /version
+	register("/version", mkVersion(GitCommit), r)
+	// /health
+	register("/health", mkVersion(GitCommit), r)
 
 	log.Printf("Starting deckofcards on port %d on %s",
 		opts.Port, time.Now().Format("01-02-2006 15:04:05 MST"))
