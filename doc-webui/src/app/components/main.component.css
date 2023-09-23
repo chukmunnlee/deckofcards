@@ -1,0 +1,10 @@
+.deck-info {
+  margin-bottom: 1vh;
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 8px;
+}
+
+.deck-info:active {
+  background-color: lightgrey;
+}

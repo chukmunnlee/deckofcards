@@ -9,8 +9,8 @@ const (
 
 	PARAM_DECK_ID = "deckId"
 
-	DECK_STANDARD_52_WITH_2_JOKERS = "Standard52DeckWith2Jokers"
-	DECK_STANDARD_52               = "Standard52Deck"
+	DECK_STANDARD_52_WITH_2_JOKERS = "Standard52With2Jokers"
+	DECK_STANDARD_52               = "Standard52"
 
 	OPT_PORT        = "port"
 	OPT_DECK_ROOT   = "deckRoot"

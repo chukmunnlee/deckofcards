@@ -1,0 +1,20 @@
+<h2>Create Your <code class="underline">{{ name }}</code> Deck</h2>
+
+<form [formGroup]="form" (submit)="process()">
+  <table>
+    <tr>
+      <td>Number of Decks:</td>
+      <td>
+        <input type="number" min="1" max="10" value="1" formControlName="deckCount">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button type="button" [routerLink]="['/']">Back</button>
+      </td>
+      <td>
+        <button type="submit" [disabled]="form.invalid">Play</button>
+      </td>
+    </tr>
+  </table>
+</form>

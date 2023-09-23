@@ -17,7 +17,6 @@ func mkApiCheckMethod() func(*gin.Context) {
 			mkResponseNotImplemented(c)
 			return
 		}
-
 		c.Next()
 	}
 }
@@ -125,6 +124,28 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			"shuffled":  deckInstance.Shuffled,
 			"remaining": len(deckInstance.Remaining),
 		})
+	}
+}
 
+func mkApiDeckBack(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		deckInstance, err := storage.Get(deckId)
+		if nil != err {
+			mkError(http.StatusNotFound, err.Error(), c)
+			return
+		}
+		deck, err := cardDecks.FindDeckById(deckInstance.Id)
+		if nil != err {
+			mkError(http.StatusNotFound, err.Error(), c)
+			return
+		}
+
+		// Can cache the back image
+		c.Header("Cache-Control", "public")
+		c.JSON(http.StatusOK, gin.H{
+			"success":    true,
+			"back_image": deck.Spec.BackImage,
+		})
 	}
 }

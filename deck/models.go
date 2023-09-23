@@ -45,6 +45,7 @@ type DeckInstance struct {
 	Name      string
 	DeckId    string
 	Shuffled  bool
+	Count     uint
 	Remaining []Card
 	Piles     map[string][]Card
 }
@@ -61,6 +62,7 @@ func (deck Deck) CreateInstance(count uint) *DeckInstance {
 		Id:       deck.Metadata.Id,
 		Name:     deck.Metadata.Name,
 		DeckId:   ulid.Make().String(),
+		Count:    count,
 		Shuffled: false,
 	}
 	for i := uint(0); i < count; i++ {

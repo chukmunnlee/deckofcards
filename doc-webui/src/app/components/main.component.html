@@ -1,0 +1,7 @@
+<h2>List of Decks</h2>
+
+<div class="deck-info" *ngFor="let d of decks$ | async"
+     [routerLink]="['/deck', d.id]" [queryParams]="{ name: d.name }" >
+  <h2>{{ d.name }}</h2>
+  <code>{{ d.description }}</code>
+</div>

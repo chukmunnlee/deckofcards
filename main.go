@@ -31,6 +31,7 @@ func main() {
 		log.Printf("Enabling CORS")
 		config := cors.DefaultConfig()
 		config.AllowOrigins = []string{"*"}
+		config.AllowHeaders = []string{"Cache-Control"}
 		r.Use(cors.New(config))
 	}
 
@@ -53,6 +54,10 @@ func main() {
 	// /api/deck/:deck_id
 	register(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeck(cardDecks, storage), r)
+
+	//api/deck/:deck_id/back
+	register(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
+		mkApiDeckBack(cardDecks, storage), r)
 
 	// /api/deck/:deck_id/shuffle
 	// /api/deck/:deck_id/shuffle?remaining=true
