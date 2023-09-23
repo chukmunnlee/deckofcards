@@ -2,6 +2,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
+import {DeckService} from '../deck.service';
 
 @Component({
   selector: 'app-create',
@@ -21,6 +22,7 @@ export class CreateComponent implements OnInit {
   private title = inject(Title)
   private fb = inject(FormBuilder)
   private router = inject(Router)
+  private deckSvc = inject(DeckService)
 
   ngOnInit(): void {
     this.title.setTitle(this.name || 'Not set')
@@ -29,7 +31,13 @@ export class CreateComponent implements OnInit {
 
   process() {
     const count = this.form.value['deckCount']
-    this.router.navigate(['/play', this.deckId ], { queryParams: { count }})
+    this.deckSvc.createDeck(this.deckId, count)
+      .then(result => {
+        this.router.navigate(['/play', result.deck_id ])
+      })
+      .catch(error => {
+        alert(`Error: ${JSON.stringify(error)}`)
+      })
   }
 
   private createForm(): FormGroup {

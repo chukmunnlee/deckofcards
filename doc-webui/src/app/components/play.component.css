@@ -1,0 +1,34 @@
+#cardNum {
+  width: 30%;
+  font-size: 1.2em;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 5vh;
+}
+.card-back {
+  width: auto;
+  height: 20vh;
+}
+
+.cards {
+  margin-top: 8vh;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 5vh;
+}
+
+.card-size {
+  width: auto;
+  height: 20vh;
+}
+
+.mt-3 {
+  margin-top: 3vh;
+}
+
+.mt-5 {
+  margin-top: 5vh;
+}

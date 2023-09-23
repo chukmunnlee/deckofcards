@@ -21,7 +21,21 @@ export class DeckService {
         .set('deck_id', deckId).set('deck_count', count)
 
     return lastValueFrom(
-      this.http.get<any>(`${BASE}/deck/new`, { params })
+      this.http.get<DeckStatus>(`${BASE}/deck/new/shuffle`, { params })
+    )
+  }
+
+  getDeckStatus(deckId: string): Promise<DeckStatus> {
+    return lastValueFrom(
+      this.http.get<any>(`${BASE}/deck/${deckId}`)
+    )
+  }
+
+  drawDeck(deckId: string, count = 1) {
+    const params = new HttpParams().set('count', count)
+
+    return lastValueFrom(
+      this.http.get<any>(`${BASE}/deck/${deckId}/draw`, { params })
     )
   }
 

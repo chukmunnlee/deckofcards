@@ -1,1 +1,35 @@
-<p>play works!</p>
+<h2>Play</h2>
+
+<div class="top">
+  <div>
+    <div>
+      <div>
+        <img [src]="backImage" class="card-back" (click)="process()">
+      </div>
+      <h4>Remaining: {{ maxCards }}</h4>
+    </div>
+    <div class="mt-3">
+      <button type="button" [routerLink]="['/']">Back</button>
+    </div>
+  </div>
+  <div>
+    <form [formGroup]="form" (submit)="process()">
+      <div> <h3>Select number of cards</h3> </div>
+      <div>
+        <input id="cardNum" type="number" [min]="minCards" [max]="maxCards"
+              [value]="minCards" formControlName="count">
+      </div>
+      <div class="mt-3">
+        <button type="submit">Draw</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="cards" *ngIf="drawnCards.length; else noCards">
+  <img *ngFor="let c of drawnCards" [src]="c.image" class="card-size">
+</div>
+
+<ng-template #noCards>
+  <h3>No cards drawn</h3>
+</ng-template>
