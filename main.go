@@ -35,41 +35,38 @@ func main() {
 		r.Use(cors.New(config))
 	}
 
-	// Check request is GET or POST method
-	r.Use(mkApiCheckMethod())
+	// GET /api/decks
+	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
 
-	// return a list of registered decks
-	register("/api/decks", mkApiDecks(cardDecks, storage), r)
+	// POST /api/deck
+	// Content-Type: application/json
+	// { "jokers_enabled": false, "deck_name": "deck_name", "deck_count": 1, "shuffle": true }
+	registerPOST("/api/deck", mkApiDeckNew(cardDecks, storage), r)
 
-	// /api/deck/new?jokers_enabled=true&deck_name=deck_name
-	register("/api/deck/new", mkApiDeckNew(cardDecks, storage), r)
-
-	// /api/deck/new/shuffle?deck_count=1&jokers_enabled=true&deck_name=deck_name
-	register("/api/deck/new/shuffle", mkApiDeckNew(cardDecks, storage), r)
-
-	// /api/deck/:deck_id/draw?count=2
-	register(fmt.Sprintf("/api/deck/:%s/draw", PARAM_DECK_ID),
+	// GET /api/deck/:deck_id?count=2
+	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
 
-	// /api/deck/:deck_id
-	register(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+	// GET /api/deck/:deck_id/status
+	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
 		mkApiDeck(cardDecks, storage), r)
 
 	//api/deck/:deck_id/back
-	register(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
+	registerGET(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
 		mkApiDeckBack(cardDecks, storage), r)
 
-	// /api/deck/:deck_id/shuffle
-	// /api/deck/:deck_id/shuffle?remaining=true
+	// PUT /api/deck/:deck_id/shuffle
+	// PUT /api/deck/:deck_id/shuffle?remaining=true
 
 	// /version
-	register("/version", mkVersion(GitCommit), r)
+	registerGET("/version", mkVersion(GitCommit), r)
 	// /health
-	register("/health", mkVersion(GitCommit), r)
+	registerGET("/health", mkVersion(GitCommit), r)
 
 	log.Printf("Starting deckofcards on port %d on %s",
 		opts.Port, time.Now().Format("01-02-2006 15:04:05 MST"))
 
 	if err := r.Run(fmt.Sprintf(":%d", opts.Port)); nil != err {
+		log.Panicf("Cannot start deckofcards: %s", err.Error())
 	}
 }

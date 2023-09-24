@@ -3,8 +3,6 @@ package main
 import (
 	"math/rand"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -61,24 +59,21 @@ func mkApiDeckNew(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 
 	return func(c *gin.Context) {
 
-		deck, err := createDeck(cardDecks, c)
+		deck, opt, err := createDeck(cardDecks, c)
 		if nil != err {
 			mkError(http.StatusNotFound, err.Error(), c)
 			return
 		}
 
-		deckCount := 1
-		if hasField(QUERY_DECK_COUNT, c) {
-			tmp, _ := readField(QUERY_DECK_COUNT, "1", c)
-			deckCount, _ = strconv.Atoi(tmp)
+		deckCount := uint(1)
+		if opt.DeckCount > 0 {
+			deckCount = opt.DeckCount
 		}
 
-		deckInstance := deck.CreateInstance(uint(deckCount))
-		shuffled := strings.HasSuffix(c.Request.URL.Path, "/shuffle") ||
-			strings.HasSuffix(c.Request.URL.Path, "/shuffle/")
-		deckInstance.Shuffled = shuffled
+		deckInstance := deck.CreateInstance(deckCount)
+		deckInstance.Shuffled = opt.Shuffle
 
-		if shuffled {
+		if opt.Shuffle {
 			shuffleDeck(&deckInstance.Remaining, r)
 		}
 
@@ -100,12 +95,17 @@ func mkApiDeckNew(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 
 func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
 	return func(c *gin.Context) {
-		tmp, _ := readField(QUERY_COUNT, "1", c)
-		count, err := strconv.Atoi(tmp)
+		opt, err := parseRequestOptions(c)
 		if nil != err {
 			mkError(http.StatusBadRequest, err.Error(), c)
 			return
 		}
+
+		count := 1
+		if opt.Count > 0 {
+			count = opt.Count
+		}
+
 		deckId := c.Param(PARAM_DECK_ID)
 
 		deckInstance, err := storage.Get(deckId)

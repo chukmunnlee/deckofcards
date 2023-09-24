@@ -6,6 +6,7 @@ const (
 	QUERY_DECK_ID        = "deck_id"
 	QUERY_DECK_COUNT     = "deck_count"
 	QUERY_COUNT          = "count"
+	QUERY_SHUFFLE        = "shuffle"
 
 	PARAM_DECK_ID = "deckId"
 

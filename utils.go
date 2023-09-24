@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -18,6 +17,18 @@ type CLIOptions struct {
 	DeckRoot    string
 	ReleaseMode bool
 	EnableCORS  bool
+}
+
+type DeckRequestOptions struct {
+	// POST /api/deck
+	Shuffle       bool   `json:"shuffle"`
+	JokersEnabled bool   `json:"jokers_enabled"`
+	DeckName      string `json:"deck_name"`
+	DeckId        string `json:"deck_id"`
+	DeckCount     uint   `json:"deck_count"`
+
+	// GET /api/deck/:deck_id
+	Count int `form:"count"`
 }
 
 func parseCLI() CLIOptions {
@@ -50,38 +61,49 @@ func shuffleDeck(cards *[]deck.Card, r *rand.Rand) {
 	}
 }
 
-func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, error) {
+func parseRequestOptions(c *gin.Context) (*DeckRequestOptions, error) {
+	var opt DeckRequestOptions
+	if err := c.Bind(&opt); nil != err {
+		return nil, err
+	}
+	return &opt, nil
+}
+
+func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, *DeckRequestOptions, error) {
 
 	var err error
+	var opt *DeckRequestOptions
 	var deck *deck.Deck
+	var deckId string
+
+	if opt, err = parseRequestOptions(c); nil != err {
+		return nil, nil, err
+	}
 
 	deckName := DECK_STANDARD_52
-	hasDeckName := hasField(QUERY_DECK_NAME, c)
-	hasDeckId := hasField(QUERY_DECK_ID, c)
 
-	if hasDeckId {
-		deckId, _ := readField(QUERY_DECK_ID, "", c)
+	if opt.DeckId != "" {
+		deckId = opt.DeckId
 		if deck, err = cardDecks.FindDeckById(deckId); nil != err {
-			return nil, err
+			return nil, nil, err
 		}
 		deckName = deck.Metadata.Name
-	} else if hasDeckName {
-		deckName, _ = readField(QUERY_DECK_NAME, "", c)
+	} else if opt.DeckName != "" {
+		deckName = opt.DeckName
 	}
 
 	if DECK_STANDARD_52 == deckName {
-		tmp, _ := readField(QUERY_JOKERS_ENABLED, "false", c)
-		if b, _ := strconv.ParseBool(tmp); b {
+		if opt.JokersEnabled {
 			deckName = DECK_STANDARD_52_WITH_2_JOKERS
 		}
 	}
 
 	deck, err = cardDecks.FindDeckByName(deckName)
 	if nil != err {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return deck, nil
+	return deck, opt, nil
 }
 
 func hasField(field string, c *gin.Context) bool {
@@ -111,16 +133,33 @@ func mkResponseNotImplemented(c *gin.Context) {
 		})
 }
 
-func register(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
-	log.Printf("Endpoint: %s", endpoint)
-	app.GET(endpoint, handler)
+func registerPOST(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: POST %s", endpoint)
 	app.POST(endpoint, handler)
 	if strings.HasSuffix(endpoint, "/") {
-		app.GET(endpoint[:len(endpoint)-1], handler)
 		app.POST(endpoint[:len(endpoint)-1], handler)
 	} else {
-		app.GET(fmt.Sprintf("%s/", endpoint), handler)
 		app.POST(fmt.Sprintf("%s/", endpoint), handler)
+	}
+}
+
+func registerGET(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: GET %s", endpoint)
+	app.GET(endpoint, handler)
+	if strings.HasSuffix(endpoint, "/") {
+		app.GET(endpoint[:len(endpoint)-1], handler)
+	} else {
+		app.GET(fmt.Sprintf("%s/", endpoint), handler)
+	}
+}
+
+func registerPUT(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: PUT %s", endpoint)
+	app.PUT(endpoint, handler)
+	if strings.HasSuffix(endpoint, "/") {
+		app.GET(endpoint[:len(endpoint)-1], handler)
+	} else {
+		app.PUT(fmt.Sprintf("%s/", endpoint), handler)
 	}
 }
 
