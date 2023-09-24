@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
@@ -146,6 +147,22 @@ func mkApiDeckBack(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 		c.JSON(http.StatusOK, gin.H{
 			"success":    true,
 			"back_image": deck.Spec.BackImage,
+		})
+	}
+}
+
+func mkApiDeckDelete(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		if !storage.HasDeck(deckId) {
+			mkError(http.StatusNotFound, fmt.Sprintf("Cannot find deck_id %s", deckId), c)
+			return
+		}
+
+		storage.Delete(deckId)
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"deck_id": deckId,
 		})
 	}
 }

@@ -51,12 +51,16 @@ func main() {
 	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
 		mkApiDeck(cardDecks, storage), r)
 
-	//api/deck/:deck_id/back
+	// GET /api/deck/:deck_id/back
 	registerGET(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
 		mkApiDeckBack(cardDecks, storage), r)
 
 	// PUT /api/deck/:deck_id/shuffle
 	// PUT /api/deck/:deck_id/shuffle?remaining=true
+
+	// DELETE /api/deck/:deck_id
+	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeckDelete(cardDecks, storage), r)
 
 	// /version
 	registerGET("/version", mkVersion(GitCommit), r)

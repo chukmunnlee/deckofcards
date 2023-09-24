@@ -157,9 +157,19 @@ func registerPUT(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
 	log.Printf("Endpoint: PUT %s", endpoint)
 	app.PUT(endpoint, handler)
 	if strings.HasSuffix(endpoint, "/") {
-		app.GET(endpoint[:len(endpoint)-1], handler)
+		app.PUT(endpoint[:len(endpoint)-1], handler)
 	} else {
 		app.PUT(fmt.Sprintf("%s/", endpoint), handler)
+	}
+}
+
+func registerDELETE(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: DELETE %s", endpoint)
+	app.DELETE(endpoint, handler)
+	if strings.HasSuffix(endpoint, "/") {
+		app.DELETE(endpoint[:len(endpoint)-1], handler)
+	} else {
+		app.DELETE(fmt.Sprintf("%s/", endpoint), handler)
 	}
 }
 
