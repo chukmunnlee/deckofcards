@@ -31,7 +31,7 @@ func main() {
 		log.Printf("Enabling CORS")
 		config := cors.DefaultConfig()
 		config.AllowOrigins = []string{"*"}
-		config.AllowHeaders = []string{"Cache-Control"}
+		config.AllowHeaders = []string{"Cache-Control", "Content-Type"}
 		r.Use(cors.New(config))
 	}
 

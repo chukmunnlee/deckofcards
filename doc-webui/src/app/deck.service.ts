@@ -3,7 +3,8 @@ import {Injectable, inject} from "@angular/core";
 import {DeckBackImage, DeckInfo, DeckStatus} from "./models/models";
 import {lastValueFrom} from "rxjs";
 
-const BASE = 'http://localhost:3000/api'
+//const BASE = 'http://localhost:3000/api'
+const BASE = 'https://deckofcards.chuklee.com/api'
 
 @Injectable()
 export class DeckService {
@@ -17,11 +18,15 @@ export class DeckService {
   }
 
   createDeck(deckId: string, count = 1): Promise<DeckStatus> {
-    const params = new HttpParams()
-        .set('deck_id', deckId).set('deck_count', count)
+
+    const opts = {
+      deck_id: deckId,
+      deck_count: count,
+      shuffle: true
+    }
 
     return lastValueFrom(
-      this.http.get<DeckStatus>(`${BASE}/deck/new/shuffle`, { params })
+      this.http.post<DeckStatus>(`${BASE}/deck`, opts)
     )
   }
 
@@ -31,11 +36,17 @@ export class DeckService {
     )
   }
 
-  drawDeck(deckId: string, count = 1) {
+  drawDeck(deckId: string, count = 1): Promise<DeckStatus> {
     const params = new HttpParams().set('count', count)
 
     return lastValueFrom(
-      this.http.get<any>(`${BASE}/deck/${deckId}/draw`, { params })
+      this.http.get<DeckStatus>(`${BASE}/deck/${deckId}`, { params })
+    )
+  }
+
+  deleteDeck(deckId: string): Promise<any> {
+    return lastValueFrom(
+      this.http.delete<any>(`${BASE}/deck/${deckId}`)
     )
   }
 

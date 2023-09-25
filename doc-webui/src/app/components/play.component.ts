@@ -27,6 +27,7 @@ export class PlayComponent implements OnInit {
   private deckSvc = inject(DeckService)
   private title = inject(Title)
   private fb = inject(FormBuilder)
+  private router = inject(Router)
 
   ngOnInit(): void {
     this.title.setTitle(`Deck Id: ${this.deckId}`)
@@ -50,6 +51,14 @@ export class PlayComponent implements OnInit {
         this.form.controls['count'].setValue(1)
         this.drawnCards = this.deckStatus.cards || []
       })
+      .catch(error => {
+        alert(`Error: ${JSON.stringify(error)}`)
+      })
+  }
+
+  back() {
+    this.deckSvc.deleteDeck(this.deckId)
+      .then(() => this.router.navigate(['/']))
       .catch(error => {
         alert(`Error: ${JSON.stringify(error)}`)
       })
