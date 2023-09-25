@@ -3,8 +3,8 @@ import {Injectable, inject} from "@angular/core";
 import {DeckBackImage, DeckInfo, DeckStatus} from "./models/models";
 import {lastValueFrom} from "rxjs";
 
-//const BASE = 'http://localhost:3000/api'
-const BASE = 'https://deckofcards.chuklee.com/api'
+const BASE = 'http://localhost:3000/api'
+// const BASE = 'https://deckofcards.chuklee.com/api'
 
 @Injectable()
 export class DeckService {
@@ -13,8 +13,8 @@ export class DeckService {
 
   getDecks(): Promise<DeckInfo[]> {
     return lastValueFrom(
-      this.http.get<DeckInfo[]>(`${BASE}/decks`)
-    )
+      this.http.get<any>(`${BASE}/decks`)
+    ).then((resp: any) => resp['decks'] as DeckInfo[])
   }
 
   createDeck(deckId: string, count = 1): Promise<DeckStatus> {
@@ -32,7 +32,7 @@ export class DeckService {
 
   getDeckStatus(deckId: string): Promise<DeckStatus> {
     return lastValueFrom(
-      this.http.get<any>(`${BASE}/deck/${deckId}`)
+      this.http.get<DeckStatus>(`${BASE}/deck/${deckId}`)
     )
   }
 

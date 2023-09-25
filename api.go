@@ -32,7 +32,10 @@ func mkApiDecks(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.C
 		i++
 	}
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, decks)
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"decks":   decks,
+		})
 	}
 }
 

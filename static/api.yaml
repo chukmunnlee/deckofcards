@@ -1,0 +1,48 @@
+openapi: 3.1.0
+info:
+  title: DeckOfCard
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://deckofcards.chuklee.com
+  description: DeckOfCard
+- url: http://localhost:3000
+  description: Local development
+
+paths:
+  /api/decks:
+    get: 
+      summary: List of all decks
+      operationId: getDecks
+      tags:
+      - decks
+      responses:
+        '200': 
+          description: A list of all the installed card decks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decks'
+
+components:
+  schemas:
+    DeckSummary:
+      type: object
+      required:
+      - id
+      - name
+      - description
+      properties:
+        id: 
+          type: string
+        name: 
+          type: string
+        description: 
+          type: string
+    Decks:
+      type: array
+      items:
+        $ref: '#/components/schemas/DeckSummary'
+
