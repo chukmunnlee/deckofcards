@@ -60,6 +60,7 @@ paths:
 
   /api/deck/{deckId}:
     get: 
+      summary: Draw cards from a deck
       operationId: getCardsWithByDeckId
       tags:
       - deck
