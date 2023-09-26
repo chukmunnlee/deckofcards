@@ -26,7 +26,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response'
+                $ref: '#/components/schemas/GetDecksResponse'
+  /api/deck:
+    post: 
+      summary: Create a new deck
+      operationId: postDeck
+      tags:
+      - deck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeckOptions'
+      responses:
+        '200':
+          description: Created new deck 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDeckResponse'
+        '400':
+          description: Cannot create deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -48,10 +78,34 @@ components:
       items:
         $ref: '#/components/schemas/DeckSummary'
 
-    Response:
+    CreateDeckOptions:
+      type: object
+      anyOf:
+      - required: [ deck_id ]
+      - required: [ deck_name ]
+      - required: [ deck_name, deck_id ]
+      properties:
+        deck_id:
+          type: string
+        deck_name:
+          type: string
+        deck_count:
+          type: integer
+          format: int32
+          minimum: 1
+          default: 1
+        shuffle:
+          type: boolean
+          default: false
+        jokers_enabled:
+          type: boolean
+          default: false
+
+    GetDecksResponse:
       type: object
       required:
       - success
+      - decks
       properties:
         success: 
           type: boolean
@@ -60,4 +114,31 @@ components:
           schema:
             $ref: '#/components/schemas/Decks'
 
+    PostDeckResponse:
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
 
+    ErrorResponse:
+      type: object
+      required:
+      - success
+      - error
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
