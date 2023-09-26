@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -34,6 +35,8 @@ func main() {
 		config.AllowHeaders = []string{"Cache-Control", "Content-Type"}
 		r.Use(cors.New(config))
 	}
+
+	r.NoRoute(gin.WrapH(http.FileServer(http.Dir("static"))))
 
 	// GET /api/decks
 	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
