@@ -26,6 +26,7 @@ RUN apk --no-cache add curl
 
 COPY --from=builder /app/deckofcards /app/deckofcards
 
+COPY static static
 COPY assets assets
 
 ENV PORT=3000
