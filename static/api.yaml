@@ -61,6 +61,8 @@ paths:
   /api/deck/{deckId}:
     get: 
       operationId: getCardsWithByDeckId
+      tags:
+      - deck
       parameters:
       - name: deckId
         in: path
