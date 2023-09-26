@@ -58,6 +58,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /api/deck/{deckId}:
+    get: 
+      operationId: getCardsWithByDeckId
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: count
+        in: query
+        schema:
+          type: number
+          default: 1
+      responses:
+        '200':
+          description: Draw cards from a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckResponse'
+        '400':
+          description: Cannot create deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     DeckSummary:
@@ -77,6 +111,44 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/DeckSummary'
+
+    Card:
+      type: object
+      required:
+      - code
+      - image
+      - value
+      - suit
+      - images
+      properties:
+        code: 
+          type: string
+        image: 
+          type: string
+        value: 
+          type: string
+        suit: 
+          type: string
+        count:
+          type: integer 
+          format: int32
+        images:
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CardImages'
+
+    CardImages:
+      type: object
+      properties:
+        svg:
+          type: string
+        png:
+          type: string
+        jpeg:
+          type: string
+        jpg:
+          type: string
 
     CreateDeckOptions:
       type: object
@@ -111,8 +183,33 @@ components:
           type: boolean
         decks:
           type: array
+          minItems: 0
           schema:
             $ref: '#/components/schemas/Decks'
+
+    GetDeckResponse:
+      type: object
+      required:
+      - success
+      - deck_id
+      - cards
+      - shuffled
+      - remaining
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        cards:
+          type: array
+          minItems: 0
+          schema:
+            $ref: '#/components/schemas/Card'
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
 
     PostDeckResponse:
       type: object
