@@ -98,6 +98,8 @@ paths:
 components:
   schemas:
     DeckSummary:
+      title: Deck Summary 
+      description: Short information about a deck
       type: object
       required:
       - id
@@ -110,12 +112,17 @@ components:
           type: string
         description: 
           type: string
+
     Decks:
+      title: Deck Summary 
+      description: List of card decks
       type: array
       items:
         $ref: '#/components/schemas/DeckSummary'
 
     Card:
+      title: Card
+      description: Card details
       type: object
       required:
       - code
@@ -142,6 +149,8 @@ components:
             $ref: '#/components/schemas/CardImages'
 
     CardImages:
+      title: Card Images
+      description: Images of a card
       type: object
       properties:
         svg:
@@ -154,6 +163,8 @@ components:
           type: string
 
     CreateDeckOptions:
+      title: Create Deck Options
+      description: Options for creating a deck
       type: object
       anyOf:
       - required: [ deck_id ]
@@ -177,6 +188,8 @@ components:
           default: false
 
     GetDecksResponse:
+      title: Get Decks Response
+      desccription: Response from GET /api/decks
       type: object
       required:
       - success
@@ -191,6 +204,8 @@ components:
             $ref: '#/components/schemas/Decks'
 
     GetDeckResponse:
+      title: Get Deck Response
+      description: Response from GET /api/deck
       type: object
       required:
       - success
@@ -215,6 +230,8 @@ components:
           format: int32
 
     PostDeckResponse:
+      title: Post Deck Response
+      description: Response from POST /api/deck
       type: object
       required:
       - success
@@ -233,6 +250,8 @@ components:
           format: int32
 
     ErrorResponse:
+      title: Error Response
+      description: Standard error response
       type: object
       required:
       - success
