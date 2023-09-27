@@ -187,7 +187,7 @@ components:
         decks:
           type: array
           minItems: 0
-          schema:
+          items:
             $ref: '#/components/schemas/Decks'
 
     GetDeckResponse:
@@ -206,7 +206,7 @@ components:
         cards:
           type: array
           minItems: 0
-          schema:
+          items:
             $ref: '#/components/schemas/Card'
         shuffled:
           type: boolean 
