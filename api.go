@@ -169,3 +169,49 @@ func mkApiDeckDelete(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*
 		})
 	}
 }
+
+func mkApiDeckPut(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		if !storage.HasDeck(deckId) {
+			mkError(http.StatusNotFound, fmt.Sprintf("Cannot find deck_id %s", deckId), c)
+			return
+		}
+
+		deckInstance, _ := storage.Get(deckId)
+		opt, _ := parseRequestOptions(c)
+
+		var cards []deck.Card
+
+		if opt.Remaining {
+			cards = deckInstance.Remaining
+		} else {
+			opts := DeckRequestOptions{
+				DeckId:   deckInstance.Id,
+				DeckName: deckInstance.Name,
+				Shuffle:  deckInstance.Shuffled,
+			}
+			deck, err := createDeckByOption(cardDecks, opts)
+			if nil != err {
+				mkError(http.StatusBadRequest, fmt.Sprintf("Cannot created new deck for %s", deckId), c)
+				return
+			}
+			cards = (deck.CreateInstance(deckInstance.Count)).Remaining
+		}
+
+		shuffleDeck(&cards, r)
+		deckInstance.Remaining = cards
+
+		storage.Update(deckInstance)
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":   true,
+			"deck_id":   deckInstance.DeckId,
+			"shuffled":  deckInstance.Shuffled,
+			"remaining": len(deckInstance.Remaining),
+		})
+	}
+}

@@ -29,6 +29,9 @@ type DeckRequestOptions struct {
 
 	// GET /api/deck/:deck_id
 	Count int `form:"count"`
+
+	// PUT /api/deck/:deck_id?remaining=true
+	Remaining bool `form:"remaining"`
 }
 
 func parseCLI() CLIOptions {
@@ -69,25 +72,12 @@ func parseRequestOptions(c *gin.Context) (*DeckRequestOptions, error) {
 	return &opt, nil
 }
 
-func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, *DeckRequestOptions, error) {
-
-	var err error
-	var opt *DeckRequestOptions
-	var deck *deck.Deck
-	var deckId string
-
-	if opt, err = parseRequestOptions(c); nil != err {
-		return nil, nil, err
-	}
+func createDeckByOption(cardDecks deck.CardDecks, opt DeckRequestOptions) (*deck.Deck, error) {
 
 	deckName := DECK_STANDARD_52
 
 	if opt.DeckId != "" {
-		deckId = opt.DeckId
-		if deck, err = cardDecks.FindDeckById(deckId); nil != err {
-			return nil, nil, err
-		}
-		deckName = deck.Metadata.Name
+		return cardDecks.FindDeckById(opt.DeckId)
 	} else if opt.DeckName != "" {
 		deckName = opt.DeckName
 	}
@@ -98,27 +88,22 @@ func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, *DeckRequ
 		}
 	}
 
-	deck, err = cardDecks.FindDeckByName(deckName)
-	if nil != err {
+	return cardDecks.FindDeckByName(deckName)
+}
+
+func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, *DeckRequestOptions, error) {
+
+	var err error
+	var opt *DeckRequestOptions
+	var deck *deck.Deck
+
+	if opt, err = parseRequestOptions(c); nil != err {
 		return nil, nil, err
 	}
 
-	return deck, opt, nil
-}
+	deck, err = createDeckByOption(cardDecks, *opt)
 
-func hasField(field string, c *gin.Context) bool {
-	return c.Query(field) != ""
-}
-
-func readField(field string, defValue string, c *gin.Context) (string, error) {
-	switch m := c.Request.Method; m {
-	case "GET":
-		return c.DefaultQuery(field, defValue), nil
-	case "POST":
-		return c.DefaultPostForm(field, defValue), nil
-	default:
-		return "", fmt.Errorf("Method %s not implmented for %s", c.Request.Method, c.Request.URL.Path)
-	}
+	return deck, opt, err
 }
 
 func mkError(status int, msg string, c *gin.Context) {

@@ -103,6 +103,32 @@ paths:
         '404':
           description: Cannot find deck name or deck id
           $ref: '#/components/responses/NotFound'
+    put: 
+      summary: Reshuffle the cards with the deck_id
+      operationId: putCardsByDeckId
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: remaining
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Status of the shuffled deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckStatusResponse'
+        '400':
+          description: Cannot create deck
+          $ref: '#/components/responses/BadRequest'
 
   /api/deck/{deckId}/status:
     get:
@@ -118,7 +144,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Draw cards from a deck
+          description: Status of the deck
           content:
             application/json:
               schema:

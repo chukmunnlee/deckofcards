@@ -59,6 +59,8 @@ func main() {
 		mkApiDeckBack(cardDecks, storage), r)
 
 	// PUT /api/deck/:deck_id?remaining=true
+	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeckPut(cardDecks, storage), r)
 
 	// DELETE /api/deck/:deck_id
 	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
