@@ -47,23 +47,17 @@ paths:
                 $ref: '#/components/schemas/PostDeckResponse'
         '400':
           description: Cannot create deck
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
           description: Cannot find deck name or deck id
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
 
   /api/deck/{deckId}:
     get: 
       summary: Draw cards from a deck
       operationId: getCardsByDeckId
       tags:
-      - deck
+      - deck instance
       parameters:
       - name: deckId
         in: path
@@ -84,16 +78,77 @@ paths:
                 $ref: '#/components/schemas/GetDeckResponse'
         '400':
           description: Cannot create deck
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
           description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a deck 
+      operationId: deleteDeck
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Delete a deck 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/DeleteDeckResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
+
+  /api/deck/{deckId}/status:
+    get:
+      summary: Show the status of the deck
+      operationId: getDeckStatus
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Draw cards from a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckStatusResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
+
+  /api/deck/{deckId}/back:
+    get:
+      summary: Get the back image of a deck
+      operationId: getDeckBackImage
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get the back image of a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckBackResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
 
 components:
   schemas:
@@ -205,7 +260,7 @@ components:
 
     GetDeckResponse:
       title: Get Deck Response
-      description: Response from GET /api/deck
+      description: Response from GET /api/deck/<deck_id>
       type: object
       required:
       - success
@@ -228,6 +283,51 @@ components:
         remaining:
           type: integer
           format: int32
+    DeleteDeckResponse:
+      title: Delete deck Response
+      description: Response from DELETE /api/deck/<deck_id>
+      type: object
+      required:
+      - success
+      - deck_id
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+
+    GetDeckStatusResponse:
+      title: Get deck status
+      description: Response from GET /api/deck/deck_id/status
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+
+    GetDeckBackResponse:
+      title: Get deck's back image
+      description: Response from GET /api/deck/deck_id/back
+      type: object
+      required:
+      - success
+      - back_image
+      properties:
+        success: 
+          type: boolean
+        back_image: 
+          type: string
 
     PostDeckResponse:
       title: Post Deck Response
@@ -261,3 +361,19 @@ components:
           type: boolean
         error:
           type: string
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
