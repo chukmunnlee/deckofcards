@@ -15,7 +15,8 @@
     window.onload = () => {
       window.ui = SwaggerUIBundle({
         url: '/api.yaml',
-        dom_id: '#swagger-ui'
+        dom_id: '#swagger-ui', 
+		  docExpansion: 'none'
       });
     };
   </script>
