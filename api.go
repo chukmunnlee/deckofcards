@@ -57,11 +57,20 @@ func mkApiDeck(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Co
 	}
 }
 
-func mkApiDeckNew(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+func mkApiDeckNew(limit uint, cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	hasLimit := limit > 0
 
 	return func(c *gin.Context) {
+
+		if hasLimit {
+			if storage.Count() >= int(limit) {
+				mkError(http.StatusServiceUnavailable,
+					"Exceed the number of decks supported by the server. Try again later", c)
+				return
+			}
+		}
 
 		deck, opt, err := createDeck(cardDecks, c)
 		if nil != err {
@@ -118,7 +127,7 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			return
 		}
 
-		drawn := deckInstance.Draw(count, deck.PILE_DISCARD)
+		drawn := deckInstance.Draw(count, deck.PILE_DISCARDED)
 		storage.Update(deckInstance)
 
 		c.JSON(http.StatusOK, gin.H{

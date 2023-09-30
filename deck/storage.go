@@ -23,6 +23,7 @@ type DeckOperations interface {
 	Update(deckInst DeckInstance) error
 	Delete(deckId string)
 	HasDeck(deckId string) bool
+	Count() int
 }
 
 func (ds *DeckStorage) Init(config map[string]string) {
@@ -76,4 +77,8 @@ func (ds *DeckStorage) Delete(deckId string) {
 func (ds DeckStorage) HasDeck(deckId string) bool {
 	_, ex := ds.entries[deckId]
 	return ex
+}
+
+func (ds DeckStorage) Count() int {
+	return len(ds.entries)
 }

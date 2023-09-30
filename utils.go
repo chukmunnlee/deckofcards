@@ -17,6 +17,7 @@ type CLIOptions struct {
 	DeckRoot    string
 	ReleaseMode bool
 	EnableCORS  bool
+	DeckLimit   uint
 }
 
 type DeckRequestOptions struct {
@@ -32,6 +33,9 @@ type DeckRequestOptions struct {
 
 	// PUT /api/deck/:deck_id?remaining=true
 	Remaining bool `form:"remaining"`
+
+	// POST /api/deck/:deck_id/piles
+	Piles []string `json:"piles"`
 }
 
 func parseCLI() CLIOptions {
@@ -40,6 +44,7 @@ func parseCLI() CLIOptions {
 	deckRoot := flag.String(OPT_DECK_ROOT, "assets", "Location of the decks")
 	releaseMode := flag.Bool(OPT_RELEASE, true, "Disable Gin release mode")
 	enableCors := flag.Bool(OPT_ENABLE_CORS, false, "Enable CORS")
+	deckLimit := flag.Uint(OPT_DECK_LIMIT, 0, "Number of supported decks")
 
 	flag.Parse()
 
@@ -48,6 +53,7 @@ func parseCLI() CLIOptions {
 		DeckRoot:    *deckRoot,
 		ReleaseMode: *releaseMode,
 		EnableCORS:  *enableCors,
+		DeckLimit:   *deckLimit,
 	}
 }
 

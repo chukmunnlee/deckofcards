@@ -44,11 +44,19 @@ func main() {
 	// POST /api/deck
 	// Content-Type: application/json
 	// { "jokers_enabled": false, "deck_name": "deck_name", "deck_count": 1, "shuffle": true }
-	registerPOST("/api/deck", mkApiDeckNew(cardDecks, storage), r)
+	registerPOST("/api/deck", mkApiDeckNew(opts.DeckLimit, cardDecks, storage), r)
 
 	// GET /api/deck/:deck_id?count=2
 	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
+
+	// PUT /api/deck/:deck_id?remaining=true
+	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeckPut(cardDecks, storage), r)
+
+	// DELETE /api/deck/:deck_id
+	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeckDelete(cardDecks, storage), r)
 
 	// GET /api/deck/:deck_id/status
 	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
@@ -58,13 +66,13 @@ func main() {
 	registerGET(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
 		mkApiDeckBack(cardDecks, storage), r)
 
-	// PUT /api/deck/:deck_id?remaining=true
-	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
-		mkApiDeckPut(cardDecks, storage), r)
+	// GET /api/deck/:deck_id/piles
+	registerGET(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
+		mkApiPilesGet(cardDecks, storage), r)
 
-	// DELETE /api/deck/:deck_id
-	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
-		mkApiDeckDelete(cardDecks, storage), r)
+	// GET /api/deck/:deck_id/piles
+	registerPOST(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
+		mkApiPilesPost(cardDecks, storage), r)
 
 	// /version
 	registerGET("/version", mkVersion(GitCommit), r)

@@ -51,6 +51,9 @@ paths:
         '404':
           description: Cannot find deck name or deck id
           $ref: '#/components/responses/NotFound'
+        '503':
+          description: Exceeded the number of decks
+          $ref: '#/components/responses/ServiceUnavailable'
 
   /api/deck/{deckId}:
     get: 
@@ -129,6 +132,58 @@ paths:
         '400':
           description: Cannot create deck
           $ref: '#/components/responses/BadRequest'
+
+  /api/deck/{deckId}/piles:
+    get:
+      summary: List the piles for a deck
+      operationId: getPilesByDeckId
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of piles in a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckPilesResponse'
+        '400':
+          description: Cannot create deck
+          $ref: '#/components/responses/BadRequest'
+    post: 
+      summary: Manually create piles
+      operationId: postPiles
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePilesOptions'
+      responses:
+        '200':
+          description: Created new deck 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDeckPilesResponse'
+        '400':
+          description: Cannot create piles in a deck
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Cannot find deck
+          $ref: '#/components/responses/NotFound'
 
   /api/deck/{deckId}/status:
     get:
@@ -243,6 +298,17 @@ components:
         jpg:
           type: string
 
+    Remaining:
+      title: Remaining cards
+      description: Remaining cards
+      type: object
+      required:
+      - remaining
+      properties:
+        remaining:
+          type: int
+          format: int32
+
     CreateDeckOptions:
       title: Create Deck Options
       description: Options for creating a deck
@@ -267,6 +333,18 @@ components:
         jokers_enabled:
           type: boolean
           default: false
+    CreatePilesOptions:
+      title: Create piles for a given deck
+      description: Options for creating a deck
+      type: object
+      required:
+      - piles
+      properties:
+        piles:
+          type: array
+          minItems: 1
+          items:
+            type: string
 
     GetDecksResponse:
       title: Get Decks Response
@@ -342,6 +420,49 @@ components:
           type: integer
           format: int32
 
+    GetDeckPilesResponse:
+      title: Get deck status
+      description: Response from GET /api/deck/deck_id/piles
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      - piles
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+        piles:
+          type: object
+          addtionalProperties:
+            $ref: '#/components/schemas/Remaining'
+    PostDeckPilesResponse:
+      title: Create piles
+      description: Response from POST /api/deck/deck_id/piles
+      type: object
+      required:
+      - success
+      - deck_id
+      - piles
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        piles:
+          type: array
+          minItems: 0
+          items:
+            type: string
+
     GetDeckBackResponse:
       title: Get deck's back image
       description: Response from GET /api/deck/deck_id/back
@@ -398,6 +519,13 @@ components:
 
     NotFound:
       description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ServiceUnavailable:
+      description: Service unavailable
       content:
         application/json:
           schema:

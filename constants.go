@@ -17,4 +17,5 @@ const (
 	OPT_DECK_ROOT   = "deckRoot"
 	OPT_RELEASE     = "release"
 	OPT_ENABLE_CORS = "enableCORS"
+	OPT_DECK_LIMIT  = "deckLimit"
 )

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PILE_DISCARD = "discard"
+	PILE_DISCARDED = "discarded"
 )
 
 type Metadata struct {
@@ -56,6 +56,10 @@ type DeckInfo struct {
 	Description string `json:"description"`
 }
 
+type PileInfo struct {
+	Remaining uint `json:"remaining"`
+}
+
 // Deck
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	var deckInst = &DeckInstance{
@@ -69,7 +73,7 @@ func (deck Deck) CreateInstance(count uint) *DeckInstance {
 		deckInst.Remaining = append(deckInst.Remaining, deck.Spec.Cards...)
 	}
 	deckInst.Piles = make(map[string][]Card)
-	deckInst.Piles[PILE_DISCARD] = make([]Card, 0)
+	deckInst.Piles[PILE_DISCARDED] = make([]Card, 0)
 
 	return deckInst
 }
@@ -107,8 +111,29 @@ func New(file string) (*Deck, error) {
 func (deckInst *DeckInstance) Draw(count int, pileName string) []Card {
 	drawn, remaining := draw(count, deckInst.Remaining)
 	deckInst.Remaining = *remaining
-	deckInst.Piles[pileName] = append(deckInst.Piles[pileName], *drawn...)
+	deckInst.AddToPile(*drawn, pileName)
 	return *drawn
+}
+
+func (deckInst *DeckInstance) CreatePile(pileName string) bool {
+	_, ok := deckInst.Piles[pileName]
+	if ok {
+		return false
+	}
+	deckInst.Piles[pileName] = make([]Card, 0)
+	return true
+}
+
+func (deckInst *DeckInstance) AddToPile(cards []Card, pileName string) {
+	deckInst.Piles[pileName] = append(deckInst.Piles[pileName], cards...)
+}
+
+func (deckInst DeckInstance) GetPiles() map[string]PileInfo {
+	piles := make(map[string]PileInfo, 0)
+	for k, v := range deckInst.Piles {
+		piles[k] = PileInfo{Remaining: uint(len(v))}
+	}
+	return piles
 }
 
 func draw(count int, deck []Card) (*[]Card, *[]Card) {
