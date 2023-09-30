@@ -9,6 +9,7 @@ COPY go.sum .
 COPY api.go .
 COPY constants.go .
 COPY info.go .
+COPY piles_api.go .
 COPY main.go .
 COPY utils.go .
 COPY deck deck
