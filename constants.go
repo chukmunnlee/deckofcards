@@ -8,7 +8,8 @@ const (
 	QUERY_COUNT          = "count"
 	QUERY_SHUFFLE        = "shuffle"
 
-	PARAM_DECK_ID = "deckId"
+	PARAM_DECK_ID   = "deckId"
+	PARAM_PILE_NAME = "pileName"
 
 	DECK_STANDARD_52_WITH_2_JOKERS = "Standard52With2Jokers"
 	DECK_STANDARD_52               = "Standard52"

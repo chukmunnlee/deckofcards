@@ -59,6 +59,8 @@ func LoadDecks(deckRoot string) CardDecks {
 			continue
 		}
 		deckMap[strings.ToLower(deck.Metadata.Name)] = deck
+
+		//dumpTree(deck.Root)
 	}
 
 	return CardDecks{decks: deckMap}

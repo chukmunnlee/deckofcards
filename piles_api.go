@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
 	"github.com/gin-gonic/gin"
@@ -63,5 +65,40 @@ func mkApiPilesGet(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			"piles":     piles,
 		})
 
+	}
+}
+
+func mkApiPilePut(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		deckInstance, err := storage.Get(deckId)
+		if nil != err {
+			mkError(http.StatusNotFound, err.Error(), c)
+			return
+		}
+
+		pileName := c.Param(PARAM_PILE_NAME)
+		cards, ok := deckInstance.Piles[pileName]
+		if !ok {
+			mkError(http.StatusNotFound, fmt.Sprintf("%s pile in deck %s not found", pileName, deckId), c)
+			return
+		}
+
+		shuffleDeck(&cards, r)
+		deckInstance.Piles[pileName] = cards
+		storage.Update(deckInstance)
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":   true,
+			"deck_id":   deckInstance.DeckId,
+			"shuffled":  deckInstance.Shuffled,
+			"remaining": len(deckInstance.Remaining),
+			"piles": gin.H{
+				pileName: gin.H{"remaining": len(cards)},
+			},
+		})
 	}
 }

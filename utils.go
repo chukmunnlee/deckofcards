@@ -36,6 +36,10 @@ type DeckRequestOptions struct {
 
 	// POST /api/deck/:deck_id/piles
 	Piles []string `json:"piles"`
+
+	// GET /api/deck/:deck_id/contents
+	// GET /api/deck/:deck_id/pile/:deck_name/contents
+	Full bool `form:"full"`
 }
 
 func parseCLI() CLIOptions {

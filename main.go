@@ -50,6 +50,10 @@ func main() {
 	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
 
+	// TODO: GET /api/deck/:deck_id/contents
+	registerGET(fmt.Sprintf("/api/deck/:%s/contents", PARAM_DECK_ID),
+		mkApiDeckGetContents(cardDecks, storage), r)
+
 	// PUT /api/deck/:deck_id?remaining=true
 	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPut(cardDecks, storage), r)
@@ -73,6 +77,14 @@ func main() {
 	// GET /api/deck/:deck_id/piles
 	registerPOST(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
 		mkApiPilesPost(cardDecks, storage), r)
+
+	// TODO: GET /api/deck/:deck_id/pile/:pile_name/contents
+	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s/contents", PARAM_DECK_ID, PARAM_PILE_NAME),
+		mkApiDeckGetContents(cardDecks, storage), r)
+
+	// PUT /api/deck/:deck_id/pile/:pile_name
+	registerPUT(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
+		mkApiPilePut(cardDecks, storage), r)
 
 	// /version
 	registerGET("/version", mkVersion(GitCommit), r)

@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"slices"
@@ -38,6 +39,7 @@ type Deck struct {
 	Kind       string   `yaml:"kind"`
 	Metadata   Metadata `yaml:"metadata"`
 	Spec       Spec     `yaml:"spec"`
+	Root       *BTreeNode
 }
 
 type DeckInstance struct {
@@ -58,6 +60,12 @@ type DeckInfo struct {
 
 type PileInfo struct {
 	Remaining uint `json:"remaining"`
+}
+
+type BTreeNode struct {
+	Card  *Card
+	Left  *BTreeNode
+	Right *BTreeNode
 }
 
 // Deck
@@ -100,6 +108,12 @@ func New(file string) (*Deck, error) {
 			c := deck.Spec.Cards[idx]
 			cards = append(cards, c)
 		}
+		c := cards[len(cards)-1]
+		if nil == deck.Root {
+			deck.Root = &BTreeNode{Card: &c}
+		} else {
+			deck.Root.Add(&c)
+		}
 	}
 
 	deck.Spec.Cards = cards
@@ -134,6 +148,44 @@ func (deckInst DeckInstance) GetPiles() map[string]PileInfo {
 		piles[k] = PileInfo{Remaining: uint(len(v))}
 	}
 	return piles
+}
+
+// BTreeNode
+// func (node *BTreeNode) Add(code string, value string) {
+func (node *BTreeNode) Add(card *Card) {
+	curr := node
+	for {
+		if curr.Card.Code < card.Code {
+			if nil != curr.Right {
+				curr = curr.Right
+			} else {
+				n := BTreeNode{Card: card}
+				curr.Right = &n
+				return
+			}
+		} else if curr.Card.Code > card.Code {
+			if nil != curr.Left {
+				curr = curr.Left
+			} else {
+				n := BTreeNode{Card: card}
+				curr.Left = &n
+				return
+			}
+		}
+	}
+}
+
+func dumpTree(n *BTreeNode) {
+	if nil == n {
+		return
+	}
+	if nil != n.Left {
+		dumpTree(n.Left)
+	}
+	fmt.Printf(" %s", n.Card.Code)
+	if nil != n.Right {
+		dumpTree(n.Right)
+	}
 }
 
 func draw(count int, deck []Card) (*[]Card, *[]Card) {
