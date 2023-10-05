@@ -19,7 +19,7 @@ paths:
       summary: List of all decks
       operationId: getDecks
       tags:
-      - decks
+      - deck
       responses:
         '200': 
           description: A list of all the installed card decks
@@ -133,6 +133,76 @@ paths:
           description: Cannot create deck
           $ref: '#/components/responses/BadRequest'
 
+  /api/deck/{deckId}/contents:
+    get:
+      summary: Get the contents of a deck
+      operationId: getDeckContents
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get the remaining contents of the deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckResponse'
+        '404':
+          description: Cannot find deck id
+          $ref: '#/components/responses/NotFound'
+
+
+  /api/deck/{deckId}/status:
+    get:
+      summary: Show the status of the deck
+      operationId: getDeckStatus
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Status of the deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckStatusResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
+
+  /api/deck/{deckId}/back:
+    get:
+      summary: Get the back image of a deck
+      operationId: getDeckBackImage
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get the back image of a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckBackResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          $ref: '#/components/responses/NotFound'
+
   /api/deck/{deckId}/piles:
     get:
       summary: List the piles for a deck
@@ -185,50 +255,34 @@ paths:
           description: Cannot find deck
           $ref: '#/components/responses/NotFound'
 
-  /api/deck/{deckId}/status:
+  /api/deck/{deckId}/pile/{pileName}/contents:
     get:
-      summary: Show the status of the deck
-      operationId: getDeckStatus
+      summary: |
+        Get the contents of a pile from a deck
+        'discarded' pile is created for every deck instance
+      operationId: getPileContents
       tags:
-      - deck instance
+      - piles
       parameters:
       - name: deckId
         in: path
         required: true
         schema:
           type: string
-      responses:
-        '200':
-          description: Status of the deck
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetDeckStatusResponse'
-        '404':
-          description: Cannot find deck name or deck id
-          $ref: '#/components/responses/NotFound'
-
-  /api/deck/{deckId}/back:
-    get:
-      summary: Get the back image of a deck
-      operationId: getDeckBackImage
-      tags:
-      - deck instance
-      parameters:
-      - name: deckId
+      - name: pileName
         in: path
         required: true
         schema:
           type: string
       responses:
         '200':
-          description: Get the back image of a deck
+          description: Get the contents of a pile
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetDeckBackResponse'
+                $ref: '#/components/schemas/GetPileResponse'
         '404':
-          description: Cannot find deck name or deck id
+          description: Cannot find deck id or pile name
           $ref: '#/components/responses/NotFound'
 
 components:
@@ -297,6 +351,22 @@ components:
           type: string
         jpg:
           type: string
+    RemainingWithCards:
+      title: Remaining cards
+      description: Remaining cards
+      type: object
+      required:
+      - remaining
+      - cards
+      properties:
+        remaining:
+          type: int
+          format: int32
+        cards:
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Card'
 
     Remaining:
       title: Remaining cards
@@ -419,6 +489,31 @@ components:
         remaining:
           type: integer
           format: int32
+
+    GetPileResponse:
+      title: Get contets of a pile
+      description: Response from GET /api/deck/deck_id/pile/pile_name/contents
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      - piles
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+        piles:
+          type: object
+          addtionalProperties:
+            $ref: '#/components/schemas/RemainingWithCards'
 
     GetDeckPilesResponse:
       title: Get deck status
