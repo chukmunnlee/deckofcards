@@ -14,7 +14,7 @@ COPY main.go .
 COPY utils.go .
 COPY deck deck
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.GitCommit=${GIT_COMMIT}" -o deckofcards  
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X 'main.GitCommit=$GIT_COMMIT'" -o deckofcards  
 
 FROM alpine:3.18
 
