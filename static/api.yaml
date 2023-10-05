@@ -3,6 +3,9 @@ openapi: 3.1.0
 info:
   title: DeckOfCard
   version: 1.0.0
+  summary: REST API for a deck of cards
+  description: |
+    This implementation is inspired by [deckofcardsapi.com](https://www.deckofcardsapi.com/)
   license:
     name: MIT
     identifier: MIT
