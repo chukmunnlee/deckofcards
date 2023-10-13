@@ -37,9 +37,10 @@ type DeckRequestOptions struct {
 	// POST /api/deck/:deck_id/piles
 	Piles []string `json:"piles"`
 
-	// GET /api/deck/:deck_id/contents
-	// GET /api/deck/:deck_id/pile/:deck_name/contents
-	Full bool `form:"full"`
+	// PATCH /api/deck/:deck_id?cards=AS...&strict=true
+	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS...&strict=true
+	Cards  string `form:"cards"`
+	Strict bool   `form:"strict"`
 }
 
 func parseCLI() CLIOptions {
@@ -165,6 +166,16 @@ func registerDELETE(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
 		app.DELETE(endpoint[:len(endpoint)-1], handler)
 	} else {
 		app.DELETE(fmt.Sprintf("%s/", endpoint), handler)
+	}
+}
+
+func registerPATCH(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
+	log.Printf("Endpoint: PATCH %s", endpoint)
+	app.PATCH(endpoint, handler)
+	if strings.HasSuffix(endpoint, "/") {
+		app.PATCH(endpoint[:len(endpoint)-1], handler)
+	} else {
+		app.PATCH(fmt.Sprintf("%s/", endpoint), handler)
 	}
 }
 

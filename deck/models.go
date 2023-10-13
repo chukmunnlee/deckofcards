@@ -175,6 +175,28 @@ func (node *BTreeNode) Add(card *Card) {
 	}
 }
 
+func (node BTreeNode) Find(code string) (*Card, bool) {
+	curr := node
+	for {
+		if curr.Card.Code == code {
+			return curr.Card, true
+		}
+		if curr.Card.Code < code {
+			if nil != curr.Right {
+				curr = *curr.Right
+			} else {
+				return nil, false
+			}
+		} else if curr.Card.Code > code {
+			if nil != curr.Left {
+				curr = *curr.Left
+			} else {
+				return nil, false
+			}
+		}
+	}
+}
+
 func dumpTree(n *BTreeNode) {
 	if nil == n {
 		return
@@ -193,10 +215,18 @@ func draw(count int, deck []Card) (*[]Card, *[]Card) {
 		count = len(deck)
 	}
 
-	drawn := deck[0:count]
-	remainder := slices.Delete(deck, 0, count)
+	drawn := deck[:count]
+	remainder := deck[count:]
 
 	return &drawn, &remainder
+}
+
+func codeOnly(msg string, cards []Card) {
+	fmt.Printf("> %s: ", msg)
+	for _, c := range cards {
+		fmt.Printf("%s ", c.Code)
+	}
+	fmt.Printf("\n")
 }
 
 func drawBottom(count int, deck []Card) (*[]Card, *[]Card) {

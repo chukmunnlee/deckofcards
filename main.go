@@ -58,6 +58,10 @@ func main() {
 	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPut(cardDecks, storage), r)
 
+	// PATCH /api/deck/:deck_id?cards=AS,C3
+	registerPATCH(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
+		mkApiDeckPatch(cardDecks, storage), r)
+
 	// DELETE /api/deck/:deck_id
 	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDelete(cardDecks, storage), r)
@@ -85,6 +89,10 @@ func main() {
 	// PUT /api/deck/:deck_id/pile/:pile_name
 	registerPUT(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiPilePut(cardDecks, storage), r)
+
+	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,C3
+	registerPATCH(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
+		mkApiDeckPatch(cardDecks, storage), r)
 
 	// /version
 	registerGET("/version", mkVersion(GitCommit), r)
