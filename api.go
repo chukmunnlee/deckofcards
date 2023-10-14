@@ -267,13 +267,11 @@ func mkApiDeckGetContents(cardDecks deck.CardDecks, storage *deck.DeckStorage) f
 
 func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
 
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
 	return func(c *gin.Context) {
 
 		opt, _ := parseRequestOptions(c)
-		if len(opt.Cards) <= 0 {
-			mkError(http.StatusBadRequest, "No cards specified", c)
-			return
-		}
 
 		deckId := c.Param(PARAM_DECK_ID)
 		if !storage.HasDeck(deckId) {
@@ -287,31 +285,56 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		fromPile := "" != pileName
 
 		de, _ := cardDecks.FindDeckById(deckInstance.Id)
+		var currCards []deck.Card
+		var toAdd []deck.Card
+		var err error
 
-		toAdd, err := findCardsFromDeck(opt.Cards, *de, opt.Strict)
-		if nil != err {
-			mkError(http.StatusBadRequest, err.Error(), c)
+		if len(opt.Cards) > 0 {
+			toAdd, err = findCardsFromDeck(opt.Cards, *de, opt.Strict)
+			if nil != err {
+				mkError(http.StatusBadRequest, err.Error(), c)
+				return
+			}
+
+			currCards = []deck.Card{}
+			if fromPile {
+				cards, ok := deckInstance.Piles[pileName]
+				if ok {
+					currCards = cards
+				}
+			} else {
+				currCards = deckInstance.Remaining
+			}
+		} else if fromPile {
+			// Return all cards from pile to main deck
+			cards, ok := deckInstance.Piles[pileName]
+			if !ok {
+				mkError(http.StatusBadRequest,
+					fmt.Sprintf("Cannot find %s pile to return to main deck", pileName), c)
+				return
+			}
+			toAdd = cards
+			// Clear the pile
+			deckInstance.Piles[pileName] = make([]deck.Card, 0)
+			currCards = deckInstance.Remaining
+			// return back to the current pile
+			fromPile = false
+		} else {
+			mkError(http.StatusBadRequest, "Cannot return the main deck to itself", c)
 			return
 		}
 
-		currCards := []deck.Card{}
-		if fromPile {
-			cards, ok := deckInstance.Piles[pileName]
-			if ok {
-				currCards = cards
-			}
-		} else {
-			currCards = deckInstance.Remaining
-		}
-
 		currCards = append(currCards, toAdd...)
+		if opt.FShuffle {
+			shuffleDeck(&currCards, r)
+		}
 
 		if fromPile {
 			deckInstance.Piles[pileName] = currCards
 			c.JSON(http.StatusOK, gin.H{
 				"success":   true,
 				"deck_id":   deckInstance.DeckId,
-				"shuffled":  deckInstance.Shuffled,
+				"shuffled":  opt.FShuffle,
 				"remaining": len(deckInstance.Remaining),
 				"piles": gin.H{
 					pileName: gin.H{
@@ -324,7 +347,7 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 			c.JSON(http.StatusOK, gin.H{
 				"success":   true,
 				"deck_id":   deckInstance.DeckId,
-				"shuffled":  deckInstance.Shuffled,
+				"shuffled":  opt.FShuffle,
 				"remaining": len(deckInstance.Remaining),
 			})
 		}

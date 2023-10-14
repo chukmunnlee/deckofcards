@@ -39,8 +39,9 @@ type DeckRequestOptions struct {
 
 	// PATCH /api/deck/:deck_id?cards=AS...&strict=true
 	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS...&strict=true
-	Cards  string `form:"cards"`
-	Strict bool   `form:"strict"`
+	Cards    string `form:"cards"`
+	Strict   bool   `form:"strict"`
+	FShuffle bool   `form:"shuffle"`
 }
 
 func parseCLI() CLIOptions {
@@ -195,7 +196,7 @@ func findCardsFromDeck(cardsCSV string, de deck.Deck, strict bool) ([]deck.Card,
 }
 
 func dumpDeck(deckInstance *deck.DeckInstance) {
-	fmt.Printf("Deck: %s\n", deckInstance.Name)
+	fmt.Printf("Deck: %s (deckId = %s)\n", deckInstance.Name, deckInstance.DeckId)
 	for i := 0; i < len(deckInstance.Remaining); i++ {
 		fmt.Printf("%s ", deckInstance.Remaining[i].Code)
 	}
