@@ -1,0 +1,21 @@
+name: Deploy to Railway
+on:
+  push:
+    branches:
+    - 'release/**'
+
+jobs:
+  deploy_to_railway:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repo
+      id: clone_repo
+      uses: actions/checkout@v4
+
+    - name: Deploy to Railway
+      id: deploy_to_railway
+      uses: bervProject/railway-deploy@main
+      with:
+        service: ${{ secrets.RAILWAY_SERVICE }}
+        railway_token: ${{ secrets.RAILWAY_TOKEN }}
