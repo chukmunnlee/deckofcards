@@ -13,9 +13,12 @@ jobs:
       id: clone_repo
       uses: actions/checkout@v4
 
+    - name: Install Railway CLI
+      id: install_railway_cli
+      run: npm i -g @railway/cli
+
     - name: Deploy to Railway
       id: deploy_to_railway
-      uses: bervProject/railway-deploy@main
-      with:
-        service: ${{ secrets.RAILWAY_SERVICE }}
-        railway_token: ${{ secrets.RAILWAY_TOKEN }}
+      run: railway up -s ${{ secrets.RAILWAY_SERVICE }}
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
