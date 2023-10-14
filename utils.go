@@ -179,6 +179,21 @@ func registerPATCH(endpoint string, handler gin.HandlerFunc, app *gin.Engine) {
 	}
 }
 
+func findCardsFromDeck(cardsCSV string, de deck.Deck, strict bool) ([]deck.Card, error) {
+	toAdd := make([]deck.Card, 0)
+	cards := strings.Split(cardsCSV, ",")
+	for _, cr := range cards {
+		card, ok := de.Root.Find(cr)
+		if !ok {
+			if strict {
+				return nil, fmt.Errorf("Cannot find card with code %s", cr)
+			}
+		}
+		toAdd = append(toAdd, *card)
+	}
+	return toAdd, nil
+}
+
 func dumpDeck(deckInstance *deck.DeckInstance) {
 	fmt.Printf("Deck: %s\n", deckInstance.Name)
 	for i := 0; i < len(deckInstance.Remaining); i++ {

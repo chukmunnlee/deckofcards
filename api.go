@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -287,32 +286,12 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		pileName := c.Param(PARAM_PILE_NAME)
 		fromPile := "" != pileName
 
-		fmt.Printf("PATCH deck_id: %s pile_name: %s\n", deckId, pileName)
-		fmt.Printf("Cards: %s\n", opt.Cards)
-
-		cards := strings.Split(opt.Cards, ",")
-
 		de, _ := cardDecks.FindDeckById(deckInstance.Id)
-		toAdd := make([]deck.Card, 0)
-		toRemove := make([]deck.Card, 0)
-		for _, cr := range cards {
-			minus := strings.HasPrefix(cr, "-")
-			if minus {
-				cr = cr[1:]
-			}
-			card, ok := de.Root.Find(cr)
-			if !ok {
-				if opt.Strict {
-					mkError(http.StatusBadRequest, fmt.Sprintf("Cannot find card with code %s", cr), c)
-					return
-				}
-				continue
-			}
-			if minus {
-				toRemove = append(toRemove, *card)
-			} else {
-				toAdd = append(toAdd, *card)
-			}
+
+		toAdd, err := findCardsFromDeck(opt.Cards, *de, opt.Strict)
+		if nil != err {
+			mkError(http.StatusBadRequest, err.Error(), c)
+			return
 		}
 
 		currCards := []deck.Card{}
@@ -325,36 +304,32 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 			currCards = deckInstance.Remaining
 		}
 
-		for _, rcr := range toRemove {
-			for i, cr := range currCards {
-				if cr.Code == rcr.Code {
-					currCards = append(currCards[:i], currCards[i+1:]...)
-					break
-				}
-			}
-		}
-
 		currCards = append(currCards, toAdd...)
 
-		fmt.Printf(">>> --- currCards: %v\n", currCards)
+		if fromPile {
+			deckInstance.Piles[pileName] = currCards
+			c.JSON(http.StatusOK, gin.H{
+				"success":   true,
+				"deck_id":   deckInstance.DeckId,
+				"shuffled":  deckInstance.Shuffled,
+				"remaining": len(deckInstance.Remaining),
+				"piles": gin.H{
+					pileName: gin.H{
+						"remaining": len(currCards),
+					},
+				},
+			})
+		} else {
+			deckInstance.Remaining = currCards
+			c.JSON(http.StatusOK, gin.H{
+				"success":   true,
+				"deck_id":   deckInstance.DeckId,
+				"shuffled":  deckInstance.Shuffled,
+				"remaining": len(deckInstance.Remaining),
+			})
+		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
-			//"cards": deckInstance.Remaining,
-		})
+		storage.Update(deckInstance)
 
-		/*
-			if fromPile {
-				cards, ok := deckInstance.Piles[pileName]
-				if !ok {
-					mkError(http.StatusNotFound, fmt.Sprintf("Cannot find pile %s", pileName), c)
-					return
-				}
-				return
-			}
-		*/
 	}
 }
