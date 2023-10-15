@@ -12,6 +12,8 @@ jobs:
     - name: Clone repo
       id: clone_repo
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref_name }}
 
     - name: Install Railway CLI
       id: install_railway_cli

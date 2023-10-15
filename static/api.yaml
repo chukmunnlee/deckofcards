@@ -20,7 +20,7 @@ paths:
   /api/decks:
     get: 
       summary: List of all decks
-      operationId: getDecks
+      operationId: listDecks
       tags:
       - deck
       responses:
@@ -33,7 +33,7 @@ paths:
   /api/deck:
     post: 
       summary: Create a new deck
-      operationId: postDeck
+      operationId: createNewDeck
       tags:
       - deck
       requestBody:
@@ -61,7 +61,7 @@ paths:
   /api/deck/{deckId}:
     get: 
       summary: Draw cards from a deck - NOT IDEMPOTENT
-      operationId: getCardsByDeckId
+      operationId: drawCardsFromDeck
       tags:
       - deck instance
       parameters:
@@ -81,7 +81,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetDeckResponse'
+                $ref: '#/components/schemas/GetDeckResponseWithCards'
         '400':
           description: Cannot create deck
           $ref: '#/components/responses/BadRequest'
@@ -111,7 +111,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     put: 
       summary: Reshuffle the cards with the deck_id
-      operationId: putCardsByDeckId
+      operationId: reshuffleDeck
       tags:
       - deck instance
       parameters:
@@ -135,6 +135,40 @@ paths:
         '400':
           description: Cannot create deck
           $ref: '#/components/responses/BadRequest'
+    patch: 
+      summary: Add cards to the deck
+      operationId: addCardsToDeck
+      tags:
+      - deck instance
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cards
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: shuffle
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Draw cards from a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckResponse'
+        '400':
+          description: Cannot add cards to deck
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Cannot find deck 
+          $ref: '#/components/responses/NotFound'
 
   /api/deck/{deckId}/contents:
     get:
@@ -154,7 +188,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetDeckResponse'
+                $ref: '#/components/schemas/GetDeckResponseWithCards'
         '404':
           description: Cannot find deck id
           $ref: '#/components/responses/NotFound'
@@ -186,7 +220,7 @@ paths:
   /api/deck/{deckId}/back:
     get:
       summary: Get the back image of a deck
-      operationId: getDeckBackImage
+      operationId: getBackImage
       tags:
       - deck instance
       parameters:
@@ -209,7 +243,7 @@ paths:
   /api/deck/{deckId}/piles:
     get:
       summary: List the piles for a deck
-      operationId: getPilesByDeckId
+      operationId: listPilesInDeck
       tags:
       - piles
       parameters:
@@ -230,7 +264,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
     post: 
       summary: Manually create piles
-      operationId: postPiles
+      operationId: createPilesInDeck
       tags:
       - piles
       parameters:
@@ -258,12 +292,79 @@ paths:
           description: Cannot find deck
           $ref: '#/components/responses/NotFound'
 
+  /api/deck/{deckId}/pile/{pileName}:
+    put: 
+      summary: Reshuffle the cards in a pile within a deck
+      operationId: reshufflePileInDeck
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pileName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Status of the shuffled pile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckStatusResponse'
+        '404':
+          description: Cannot find deckId or pileName
+          $ref: '#/components/responses/NotFound'
+    # TODO: patch
+    patch: 
+      summary: Add cards to a pile
+      operationId: addCardsToPile
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pileName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cards
+        in: query
+        schema:
+          type: string
+      - name: shuffle
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Returns the contents of the deck and pile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutDeckStatusResponse'
+        '400':
+          description: Cannot add cards to deck
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Cannot find deck 
+          $ref: '#/components/responses/NotFound'
+
   /api/deck/{deckId}/pile/{pileName}/contents:
     get:
       summary: |
         Get the contents of a pile from a deck
         'discarded' pile is created for every deck instance
-      operationId: getPileContents
+      operationId: getPileInDeckContents
       tags:
       - piles
       parameters:
@@ -283,10 +384,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPileResponse'
+                $ref: '#/components/schemas/GetPileResponseWithCards'
         '404':
           description: Cannot find deck id or pile name
           $ref: '#/components/responses/NotFound'
+
 
 components:
   schemas:
@@ -406,6 +508,7 @@ components:
         jokers_enabled:
           type: boolean
           default: false
+
     CreatePilesOptions:
       title: Create piles for a given deck
       description: Options for creating a deck
@@ -436,8 +539,28 @@ components:
             $ref: '#/components/schemas/Decks'
 
     GetDeckResponse:
-      title: Get Deck Response
-      description: Response from GET /api/deck/<deck_id>
+      title: Get Deck Response 
+      description: Response from GET /api/deck/deck_id
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+
+    GetDeckResponseWithCards:
+      title: Get Deck Response with cards
+      description: Response from GET /api/deck/deck_id
       type: object
       required:
       - success
@@ -462,7 +585,7 @@ components:
           format: int32
     DeleteDeckResponse:
       title: Delete deck Response
-      description: Response from DELETE /api/deck/<deck_id>
+      description: Response from DELETE /api/deck/deck_id
       type: object
       required:
       - success
@@ -472,6 +595,30 @@ components:
           type: boolean
         deck_id: 
           type: string
+
+    PutDeckStatusResponse:
+      title: Get pile status
+      description: Response from GET /api/deck/deck_id/pile/pile_name
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+        piles:
+          type: object
+          addtionalProperties:
+            $ref: '#/components/schemas/Remaining'
 
     GetDeckStatusResponse:
       title: Get deck status
@@ -493,8 +640,8 @@ components:
           type: integer
           format: int32
 
-    GetPileResponse:
-      title: Get contets of a pile
+    GetPileResponseWithCards:
+      title: Get contents of a pile
       description: Response from GET /api/deck/deck_id/pile/pile_name/contents
       type: object
       required:
