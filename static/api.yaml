@@ -75,6 +75,13 @@ paths:
         schema:
           type: number
           default: 1
+      - name: from 
+        in: query
+        schema:
+          type: string
+          enum:
+          - bottom
+          - random
       responses:
         '200':
           description: Draw cards from a deck

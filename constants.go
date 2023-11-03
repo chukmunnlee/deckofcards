@@ -8,6 +8,10 @@ const (
 	QUERY_COUNT          = "count"
 	QUERY_SHUFFLE        = "shuffle"
 	QUERY_CARDS          = "cards"
+	QUERY_FROM           = "from" //bottom, random
+	QUERY_FROM_BOTTOM    = "bottom"
+	QUERY_FROM_RANDOM    = "random"
+	QUERY_FROM_TOP       = "top"
 
 	PARAM_DECK_ID   = "deckId"
 	PARAM_PILE_NAME = "pileName"

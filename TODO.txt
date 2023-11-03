@@ -1,13 +1,19 @@
 Adding to deck and piles
-	PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,...
-	PATCH /api/deck/:deck_id?cards=AS,...
 	https://www.deckofcardsapi.com/api/deck/{deck_id}/pile/{pile_name}/add/?cards=AS,2S
+	PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,... *done
+	PATCH /api/deck/:deck_id?cards=AS,... *done
 
-Drawing from deck and piles
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?count=2
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/draw/bottom?count=2
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/draw/random?count=1 (default)
+Drawing from deck
+	GET /deck/<<deck_id>> *done
+	GET /api/deck/<<deck_id>>?count=2 *done
+	GET /api/deck/<<deck_id>>?count=2&from=bottom (or random) *done
+	GET /api/deck/<<deck_id>>?cards=AS 
+
+Drawing from piles
+	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS
+	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?count=2
+	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/bottom?count=2
+	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/random?count=1 (default)
 
 Returning cards to the deck
 	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/ copy

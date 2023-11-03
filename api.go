@@ -115,6 +115,16 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			return
 		}
 
+		from := QUERY_FROM_TOP
+		if opt.From != "" {
+			from = opt.From
+		}
+
+		if (QUERY_FROM_TOP != from) && (QUERY_FROM_BOTTOM != from) && (QUERY_FROM_RANDOM != from) {
+			mkError(http.StatusBadRequest, fmt.Sprint("Unknown from value. One of bottom, random"), c)
+			return
+		}
+
 		count := 1
 		if opt.Count > 0 {
 			count = opt.Count
@@ -128,7 +138,19 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			return
 		}
 
-		drawn := deckInstance.Draw(count, deck.PILE_DISCARDED)
+		var drawn []deck.Card
+		switch from {
+		case QUERY_FROM_TOP:
+			drawn = deckInstance.Draw(count)
+		case QUERY_FROM_RANDOM:
+			drawn = deckInstance.DrawRandom(count)
+		case QUERY_FROM_BOTTOM:
+			drawn = deckInstance.DrawFromBottom(count)
+		}
+
+		// Add to discarded pile
+		deckInstance.AddToPile(drawn, deck.PILE_DISCARDED)
+
 		storage.Update(deckInstance)
 
 		c.JSON(http.StatusOK, gin.H{
@@ -353,6 +375,5 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		}
 
 		storage.Update(deckInstance)
-
 	}
 }

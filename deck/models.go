@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"slices"
+	"time"
 
 	"github.com/oklog/ulid/v2"
 	"gopkg.in/yaml.v3"
@@ -122,10 +122,21 @@ func New(file string) (*Deck, error) {
 }
 
 // DeckInstance
-func (deckInst *DeckInstance) Draw(count int, pileName string) []Card {
+func (deckInst *DeckInstance) Draw(count int) []Card {
 	drawn, remaining := draw(count, deckInst.Remaining)
 	deckInst.Remaining = *remaining
-	deckInst.AddToPile(*drawn, pileName)
+	return *drawn
+}
+
+func (deckInst *DeckInstance) DrawFromBottom(count int) []Card {
+	drawn, remaining := drawFromBottom(count, deckInst.Remaining)
+	deckInst.Remaining = *remaining
+	return *drawn
+}
+
+func (deckInst *DeckInstance) DrawRandom(count int) []Card {
+	drawn, remaining := drawRandom(count, deckInst.Remaining)
+	deckInst.Remaining = *remaining
 	return *drawn
 }
 
@@ -221,26 +232,29 @@ func draw(count int, deck []Card) (*[]Card, *[]Card) {
 	return &drawn, &remainder
 }
 
-func codeOnly(msg string, cards []Card) {
-	fmt.Printf("> %s: ", msg)
-	for _, c := range cards {
-		fmt.Printf("%s ", c.Code)
-	}
-	fmt.Printf("\n")
-}
-
-func drawBottom(count int, deck []Card) (*[]Card, *[]Card) {
-	start := len(deck) - count
-	if start < 0 {
+func drawFromBottom(count int, deck []Card) (*[]Card, *[]Card) {
+	start := 0
+	if len(deck) < count {
 		start = 0
+	} else {
+		start = len(deck) - count
 	}
 
-	drawn := deck[start : start+count]
-	remainder := slices.Delete(deck, start, start+count)
+	drawn := deck[start:]
+	remainder := deck[0:start]
 
 	return &drawn, &remainder
 }
 
+func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
+	rand.Seed(time.Now().UnixMilli())
+	rand.Shuffle(len(deck), func(i, j int) {
+		deck[i], deck[j] = deck[j], deck[i]
+	})
+	return draw(count, deck)
+}
+
+/*
 func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
 	drawn := make([]Card, 0)
 	remainder := deck
@@ -255,4 +269,13 @@ func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
 	}
 
 	return &drawn, &remainder
+}
+*/
+
+func codeOnly(msg string, cards []Card) {
+	fmt.Printf("> %s: ", msg)
+	for _, c := range cards {
+		fmt.Printf("%s ", c.Code)
+	}
+	fmt.Printf("\n")
 }
