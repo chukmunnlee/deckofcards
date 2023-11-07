@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/chukmunnlee/deckofcards/deck"
@@ -115,19 +116,23 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			return
 		}
 
-		from := QUERY_FROM_TOP
-		if opt.From != "" {
-			from = opt.From
-		}
-
-		if (QUERY_FROM_TOP != from) && (QUERY_FROM_BOTTOM != from) && (QUERY_FROM_RANDOM != from) {
-			mkError(http.StatusBadRequest, fmt.Sprint("Unknown from value. One of bottom, random"), c)
-			return
-		}
-
+		var from string
 		count := 1
-		if opt.Count > 0 {
-			count = opt.Count
+		if "" != opt.Cards {
+			from = QUERY_FROM_LIST
+		} else {
+			from = QUERY_FROM_TOP
+			if "" != opt.From {
+				from = opt.From
+			}
+
+			if (QUERY_FROM_TOP != from) && (QUERY_FROM_BOTTOM != from) && (QUERY_FROM_RANDOM != from) {
+				mkError(http.StatusBadRequest, fmt.Sprint("Unknown from value. One of bottom, random"), c)
+				return
+			}
+			if opt.Count > 0 {
+				count = opt.Count
+			}
 		}
 
 		deckId := c.Param(PARAM_DECK_ID)
@@ -146,6 +151,9 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			drawn = deckInstance.DrawRandom(count)
 		case QUERY_FROM_BOTTOM:
 			drawn = deckInstance.DrawFromBottom(count)
+		case QUERY_FROM_LIST:
+			c := strings.Split(strings.TrimSpace(opt.Cards), ",")
+			drawn = deckInstance.DrawFromList(c)
 		}
 
 		// Add to discarded pile

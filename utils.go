@@ -27,10 +27,10 @@ type DeckRequestOptions struct {
 	DeckName      string `json:"deck_name"`
 	DeckId        string `json:"deck_id"`
 	DeckCount     uint   `json:"deck_count"`
-	From          string `form:"from"`
 
 	// GET /api/deck/:deck_id
-	Count int `form:"count"`
+	Count int    `form:"count"`
+	From  string `form:"from"`
 
 	// PUT /api/deck/:deck_id?remaining=true
 	Remaining bool `form:"remaining"`

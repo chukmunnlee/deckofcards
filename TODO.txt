@@ -7,7 +7,7 @@ Drawing from deck
 	GET /deck/<<deck_id>> *done
 	GET /api/deck/<<deck_id>>?count=2 *done
 	GET /api/deck/<<deck_id>>?count=2&from=bottom (or random) *done
-	GET /api/deck/<<deck_id>>?cards=AS 
+	GET /api/deck/<<deck_id>>?cards=AS,2S *done
 
 Drawing from piles
 	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS

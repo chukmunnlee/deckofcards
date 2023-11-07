@@ -135,7 +135,13 @@ func (deckInst *DeckInstance) DrawFromBottom(count int) []Card {
 }
 
 func (deckInst *DeckInstance) DrawRandom(count int) []Card {
-	drawn, remaining := drawRandom(count, deckInst.Remaining)
+	drawn, remaining := drawRandomNonShuffle(count, deckInst.Remaining)
+	deckInst.Remaining = *remaining
+	return *drawn
+}
+
+func (deckInst *DeckInstance) DrawFromList(toDraw []string) []Card {
+	drawn, remaining := drawFromList(toDraw, deckInst.Remaining)
 	deckInst.Remaining = *remaining
 	return *drawn
 }
@@ -254,8 +260,7 @@ func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
 	return draw(count, deck)
 }
 
-/*
-func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
+func drawRandomNonShuffle(count int, deck []Card) (*[]Card, *[]Card) {
 	drawn := make([]Card, 0)
 	remainder := deck
 	if len(deck) < count {
@@ -265,12 +270,26 @@ func drawRandom(count int, deck []Card) (*[]Card, *[]Card) {
 	for i := 0; i < count; i++ {
 		idx := rand.Intn(len(deck))
 		drawn = append(drawn, deck[idx])
-		remainder = slices.Delete(remainder, idx, 1)
+		remainder = append(remainder[0:idx], remainder[idx+1:]...)
 	}
 
 	return &drawn, &remainder
 }
-*/
+
+func drawFromList(toDraw []string, deck []Card) (*[]Card, *[]Card) {
+	drawn := make([]Card, 0)
+	remainder := deck
+	for _, code := range toDraw {
+		for i, c := range remainder {
+			if code == c.Code {
+				drawn = append(drawn, remainder[i])
+				remainder = append(remainder[0:i], remainder[i+1:]...)
+				break
+			}
+		}
+	}
+	return &drawn, &remainder
+}
 
 func codeOnly(msg string, cards []Card) {
 	fmt.Printf("> %s: ", msg)

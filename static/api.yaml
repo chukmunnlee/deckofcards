@@ -82,6 +82,10 @@ paths:
           enum:
           - bottom
           - random
+      - name: cards
+        in: query
+        schema:
+          type: string
       responses:
         '200':
           description: Draw cards from a deck

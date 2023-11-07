@@ -12,6 +12,7 @@ const (
 	QUERY_FROM_BOTTOM    = "bottom"
 	QUERY_FROM_RANDOM    = "random"
 	QUERY_FROM_TOP       = "top"
+	QUERY_FROM_LIST      = "list" //for cards=
 
 	PARAM_DECK_ID   = "deckId"
 	PARAM_PILE_NAME = "pileName"
