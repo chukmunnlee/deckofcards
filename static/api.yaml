@@ -519,6 +519,8 @@ components:
         jokers_enabled:
           type: boolean
           default: false
+        cards:
+          type: string
 
     CreatePilesOptions:
       title: Create piles for a given deck
