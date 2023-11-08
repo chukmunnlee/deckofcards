@@ -74,7 +74,7 @@ func mkApiDeckNew(limit uint, cardDecks deck.CardDecks, storage *deck.DeckStorag
 			}
 		}
 
-		deck, opt, err := createDeck(cardDecks, c)
+		dk, opt, err := createDeck(cardDecks, c)
 		if nil != err {
 			mkError(http.StatusNotFound, err.Error(), c)
 			return
@@ -85,7 +85,12 @@ func mkApiDeckNew(limit uint, cardDecks deck.CardDecks, storage *deck.DeckStorag
 			deckCount = opt.DeckCount
 		}
 
-		deckInstance := deck.CreateInstance(deckCount)
+		var deckInstance *deck.DeckInstance
+		if len(strings.TrimSpace(opt.Cards)) > 0 {
+			deckInstance = dk.CreateCustomInstance(opt.Cards, deckCount)
+		} else {
+			deckInstance = dk.CreateInstance(deckCount)
+		}
 		deckInstance.Shuffled = opt.Shuffle
 
 		if opt.Shuffle {
@@ -355,16 +360,18 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		}
 
 		currCards = append(currCards, toAdd...)
-		if opt.FShuffle {
+		//if opt.FShuffle {
+		if opt.Shuffle {
 			shuffleDeck(&currCards, r)
 		}
 
 		if fromPile {
 			deckInstance.Piles[pileName] = currCards
 			c.JSON(http.StatusOK, gin.H{
-				"success":   true,
-				"deck_id":   deckInstance.DeckId,
-				"shuffled":  opt.FShuffle,
+				"success": true,
+				"deck_id": deckInstance.DeckId,
+				//"shuffled":  opt.FShuffle,
+				"shuffled":  opt.Shuffle,
 				"remaining": len(deckInstance.Remaining),
 				"piles": gin.H{
 					pileName: gin.H{
@@ -375,9 +382,10 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		} else {
 			deckInstance.Remaining = currCards
 			c.JSON(http.StatusOK, gin.H{
-				"success":   true,
-				"deck_id":   deckInstance.DeckId,
-				"shuffled":  opt.FShuffle,
+				"success": true,
+				"deck_id": deckInstance.DeckId,
+				//"shuffled":  opt.FShuffle,
+				"shuffled":  opt.Shuffle,
 				"remaining": len(deckInstance.Remaining),
 			})
 		}

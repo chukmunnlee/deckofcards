@@ -9,6 +9,10 @@ Drawing from deck
 	GET /api/deck/<<deck_id>>?count=2&from=bottom (or random) *done
 	GET /api/deck/<<deck_id>>?cards=AS,2S *done
 
+Partial Deck
+	POST /api/deck?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH&shuffle=true&count=2 *done
+		https://www.deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH
+
 Drawing from piles
 	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS
 	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?count=2
@@ -21,5 +25,3 @@ Returning cards to the deck
 	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/?cards=AS,2S
 	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/?cards=AS,2S
 
-Partial Deck
-	https://www.deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH

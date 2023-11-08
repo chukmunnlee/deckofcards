@@ -22,7 +22,7 @@ type CLIOptions struct {
 
 type DeckRequestOptions struct {
 	// POST /api/deck
-	Shuffle       bool   `json:"shuffle"`
+	Shuffle       bool   `json:"shuffle" form:"shuffle"`
 	JokersEnabled bool   `json:"jokers_enabled"`
 	DeckName      string `json:"deck_name"`
 	DeckId        string `json:"deck_id"`
@@ -40,9 +40,9 @@ type DeckRequestOptions struct {
 
 	// PATCH /api/deck/:deck_id?cards=AS...&strict=true
 	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS...&strict=true
-	Cards    string `form:"cards"`
-	Strict   bool   `form:"strict"`
-	FShuffle bool   `form:"shuffle"`
+	Cards  string `form:"cards" json:"cards"`
+	Strict bool   `form:"strict"`
+	//FShuffle bool   `form:"shuffle"`
 }
 
 func parseCLI() CLIOptions {

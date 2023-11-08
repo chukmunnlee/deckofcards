@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/oklog/ulid/v2"
@@ -79,6 +80,29 @@ func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	}
 	for i := uint(0); i < count; i++ {
 		deckInst.Remaining = append(deckInst.Remaining, deck.Spec.Cards...)
+	}
+	deckInst.Piles = make(map[string][]Card)
+	deckInst.Piles[PILE_DISCARDED] = make([]Card, 0)
+
+	return deckInst
+}
+
+func (dk Deck) CreateCustomInstance(cards string, count uint) *DeckInstance {
+	var deckInst = &DeckInstance{
+		Id:       dk.Metadata.Id,
+		Name:     dk.Metadata.Name,
+		DeckId:   ulid.Make().String(),
+		Count:    count,
+		Shuffled: false,
+	}
+	codes := strings.Split(strings.TrimSpace(cards), ",")
+	for _, c := range codes {
+		for _, pc := range dk.Spec.Cards {
+			if c == pc.Code {
+				deckInst.Remaining = append(deckInst.Remaining, pc)
+				break
+			}
+		}
 	}
 	deckInst.Piles = make(map[string][]Card)
 	deckInst.Piles[PILE_DISCARDED] = make([]Card, 0)
