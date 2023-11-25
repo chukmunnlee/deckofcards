@@ -38,6 +38,7 @@ func main() {
 
 	r.NoRoute(gin.WrapH(http.FileServer(http.Dir("static"))))
 
+	// DECK
 	// GET /api/decks
 	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
 
@@ -46,6 +47,7 @@ func main() {
 	// { "jokers_enabled": false, "deck_name": "deck_name", "deck_count": 1, "shuffle": true }
 	registerPOST("/api/deck", mkApiDeckNew(opts.DeckLimit, cardDecks, storage), r)
 
+	// DECK INSTANCE
 	// GET /api/deck/:deck_id?count=2
 	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
@@ -68,12 +70,13 @@ func main() {
 
 	// GET /api/deck/:deck_id/status
 	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
-		mkApiDeck(cardDecks, storage), r)
+		mkApiDeckStatus(cardDecks, storage), r)
 
 	// GET /api/deck/:deck_id/back
 	registerGET(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
 		mkApiDeckBack(cardDecks, storage), r)
 
+	// PILES
 	// GET /api/deck/:deck_id/piles
 	registerGET(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
 		mkApiPilesGet(cardDecks, storage), r)
@@ -81,6 +84,10 @@ func main() {
 	// POST /api/deck/:deck_id/piles
 	registerPOST(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
 		mkApiPilesPost(cardDecks, storage), r)
+
+	// GET /api/deck/:deck_id/pile/:pile_name?
+	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
+		mkApiPileGet(cardDecks, storage), r)
 
 	// GET /api/deck/:deck_id/pile/:pile_name/contents
 	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s/contents", PARAM_DECK_ID, PARAM_PILE_NAME),

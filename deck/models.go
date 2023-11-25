@@ -170,6 +170,7 @@ func (deckInst *DeckInstance) DrawFromList(toDraw []string) []Card {
 	return *drawn
 }
 
+// Pile
 func (deckInst *DeckInstance) CreatePile(pileName string) bool {
 	_, ok := deckInst.Piles[pileName]
 	if ok {
@@ -189,6 +190,46 @@ func (deckInst DeckInstance) GetPiles() map[string]PileInfo {
 		piles[k] = PileInfo{Remaining: uint(len(v))}
 	}
 	return piles
+}
+
+func (deckInst *DeckInstance) DrawFromPile(count int, pileName string) ([]Card, error) {
+	pile, ok := deckInst.Piles[pileName]
+	if !ok {
+		return nil, fmt.Errorf("Pile not found: %s", pileName)
+	}
+	drawn, remaining := draw(count, pile)
+	deckInst.Piles[pileName] = *remaining
+	return *drawn, nil
+}
+
+func (deckInst *DeckInstance) DrawFromPileBottom(count int, pileName string) ([]Card, error) {
+	pile, ok := deckInst.Piles[pileName]
+	if !ok {
+		return nil, fmt.Errorf("Pile not found: %s", pileName)
+	}
+	drawn, remaining := drawFromBottom(count, pile)
+	deckInst.Piles[pileName] = *remaining
+	return *drawn, nil
+}
+
+func (deckInst *DeckInstance) DrawFromPileRandom(count int, pileName string) ([]Card, error) {
+	pile, ok := deckInst.Piles[pileName]
+	if !ok {
+		return nil, fmt.Errorf("Pile not found: %s", pileName)
+	}
+	drawn, remaining := drawRandomNonShuffle(count, pile)
+	deckInst.Piles[pileName] = *remaining
+	return *drawn, nil
+}
+
+func (deckInst *DeckInstance) DrawFromPileList(toDraw []string, pileName string) ([]Card, error) {
+	pile, ok := deckInst.Piles[pileName]
+	if !ok {
+		return nil, fmt.Errorf("Pile not found: %s", pileName)
+	}
+	drawn, remaining := drawFromList(toDraw, pile)
+	deckInst.Piles[pileName] = *remaining
+	return *drawn, nil
 }
 
 // BTreeNode

@@ -40,7 +40,7 @@ func mkApiDecks(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.C
 	}
 }
 
-func mkApiDeck(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+func mkApiDeckStatus(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
 	return func(c *gin.Context) {
 		deckId := c.Param(PARAM_DECK_ID)
 		deckInstance, err := storage.Get(deckId)
@@ -49,11 +49,17 @@ func mkApiDeck(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Co
 			return
 		}
 
+		piles := make([]gin.H, 0)
+		for k, v := range deckInstance.Piles {
+			piles = append(piles, gin.H{k: gin.H{"remaining": len(v)}})
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"success":   true,
 			"deck_id":   deckInstance.DeckId,
 			"shuffled":  deckInstance.Shuffled,
 			"remaining": len(deckInstance.Remaining),
+			"piles":     piles,
 		})
 	}
 }

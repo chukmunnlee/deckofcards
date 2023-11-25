@@ -14,10 +14,11 @@ Partial Deck
 		https://www.deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH
 
 Drawing from piles
-	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS
-	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?count=2
-	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/bottom?count=2
-	GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/random?count=1 (default)
+	GET /api/deck/<<deck_id>>/pile/<<pile_name>>?count=2&from=bottom (or random) *done
+		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?cards=AS
+		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/?count=2
+		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/bottom?count=2
+		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/random?count=1 (default)
 
 Returning cards to the deck
 	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/ copy

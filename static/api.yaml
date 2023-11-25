@@ -219,11 +219,11 @@ paths:
           type: string
       responses:
         '200':
-          description: Status of the deck
+          description: List of piles in a deck
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetDeckStatusResponse'
+                $ref: '#/components/schemas/GetDeckPilesResponse'
         '404':
           description: Cannot find deck name or deck id
           $ref: '#/components/responses/NotFound'
@@ -304,6 +304,52 @@ paths:
           $ref: '#/components/responses/NotFound'
 
   /api/deck/{deckId}/pile/{pileName}:
+    get:
+      summary: Specify the cards to draw from a pile
+      operationId: drawCardsFromPile
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pileName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: count
+        in: query
+        schema:
+          type: number
+          default: 1
+      - name: from 
+        in: query
+        schema:
+          type: string
+          enum:
+          - bottom
+          - random
+      - name: cards
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Draw cards from a pile
+          content:
+            application/json:
+              schema:
+                # HERE
+                $ref: '#/components/schemas/GetPileResponseWithDrawnCards'
+        '400':
+          description: Bad request
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Cannot find deck id or pile name
+          $ref: '#/components/responses/NotFound'
     put: 
       summary: Reshuffle the cards in a pile within a deck
       operationId: reshufflePileInDeck
@@ -330,7 +376,6 @@ paths:
         '404':
           description: Cannot find deckId or pileName
           $ref: '#/components/responses/NotFound'
-    # TODO: patch
     patch: 
       summary: Add cards to a pile
       operationId: addCardsToPile
@@ -673,6 +718,37 @@ components:
         remaining:
           type: integer
           format: int32
+        piles:
+          type: object
+          addtionalProperties:
+            $ref: '#/components/schemas/RemainingWithCards'
+
+    GetPileResponseWithDrawnCards:
+      title: Drawing cards from a pile
+      description: Response from GET /api/deck/deck_id/pile/pile_name
+      type: object
+      required:
+      - success
+      - deck_id
+      - shuffled
+      - remaining
+      - cards
+      - piles
+      properties:
+        success: 
+          type: boolean
+        deck_id: 
+          type: string
+        shuffled:
+          type: boolean 
+        remaining:
+          type: integer
+          format: int32
+        cards:
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Card'
         piles:
           type: object
           addtionalProperties:
