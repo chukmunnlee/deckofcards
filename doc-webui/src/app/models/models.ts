@@ -27,3 +27,9 @@ export interface DeckStatus {
 export interface DeckBackImage {
   back_image: string
 }
+
+export interface CreateDeckOptions {
+  count: number
+  replacement: boolean
+  shuffle: boolean
+}

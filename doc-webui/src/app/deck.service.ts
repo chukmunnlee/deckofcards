@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, inject} from "@angular/core";
-import {DeckBackImage, DeckInfo, DeckStatus} from "./models/models";
+import {CreateDeckOptions, DeckBackImage, DeckInfo, DeckStatus} from "./models/models";
 import {lastValueFrom} from "rxjs";
 import { environment } from 'src/environments/environment'
 
@@ -21,12 +21,14 @@ export class DeckService {
     ).then((resp: any) => resp['decks'] as DeckInfo[])
   }
 
-  createDeck(deckId: string, count = 1): Promise<DeckStatus> {
+  //createDeck(deckId: string, count = 1): Promise<DeckStatus> {
+  createDeck(deckId: string, createOpts: CreateDeckOptions): Promise<DeckStatus> {
 
     const opts = {
       deck_id: deckId,
-      deck_count: count,
-      shuffle: true
+      deck_count: createOpts.count,
+      replacement: createOpts.replacement,
+      shuffle: createOpts.shuffle
     }
 
     return lastValueFrom(
@@ -36,7 +38,7 @@ export class DeckService {
 
   getDeckStatus(deckId: string): Promise<DeckStatus> {
     return lastValueFrom(
-      this.http.get<DeckStatus>(`${this.BASE}/deck/${deckId}`)
+      this.http.get<DeckStatus>(`${this.BASE}/deck/${deckId}/status`)
     )
   }
 

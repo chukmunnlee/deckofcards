@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {DeckService} from '../deck.service';
+import {CreateDeckOptions} from '../models/models';
 
 @Component({
   selector: 'app-create',
@@ -30,8 +31,8 @@ export class CreateComponent implements OnInit {
   }
 
   process() {
-    const count = this.form.value['deckCount']
-    this.deckSvc.createDeck(this.deckId, count)
+    const opts = this.form.value as CreateDeckOptions
+    this.deckSvc.createDeck(this.deckId, opts)
       .then(result => {
         this.router.navigate(['/play', result.deck_id ])
       })
@@ -42,7 +43,9 @@ export class CreateComponent implements OnInit {
 
   private createForm(): FormGroup {
     return this.fb.group({
-      deckCount: this.fb.control<number>(1, [Validators.min(1), Validators.max(10), Validators.required])
+      deckCount: this.fb.control<number>(1, [Validators.min(1), Validators.max(10), Validators.required]),
+      shuffle: this.fb.control<boolean>(true),
+      replacement: this.fb.control<boolean>(false),
     })
   }
 
