@@ -53,6 +53,7 @@ func LoadDecks(deckRoot string) CardDecks {
 			continue
 		}
 		def := fmt.Sprintf("%s/%s", deckRoot, f.Name())
+		log.Printf("Loading %s\n", def)
 		deck, err := New(def)
 		if nil != err {
 			log.Printf("Error parsing deck: %s\n", def)

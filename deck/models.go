@@ -2,6 +2,7 @@ package deck
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -237,6 +238,11 @@ func (deckInst *DeckInstance) DrawFromPileList(toDraw []string, pileName string)
 func (node *BTreeNode) Add(card *Card) {
 	curr := node
 	for {
+		if curr.Card.Code == card.Code {
+			log.Printf("WARNING! Duplicate code: %s. Ignoring\n", card.Code)
+			return
+		}
+
 		if curr.Card.Code < card.Code {
 			if nil != curr.Right {
 				curr = curr.Right
@@ -246,6 +252,7 @@ func (node *BTreeNode) Add(card *Card) {
 				return
 			}
 		} else if curr.Card.Code > card.Code {
+			//} else {
 			if nil != curr.Left {
 				curr = curr.Left
 			} else {
