@@ -15,12 +15,15 @@ servers:
   description: DeckOfCard
 - url: http://localhost:3000
   description: Local development
+- url: http://localhost:8080
+  description: Local development over Caddy
 
 paths:
   /api/decks:
     get: 
       summary: List of all decks
       operationId: listDecks
+      x-specification-usecase: "UC-C-PIC-A-003"
       tags:
       - deck
       responses:

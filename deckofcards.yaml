@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: doc-ns
+  labels:
+    app: doc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doc-deploy
+  namespace: doc-ns
+  labels:
+    app: doc
+    name: doc-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doc
+      name: doc-po
+  template:
+    metadata:
+      name: doc-po
+      labels:
+        app: doc
+        name: doc-po
+    spec:
+      containers:
+      - name: caddy
+        image: chukmunnlee/deckofcards-caddy-openapi:v0.8.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+      - name: deckofcards
+        image: chukmunnlee/deckofcards:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: doc-svc
+  namespace: doc-ns
+  labels:
+    app: doc
+    name: doc-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: doc
+    name: doc-po
+  ports:
+  - port: 8080
+    targetPort: 8080
+

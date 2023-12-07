@@ -1,38 +1,33 @@
-ARG GIT_COMMIT=abcd1234
+FROM caddy:2.7.3-builder AS builder
 
-FROM golang:1.21 AS builder
+WORKDIR /opt/src
 
-WORKDIR /app
-
-COPY go.mod .
-COPY go.sum .
 COPY api.go .
 COPY constants.go .
+COPY go.mod .
+COPY go.sum .
 COPY info.go .
-COPY piles_api.go .
 COPY main.go .
+COPY piles_api.go .
 COPY utils.go .
 COPY deck deck
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X 'main.GitCommit=${GIT_COMMIT}'" -o deckofcards  
+RUN go build -o main .
 
-FROM alpine:3.18
+FROM caddy:2.7.3-alpine
 
-LABEL org.opencontainers.image.source=https://github.com/chukmunnlee/deckofcards
-LABEL org.opencontainers.image.licenses=MIT
+WORKDIR /opt/app
 
-WORKDIR /app
+COPY --from=builder /opt/src/main .
 
-RUN apk --no-cache add curl
-
-COPY --from=builder /app/deckofcards /app/deckofcards
-
-COPY static static
 COPY assets assets
+COPY static static
+
+VOLUME /opt/app/assets
+VOLUME /opt/app/static
 
 ENV PORT=3000
 
-HEALTHCHECK --interval=1m --timeout=5s --start-period=5s --retries=3 \
-	CMD curl -s -o /dev/null http://localhost:${PORT}/health || exit 1
+EXPOSE ${PORT}
 
-ENTRYPOINT /app/deckofcards --port=${PORT} --enableCORS
+ENTRYPOINT /opt/app/main --enableCORS --port=${PORT}

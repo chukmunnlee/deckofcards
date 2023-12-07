@@ -1,0 +1,43 @@
+{
+	admin  0.0.0.0:2019
+}
+
+http://localhost:8080 {
+	@api {
+		path /api/*
+	}
+
+	@oas_spec {
+		path /api/openapi
+	}
+
+	route @oas_spec {
+		rewrite @oas_spec /api.yaml
+		root ./static
+		file_server
+	}
+
+	reverse_proxy @api {
+		to localhost:3000
+	}
+
+	route @api {
+		openapi {
+			spec ./static/api.yaml
+			check {
+				req_body
+			}
+			log_error
+		}
+	}
+
+	file_server {
+		root ./static
+	}
+
+	handle_errors {
+		respond @api "Resource: {http.request.orig_uri}. Error: {openapi.error} - {openapi.response_error}" {openapi.status_code} {
+			close
+		}
+	}
+}

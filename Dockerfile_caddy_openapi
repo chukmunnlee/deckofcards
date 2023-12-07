@@ -1,0 +1,26 @@
+FROM caddy:2.7.3-builder AS builder
+
+WORKDIR /opt/build
+
+RUN xcaddy build --with github.com/chukmunnlee/caddy-openapi@v0.8.0
+
+FROM caddy:2.7.3-alpine
+
+COPY --from=builder /opt/build/caddy /usr/bin/caddy
+
+WORKDIR /opt
+
+RUN mkdir -p /opt/config && mkdir -p /opt/static
+
+COPY static/api.yaml static
+COPY Caddyfile_docker config/Caddyfile
+
+VOLUME /opt/config
+VOLUME /opt/static
+
+
+ENV PORT=8080
+
+EXPOSE ${PORT}
+
+ENTRYPOINT ["/usr/bin/caddy", "run", "--config", "/opt/config/Caddyfile"]
