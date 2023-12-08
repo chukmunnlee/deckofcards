@@ -19,7 +19,7 @@ VOLUME /opt/config
 VOLUME /opt/static
 
 
-ENV PORT=8080
+ENV PORT=8080 TARGET_PORT=3000
 
 EXPOSE ${PORT}
 

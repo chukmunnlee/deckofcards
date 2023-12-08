@@ -1,4 +1,4 @@
-:8080 {
+:{$PORT} {
 	@api {
 		path /api/*
 	}
@@ -14,7 +14,7 @@
 	}
 
 	reverse_proxy @api {
-		to localhost:3000
+		to localhost:{$TARGET_PORT}
 	}
 
 	route @api {

@@ -28,12 +28,19 @@ spec:
         app: doc
         name: doc-po
     spec:
-      containers:
+      initContainers:
       - name: caddy
-        image: chukmunnlee/deckofcards-caddy-openapi:v0.8.0
+        image: chukmunnlee/deckofcards-caddy-openapi:v0.9.0
         imagePullPolicy: IfNotPresent
+        env:
+        - name: PORT 
+          value: "8080"
+        - name: TARGET_PORT
+          value: "3000"
         ports:
         - containerPort: 8080
+        restartPolicy: Always
+      containers:
       - name: deckofcards
         image: chukmunnlee/deckofcards:v1
         imagePullPolicy: IfNotPresent
