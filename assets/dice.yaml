@@ -1,0 +1,45 @@
+apiVersion: deck/v1
+kind: Deck
+metadata:
+  id: 01HH6GM4RENAWPD5K02SP60MJ0
+  name: Dice6Side
+  description: Six sided dice
+spec:
+  backImage: https://acme.sgp1.digitaloceanspaces.com/dice/back.png
+  cards:
+  - code: D01
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice1.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice1.png
+    value: '1'
+    suit: D6
+  - code: D02
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice2.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice2.png
+    value: '2'
+    suit: D6
+  - code: D03
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice3.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice3.png
+    value: '3'
+    suit: D6
+  - code: D04
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice4.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice4.png
+    value: '4'
+    suit: D6
+  - code: D05
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice5.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice5.png
+    value: '5'
+    suit: D6
+  - code: D06
+    image: https://acme.sgp1.digitaloceanspaces.com/dice/dice6.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/dice/dice6.png
+    value: '6'
+    suit: D6
