@@ -23,8 +23,9 @@ COPY --from=builder /opt/src/main .
 COPY assets assets
 COPY static static
 
-VOLUME /opt/app/assets
-VOLUME /opt/app/static
+# Cannot use volume in Railway
+#VOLUME /opt/app/assets
+#VOLUME /opt/app/static
 
 ENV PORT=3000
 
