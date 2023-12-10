@@ -1,0 +1,45 @@
+apiVersion: deck/v1
+kind: Deck
+metadata:
+  id: 01HH94962764SYCF3A8ATDKMTY
+  name: Mahjong
+  description: Mahjong with Hong Kong tiles
+spec:
+  backImage: https://acme.sgp1.digitaloceanspaces.com/mahjong/back.png
+  cards:
+  - code: D01
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '1'
+    suit: D6
+  - code: D02
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '2'
+    suit: D6
+  - code: D03
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '3'
+    suit: D6
+  - code: D04
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '4'
+    suit: D6
+  - code: D05
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '5'
+    suit: D6
+  - code: D06
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/XXXX.png
+    value: '6'
+    suit: D6
