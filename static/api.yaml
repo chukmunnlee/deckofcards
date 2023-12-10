@@ -564,6 +564,9 @@ components:
         shuffle:
           type: boolean
           default: false
+        replacement:
+          type: boolean
+          default: false
         jokers_enabled:
           type: boolean
           default: false
@@ -607,6 +610,7 @@ components:
       - success
       - deck_id
       - shuffled
+      - replacement
       - remaining
       properties:
         success: 
@@ -614,6 +618,8 @@ components:
         deck_id: 
           type: string
         shuffled:
+          type: boolean 
+        replacement:
           type: boolean 
         remaining:
           type: integer
@@ -628,6 +634,7 @@ components:
       - deck_id
       - cards
       - shuffled
+      - replacement
       - remaining
       properties:
         success: 
@@ -640,6 +647,8 @@ components:
           items:
             $ref: '#/components/schemas/Card'
         shuffled:
+          type: boolean 
+        replacement:
           type: boolean 
         remaining:
           type: integer
@@ -689,6 +698,7 @@ components:
       - success
       - deck_id
       - shuffled
+      - replacement
       - remaining
       properties:
         success: 
@@ -696,6 +706,8 @@ components:
         deck_id: 
           type: string
         shuffled:
+          type: boolean 
+        replacement:
           type: boolean 
         remaining:
           type: integer
@@ -709,6 +721,7 @@ components:
       - success
       - deck_id
       - shuffled
+      - replacement
       - remaining
       - piles
       properties:
@@ -717,6 +730,8 @@ components:
         deck_id: 
           type: string
         shuffled:
+          type: boolean 
+        replacement:
           type: boolean 
         remaining:
           type: integer
@@ -734,6 +749,7 @@ components:
       - success
       - deck_id
       - shuffled
+      - replacement
       - remaining
       - cards
       - piles
@@ -743,6 +759,8 @@ components:
         deck_id: 
           type: string
         shuffled:
+          type: boolean 
+        replacement:
           type: boolean 
         remaining:
           type: integer

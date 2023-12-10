@@ -27,6 +27,7 @@ type DeckRequestOptions struct {
 	DeckName      string `json:"deck_name"`
 	DeckId        string `json:"deck_id"`
 	DeckCount     uint   `json:"deck_count"`
+	Replacement   bool   `json:"replacement"`
 
 	// GET /api/deck/:deck_id
 	Count int    `form:"count"`

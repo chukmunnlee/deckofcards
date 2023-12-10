@@ -45,13 +45,14 @@ type Deck struct {
 }
 
 type DeckInstance struct {
-	Id        string
-	Name      string
-	DeckId    string
-	Shuffled  bool
-	Count     uint
-	Remaining []Card
-	Piles     map[string][]Card
+	Id          string
+	Name        string
+	DeckId      string
+	Shuffled    bool
+	Replacement bool
+	Count       uint
+	Remaining   []Card
+	Piles       map[string][]Card
 }
 
 type DeckInfo struct {
@@ -73,11 +74,12 @@ type BTreeNode struct {
 // Deck
 func (deck Deck) CreateInstance(count uint) *DeckInstance {
 	var deckInst = &DeckInstance{
-		Id:       deck.Metadata.Id,
-		Name:     deck.Metadata.Name,
-		DeckId:   ulid.Make().String(),
-		Count:    count,
-		Shuffled: false,
+		Id:          deck.Metadata.Id,
+		Name:        deck.Metadata.Name,
+		DeckId:      ulid.Make().String(),
+		Count:       count,
+		Shuffled:    false,
+		Replacement: false,
 	}
 	for i := uint(0); i < count; i++ {
 		deckInst.Remaining = append(deckInst.Remaining, deck.Spec.Cards...)
@@ -90,11 +92,12 @@ func (deck Deck) CreateInstance(count uint) *DeckInstance {
 
 func (dk Deck) CreateCustomInstance(cards string, count uint) *DeckInstance {
 	var deckInst = &DeckInstance{
-		Id:       dk.Metadata.Id,
-		Name:     dk.Metadata.Name,
-		DeckId:   ulid.Make().String(),
-		Count:    count,
-		Shuffled: false,
+		Id:          dk.Metadata.Id,
+		Name:        dk.Metadata.Name,
+		DeckId:      ulid.Make().String(),
+		Count:       count,
+		Shuffled:    false,
+		Replacement: false,
 	}
 	codes := strings.Split(strings.TrimSpace(cards), ",")
 	for _, c := range codes {

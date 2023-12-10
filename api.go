@@ -55,11 +55,12 @@ func mkApiDeckStatus(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
-			"piles":     piles,
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
+			"piles":       piles,
 		})
 	}
 }
@@ -98,6 +99,7 @@ func mkApiDeckNew(limit uint, cardDecks deck.CardDecks, storage *deck.DeckStorag
 			deckInstance = dk.CreateInstance(deckCount)
 		}
 		deckInstance.Shuffled = opt.Shuffle
+		deckInstance.Replacement = opt.Replacement
 
 		if opt.Shuffle {
 			shuffleDeck(&deckInstance.Remaining, r)
@@ -111,15 +113,17 @@ func mkApiDeckNew(limit uint, cardDecks deck.CardDecks, storage *deck.DeckStorag
 		dumpDeck(deckInstance)
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
 		})
 	}
 }
 
 func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return func(c *gin.Context) {
 		opt, err := parseRequestOptions(c)
 		if nil != err {
@@ -170,14 +174,28 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 		// Add to discarded pile
 		deckInstance.AddToPile(drawn, deck.PILE_DISCARDED)
 
+		// If replacement, the recreate the deck or randomly add back to deck?
+		if deckInstance.Replacement {
+			_deck, _ := cardDecks.FindDeckById(deckInstance.Id)
+			remaining := make([]deck.Card, 0)
+			for i := 0; i < int(deckInstance.Count); i++ {
+				remaining = append(remaining, _deck.Spec.Cards...)
+			}
+			if deckInstance.Shuffled {
+				shuffleDeck(&remaining, r)
+			}
+			deckInstance.Remaining = remaining
+		}
+
 		storage.Update(deckInstance)
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"cards":     drawn,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"cards":       drawn,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
 		})
 	}
 }
@@ -257,10 +275,11 @@ func mkApiDeckPut(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 		storage.Update(deckInstance)
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
 		})
 	}
 }
@@ -283,10 +302,11 @@ func mkApiDeckGetContents(cardDecks deck.CardDecks, storage *deck.DeckStorage) f
 				return
 			}
 			c.JSON(http.StatusOK, gin.H{
-				"success":   true,
-				"deck_id":   deckInstance.DeckId,
-				"shuffled":  deckInstance.Shuffled,
-				"remaining": len(deckInstance.Remaining),
+				"success":     true,
+				"deck_id":     deckInstance.DeckId,
+				"shuffled":    deckInstance.Shuffled,
+				"replacement": deckInstance.Replacement,
+				"remaining":   len(deckInstance.Remaining),
 				"piles": gin.H{
 					pileName: gin.H{
 						"remaining": len(cards),
@@ -297,11 +317,12 @@ func mkApiDeckGetContents(cardDecks deck.CardDecks, storage *deck.DeckStorage) f
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"success":   true,
-			"deck_id":   deckInstance.DeckId,
-			"shuffled":  deckInstance.Shuffled,
-			"remaining": len(deckInstance.Remaining),
-			"cards":     deckInstance.Remaining,
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
+			"cards":       deckInstance.Remaining,
 		})
 	}
 }
@@ -374,11 +395,11 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		if fromPile {
 			deckInstance.Piles[pileName] = currCards
 			c.JSON(http.StatusOK, gin.H{
-				"success": true,
-				"deck_id": deckInstance.DeckId,
-				//"shuffled":  opt.FShuffle,
-				"shuffled":  opt.Shuffle,
-				"remaining": len(deckInstance.Remaining),
+				"success":     true,
+				"deck_id":     deckInstance.DeckId,
+				"shuffled":    opt.Shuffle,
+				"remaining":   len(deckInstance.Remaining),
+				"replacement": deckInstance.Replacement,
 				"piles": gin.H{
 					pileName: gin.H{
 						"remaining": len(currCards),
@@ -388,11 +409,11 @@ func mkApiDeckPatch(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*g
 		} else {
 			deckInstance.Remaining = currCards
 			c.JSON(http.StatusOK, gin.H{
-				"success": true,
-				"deck_id": deckInstance.DeckId,
-				//"shuffled":  opt.FShuffle,
-				"shuffled":  opt.Shuffle,
-				"remaining": len(deckInstance.Remaining),
+				"success":     true,
+				"deck_id":     deckInstance.DeckId,
+				"shuffled":    opt.Shuffle,
+				"replacement": deckInstance.Replacement,
+				"remaining":   len(deckInstance.Remaining),
 			})
 		}
 
