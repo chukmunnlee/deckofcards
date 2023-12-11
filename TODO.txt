@@ -20,9 +20,10 @@ Drawing from piles
 		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/bottom?count=2
 		GET /api/deck/<<deck_id>>/pile/<<pile_name>>/draw/random?count=1 (default)
 
-Returning cards to the deck
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/ copy
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/?cards=AS,2S
-	https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/?cards=AS,2S
+Returning cards from piles the main deck
+	PUT /api/deck/<<deck_api>>
+		https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/ copy
+		https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/
+		https://www.deckofcardsapi.com/api/deck/<<deck_id>>/return/?cards=AS,2S
+		https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/?cards=AS,2S
 

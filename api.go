@@ -257,21 +257,26 @@ func mkApiDeckPut(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 
 		if opt.Remaining {
 			cards = deckInstance.Remaining
+			if deckInstance.Shuffled {
+				shuffleDeck(&cards, r)
+			}
 		} else {
-			opts := DeckRequestOptions{
-				DeckId:   deckInstance.Id,
-				DeckName: deckInstance.Name,
-				Shuffle:  deckInstance.Shuffled,
-			}
-			deck, err := createDeckByOption(cardDecks, opts)
-			if nil != err {
-				mkError(http.StatusBadRequest, fmt.Sprintf("Cannot created new deck for %s", deckId), c)
-				return
-			}
-			cards = (deck.CreateInstance(deckInstance.Count)).Remaining
+			//opts := DeckRequestOptions{
+			//	DeckId:      deckInstance.Id,
+			//	DeckName:    deckInstance.Name,
+			//	Shuffle:     deckInstance.Shuffled,
+			//	Replacement: deckInstance.Replacement,
+			//}
+			//deck, err := createDeckByOption(cardDecks, opts)
+			//if nil != err {
+			//	mkError(http.StatusBadRequest, fmt.Sprintf("Cannot created new deck for %s", deckId), c)
+			//	return
+			//}
+			//cards = (deck.CreateInstance(deckInstance.Count)).Remaining
+			_d, _ := cardDecks.FindDeckById(deckInstance.Id)
+			cards = cloneDeck(*_d, deckInstance.Count, deckInstance.Shuffled, r)
 		}
 
-		shuffleDeck(&cards, r)
 		deckInstance.Remaining = cards
 
 		storage.Update(deckInstance)

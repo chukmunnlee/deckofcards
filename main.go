@@ -39,34 +39,34 @@ func main() {
 	r.NoRoute(gin.WrapH(http.FileServer(http.Dir("static"))))
 
 	// DECK
-	// GET /api/decks
+	// GET /api/decks - get a list of all registered decks
 	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
 
-	// POST /api/deck
+	// POST /api/deck - create a deck
 	// Content-Type: application/json
 	// { "jokers_enabled": false, "deck_name": "deck_name", "deck_count": 1, "shuffle": true }
 	registerPOST("/api/deck", mkApiDeckNew(opts.DeckLimit, cardDecks, storage), r)
 
 	// DECK INSTANCE
-	// GET /api/deck/:deck_id?count=2
+	// GET /api/deck/:deck_id?count=2 - draw cards from a deck
 	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
 
-	// GET /api/deck/:deck_id/contents
-	registerGET(fmt.Sprintf("/api/deck/:%s/contents", PARAM_DECK_ID),
-		mkApiDeckGetContents(cardDecks, storage), r)
-
-	// PUT /api/deck/:deck_id?remaining=true
+	// PUT /api/deck/:deck_id?remaining=true - recreate the deck for the same deck_id or shuffle the remaining
 	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPut(cardDecks, storage), r)
 
-	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true
+	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true - add cards to main pile or named pile
 	registerPATCH(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPatch(cardDecks, storage), r)
 
-	// DELETE /api/deck/:deck_id
+	// DELETE /api/deck/:deck_id - delete a deck
 	registerDELETE(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDelete(cardDecks, storage), r)
+
+	// GET /api/deck/:deck_id/contents - show the deck's contents
+	registerGET(fmt.Sprintf("/api/deck/:%s/contents", PARAM_DECK_ID),
+		mkApiDeckGetContents(cardDecks, storage), r)
 
 	// GET /api/deck/:deck_id/status
 	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
