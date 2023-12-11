@@ -120,6 +120,17 @@ func createDeck(cardDecks deck.CardDecks, c *gin.Context) (*deck.Deck, *DeckRequ
 	return deck, opt, err
 }
 
+func cloneDeck(_deck deck.Deck, count uint, shuffled bool, r *rand.Rand) []deck.Card {
+	cloned := make([]deck.Card, 0)
+	for i := 0; i < int(count); i++ {
+		cloned = append(cloned, _deck.Spec.Cards...)
+	}
+	if shuffled {
+		shuffleDeck(&cloned, r)
+	}
+	return cloned
+}
+
 func mkError(status int, msg string, c *gin.Context) {
 	c.JSON(status, gin.H{"success": false, "error": msg})
 }

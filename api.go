@@ -158,34 +158,36 @@ func mkApiDeckDraw(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gi
 			return
 		}
 
-		var drawn []deck.Card
-		switch from {
-		case QUERY_FROM_TOP:
-			drawn = deckInstance.Draw(count)
-		case QUERY_FROM_RANDOM:
-			drawn = deckInstance.DrawRandom(count)
-		case QUERY_FROM_BOTTOM:
-			drawn = deckInstance.DrawFromBottom(count)
-		case QUERY_FROM_LIST:
+		_deck, _ := cardDecks.FindDeckById(deckInstance.Id)
+		drawn := make([]deck.Card, 0)
+		if QUERY_FROM_LIST == from {
 			c := strings.Split(strings.TrimSpace(opt.Cards), ",")
 			drawn = deckInstance.DrawFromList(c)
+			if deckInstance.Replacement {
+				deckInstance.Remaining = cloneDeck(*_deck, deckInstance.Count, deckInstance.Shuffled, r)
+			}
+
+		} else {
+			for i := 0; i < count; i++ {
+				var d []deck.Card
+				switch from {
+				case QUERY_FROM_TOP:
+					d = deckInstance.Draw(1)
+				case QUERY_FROM_RANDOM:
+					d = deckInstance.DrawRandom(1)
+				case QUERY_FROM_BOTTOM:
+					d = deckInstance.DrawFromBottom(1)
+				}
+				drawn = append(drawn, d...)
+
+				if deckInstance.Replacement {
+					deckInstance.Remaining = cloneDeck(*_deck, deckInstance.Count, deckInstance.Shuffled, r)
+				}
+			}
 		}
 
 		// Add to discarded pile
 		deckInstance.AddToPile(drawn, deck.PILE_DISCARDED)
-
-		// If replacement, the recreate the deck or randomly add back to deck?
-		if deckInstance.Replacement {
-			_deck, _ := cardDecks.FindDeckById(deckInstance.Id)
-			remaining := make([]deck.Card, 0)
-			for i := 0; i < int(deckInstance.Count); i++ {
-				remaining = append(remaining, _deck.Spec.Cards...)
-			}
-			if deckInstance.Shuffled {
-				shuffleDeck(&remaining, r)
-			}
-			deckInstance.Remaining = remaining
-		}
 
 		storage.Update(deckInstance)
 
