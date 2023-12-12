@@ -21,15 +21,16 @@ export class DeckService {
     ).then((resp: any) => resp['decks'] as DeckInfo[])
   }
 
-  //createDeck(deckId: string, count = 1): Promise<DeckStatus> {
   createDeck(deckId: string, createOpts: CreateDeckOptions): Promise<DeckStatus> {
 
     const opts = {
       deck_id: deckId,
-      deck_count: createOpts.count,
+      deck_count: createOpts.deckCount,
       replacement: createOpts.replacement,
       shuffle: createOpts.shuffle
     }
+
+    console.info('>>> opts: ', opts)
 
     return lastValueFrom(
       this.http.post<DeckStatus>(`${this.BASE}/deck`, opts)

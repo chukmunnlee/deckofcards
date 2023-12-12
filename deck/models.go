@@ -17,9 +17,9 @@ const (
 )
 
 type Metadata struct {
-	Id          string `yaml:"id"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
+	Id          string `yaml:"id" json:"id"`
+	Name        string `yaml:"name" json:"name"`
+	Description string `yaml:"description" json:"description"`
 }
 
 type Card struct {
@@ -32,8 +32,8 @@ type Card struct {
 }
 
 type Spec struct {
-	BackImage string `yaml:"backImage"`
-	Cards     []Card `yaml:"cards"`
+	BackImage string `yaml:"backImage" json:"backImage"`
+	Cards     []Card `yaml:"cards" json:"cards"`
 }
 
 type Deck struct {

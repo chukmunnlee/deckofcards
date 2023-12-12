@@ -42,6 +42,9 @@ func main() {
 	// GET /api/decks - get a list of all registered decks
 	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
 
+	registerGET(fmt.Sprintf("/api/deck/:%s/cards", PARAM_DECK_ID),
+		mkApiDeckCards(cardDecks, storage), r)
+
 	// POST /api/deck - create a deck
 	// Content-Type: application/json
 	// { "jokers_enabled": false, "deck_name": "deck_name", "deck_count": 1, "shuffle": true }
@@ -52,11 +55,13 @@ func main() {
 	registerGET(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckDraw(cardDecks, storage), r)
 
-	// PUT /api/deck/:deck_id?remaining=true - recreate the deck for the same deck_id or shuffle the remaining
+	// PUT /api/deck/:deck_id?remaining=true - recreate the deck for the same deck_id, clear all Piles
+	//   or shuffle the remaining, piles are not clear
 	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPut(cardDecks, storage), r)
 
-	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true - add cards to main pile or named pile
+	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true - create custom deck or pile
+	//   add cards to main pile or named pile
 	registerPATCH(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPatch(cardDecks, storage), r)
 
@@ -68,11 +73,11 @@ func main() {
 	registerGET(fmt.Sprintf("/api/deck/:%s/contents", PARAM_DECK_ID),
 		mkApiDeckGetContents(cardDecks, storage), r)
 
-	// GET /api/deck/:deck_id/status
+	// GET /api/deck/:deck_id/status - show the decks's information
 	registerGET(fmt.Sprintf("/api/deck/:%s/status", PARAM_DECK_ID),
 		mkApiDeckStatus(cardDecks, storage), r)
 
-	// GET /api/deck/:deck_id/back
+	// GET /api/deck/:deck_id/back - get back image of card
 	registerGET(fmt.Sprintf("/api/deck/:%s/back", PARAM_DECK_ID),
 		mkApiDeckBack(cardDecks, storage), r)
 
@@ -97,7 +102,8 @@ func main() {
 	registerPUT(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiPilePut(cardDecks, storage), r)
 
-	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,C3,shuffle=true
+	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,C3,shuffle=true - create custom deck or pile
+	//   add cards to main pile or named pile
 	registerPATCH(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiDeckPatch(cardDecks, storage), r)
 

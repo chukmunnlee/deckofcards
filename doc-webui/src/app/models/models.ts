@@ -29,7 +29,7 @@ export interface DeckBackImage {
 }
 
 export interface CreateDeckOptions {
-  count: number
+  deckCount: number
   replacement: boolean
   shuffle: boolean
 }

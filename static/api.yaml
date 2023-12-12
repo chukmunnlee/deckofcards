@@ -23,7 +23,6 @@ paths:
     get: 
       summary: List of all decks
       operationId: listDecks
-      x-specification-usecase: "UC-C-PIC-A-003"
       tags:
       - deck
       responses:
@@ -33,6 +32,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetDecksResponse'
+  /api/deck/{deckId}/cards:
+    get: 
+      summary: Get the deck's contents
+      operationId: getDeckInfo
+      tags:
+      - deck
+      responses:
+        '200': 
+          description: Deck information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckCardsResponse'
+
   /api/deck:
     post: 
       summary: Create a new deck
@@ -624,6 +637,35 @@ components:
         remaining:
           type: integer
           format: int32
+
+    GetDeckCardsResponse:
+      title: Get Deck Cards Response 
+      description: Response from GET /api/deck/:deck_id/cards
+      type: object
+      # HERE
+      required:
+      - success
+      - id
+      - name
+      - description
+      - backImage
+      - cards
+      properties:
+        success: 
+          type: boolean
+        id: 
+          type: string
+        name: 
+          type: string
+        description: 
+          type: string
+        backImage: 
+          type: string
+        cards:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Card'
 
     GetDeckResponseWithCards:
       title: Get Deck Response with cards
