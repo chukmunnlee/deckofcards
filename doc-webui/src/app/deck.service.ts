@@ -27,10 +27,9 @@ export class DeckService {
       deck_id: deckId,
       deck_count: createOpts.deckCount,
       replacement: createOpts.replacement,
-      shuffle: createOpts.shuffle
+      shuffle: createOpts.shuffle,
+      split: createOpts.split
     }
-
-    console.info('>>> opts: ', opts)
 
     return lastValueFrom(
       this.http.post<DeckStatus>(`${this.BASE}/deck`, opts)

@@ -32,4 +32,5 @@ export interface CreateDeckOptions {
   deckCount: number
   replacement: boolean
   shuffle: boolean
+  split: number
 }

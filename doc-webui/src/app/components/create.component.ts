@@ -46,6 +46,7 @@ export class CreateComponent implements OnInit {
       deckCount: this.fb.control<number>(1, [Validators.min(1), Validators.max(10), Validators.required]),
       shuffle: this.fb.control<boolean>(true),
       replacement: this.fb.control<boolean>(false),
+      split: this.fb.control<number>(1, [Validators.min(1), Validators.max(10) ]),
     })
   }
 
