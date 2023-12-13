@@ -174,3 +174,34 @@ func mkApiPilePut(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin
 		})
 	}
 }
+
+func mkApiPileStatus(cardDecks deck.CardDecks, storage *deck.DeckStorage) func(*gin.Context) {
+
+	return func(c *gin.Context) {
+		deckId := c.Param(PARAM_DECK_ID)
+		deckInstance, err := storage.Get(deckId)
+		if nil != err {
+			mkError(http.StatusNotFound, err.Error(), c)
+			return
+		}
+
+		pileName := c.Param(PARAM_PILE_NAME)
+		cards, ok := deckInstance.Piles[pileName]
+
+		if !ok {
+			mkError(http.StatusNotFound, fmt.Sprintf("%s pile in deck %s not found", pileName, deckId), c)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":     true,
+			"deck_id":     deckInstance.DeckId,
+			"shuffled":    deckInstance.Shuffled,
+			"replacement": deckInstance.Replacement,
+			"remaining":   len(deckInstance.Remaining),
+			"piles": gin.H{
+				pileName: gin.H{"remaining": len(cards)},
+			},
+		})
+	}
+}

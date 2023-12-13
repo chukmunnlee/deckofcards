@@ -460,6 +460,33 @@ paths:
         '404':
           description: Cannot find deck id or pile name
           $ref: '#/components/responses/NotFound'
+  /api/deck/{deckId}/pile/{pileName}/status:
+    get:
+      summary: Get the status of a pile from a deck
+      operationId: getPileStatus
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pileName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get the contents of a pile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckPilesResponse'
+        '404':
+          description: Cannot find deck id or pile name
+          $ref: '#/components/responses/NotFound'
 
 
 components:

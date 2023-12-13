@@ -42,6 +42,7 @@ func main() {
 	// GET /api/decks - get a list of all registered decks
 	registerGET("/api/decks", mkApiDecks(cardDecks, storage), r)
 
+	// GET /api/deck/:deck_id/cards - list all cards from a deck
 	registerGET(fmt.Sprintf("/api/deck/:%s/cards", PARAM_DECK_ID),
 		mkApiDeckCards(cardDecks, storage), r)
 
@@ -60,8 +61,7 @@ func main() {
 	registerPUT(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPut(cardDecks, storage), r)
 
-	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true - create custom deck or pile
-	//   add cards to main pile or named pile
+	// PATCH /api/deck/:deck_id?cards=AS,C3,shuffle=true - add additional cards to deck or pile
 	registerPATCH(fmt.Sprintf("/api/deck/:%s", PARAM_DECK_ID),
 		mkApiDeckPatch(cardDecks, storage), r)
 
@@ -82,21 +82,25 @@ func main() {
 		mkApiDeckBack(cardDecks, storage), r)
 
 	// PILES
-	// GET /api/deck/:deck_id/piles
+	// GET /api/deck/:deck_id/piles - list all the piles in a deck instance
 	registerGET(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
 		mkApiPilesGet(cardDecks, storage), r)
 
-	// POST /api/deck/:deck_id/piles
+	// POST /api/deck/:deck_id/piles - create a pile in a deck instance
 	registerPOST(fmt.Sprintf("/api/deck/:%s/piles", PARAM_DECK_ID),
 		mkApiPilesPost(cardDecks, storage), r)
 
-	// GET /api/deck/:deck_id/pile/:pile_name?
+	// GET /api/deck/:deck_id/pile/:pile_name - draw one or more cards from a pile
 	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiPileGet(cardDecks, storage), r)
 
-	// GET /api/deck/:deck_id/pile/:pile_name/contents
+	// GET /api/deck/:deck_id/pile/:pile_name/contents - show the contents of a pile
 	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s/contents", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiDeckGetContents(cardDecks, storage), r)
+
+	// GET /api/deck/:deck_id/pile/:pile_name/status - show the status of a pile
+	registerGET(fmt.Sprintf("/api/deck/:%s/pile/:%s/status", PARAM_DECK_ID, PARAM_PILE_NAME),
+		mkApiPileStatus(cardDecks, storage), r)
 
 	// PUT /api/deck/:deck_id/pile/:pile_name
 	registerPUT(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
