@@ -184,6 +184,10 @@ func (deckInst *DeckInstance) CreatePile(pileName string) bool {
 	return true
 }
 
+func (deckInst *DeckInstance) ClearPile(pileName string) {
+	deckInst.Piles[pileName] = make([]Card, 0)
+}
+
 func (deckInst *DeckInstance) AddToPile(cards []Card, pileName string) {
 	deckInst.Piles[pileName] = append(deckInst.Piles[pileName], cards...)
 }
@@ -194,6 +198,12 @@ func (deckInst DeckInstance) GetPiles() map[string]PileInfo {
 		piles[k] = PileInfo{Remaining: uint(len(v))}
 	}
 	return piles
+}
+
+func (deckInst *DeckInstance) DrawCardFromPile(toDraw []string, pileName string) []Card {
+	drawn, remaining := drawFromList(toDraw, deckInst.Piles[pileName])
+	deckInst.Piles[pileName] = *remaining
+	return *drawn
 }
 
 func (deckInst *DeckInstance) DrawFromPile(count int, pileName string) ([]Card, error) {

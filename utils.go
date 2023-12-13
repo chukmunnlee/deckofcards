@@ -32,6 +32,7 @@ type DeckRequestOptions struct {
 	// GET /api/deck/:deck_id
 	Count int    `form:"count"`
 	From  string `form:"from"`
+	To    string `form:"to"`
 
 	// PUT /api/deck/:deck_id?remaining=true
 	Remaining bool `form:"remaining"`
@@ -76,6 +77,14 @@ func shuffleDeck(cards *[]deck.Card, r *rand.Rand) {
 			(*cards)[i], (*cards)[j] = (*cards)[j], (*cards)[i]
 		})
 	}
+}
+
+func mergePile(fromDeck []deck.Card, toDeck []deck.Card, r *rand.Rand) *[]deck.Card {
+	for _, v := range fromDeck {
+		i := r.Intn(len(toDeck))
+		toDeck = append(append(toDeck[:i], v), toDeck[i+1:]...)
+	}
+	return &toDeck
 }
 
 func parseRequestOptions(c *gin.Context) (*DeckRequestOptions, error) {
@@ -208,10 +217,13 @@ func findCardsFromDeck(cardsCSV string, de deck.Deck, strict bool) ([]deck.Card,
 	return toAdd, nil
 }
 
-func dumpDeck(deckInstance *deck.DeckInstance) {
-	fmt.Printf("Deck: %s (deckId = %s)\n", deckInstance.Name, deckInstance.DeckId)
-	for i := 0; i < len(deckInstance.Remaining); i++ {
-		fmt.Printf("%s ", deckInstance.Remaining[i].Code)
+func dumpCards(cards []deck.Card) {
+	for i := 0; i < len(cards); i++ {
+		fmt.Printf("%s ", cards[i].Code)
 	}
 	fmt.Println()
+}
+func dumpDeck(deckInstance *deck.DeckInstance) {
+	fmt.Printf("Deck: %s (deckId = %s)\n", deckInstance.Name, deckInstance.DeckId)
+	dumpCards(deckInstance.Remaining)
 }

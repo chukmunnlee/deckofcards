@@ -106,6 +106,10 @@ func main() {
 	registerPUT(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),
 		mkApiPilePut(cardDecks, storage), r)
 
+	// PUT /api/pile/:pile_name/deck/:deck_id - return pile to main deck
+	registerPUT(fmt.Sprintf("/api/pile/:%s/deck/:%s", PARAM_PILE_NAME, PARAM_DECK_ID),
+		mkApiPutPileToDeck(cardDecks, storage), r)
+
 	// PATCH /api/deck/:deck_id/pile/:pile_name?cards=AS,C3,shuffle=true - create custom deck or pile
 	//   add cards to main pile or named pile
 	registerPATCH(fmt.Sprintf("/api/deck/:%s/pile/:%s", PARAM_DECK_ID, PARAM_PILE_NAME),

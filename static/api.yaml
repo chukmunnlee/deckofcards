@@ -38,6 +38,12 @@ paths:
       operationId: getDeckInfo
       tags:
       - deck
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200': 
           description: Deck information
@@ -96,8 +102,10 @@ paths:
         schema:
           type: string
           enum:
+          - top
           - bottom
           - random
+          default: top
       - name: cards
         in: query
         schema:
@@ -179,6 +187,11 @@ paths:
         schema:
           type: string
       - name: shuffle
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - name: strict
         in: query
         schema:
           type: boolean
@@ -346,8 +359,10 @@ paths:
         schema:
           type: string
           enum:
+          - top
           - bottom
           - random
+          default: top
       - name: cards
         in: query
         schema:
@@ -413,6 +428,11 @@ paths:
         schema:
           type: string
       - name: shuffle
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - name: strict
         in: query
         schema:
           type: boolean
@@ -484,6 +504,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetDeckPilesResponse'
+        '404':
+          description: Cannot find deck id or pile name
+          $ref: '#/components/responses/NotFound'
+
+  /api/pile/{pileName}/deck/{deckId}:
+    put:
+      summary: Move cards from pile to main deck
+      operationId: moveCardsFromPileToDeck
+      tags:
+      - piles
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pileName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: to 
+        in: query
+        schema:
+          type: string
+          enum:
+          - top
+          - bottom
+          - random
+          default: bottom
+      - name: cards
+        in: query
+        schema:
+          type: string
+      - name: strict
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Get the contents of a pile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDeckPilesResponse'
+        '400':
+          description: Cannot move deck
+          $ref: '#/components/responses/BadRequest'
         '404':
           description: Cannot find deck id or pile name
           $ref: '#/components/responses/NotFound'
