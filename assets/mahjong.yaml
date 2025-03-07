@@ -1,0 +1,312 @@
+apiVersion: deck/v1
+kind: Deck
+metadata:
+  id: 01HH94962764SYCF3A8ATDKMTY
+  name: Mahjong
+  description: Mahjong with Hong Kong tiles
+spec:
+  backImage: https://acme.sgp1.digitaloceanspaces.com/mahjong/back.png
+  presets:
+    count: 1
+    split: 4
+    shuffle: true
+  cards:
+    # Bamboo
+  - code: BM01
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_1.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_1.png
+    value: '1'
+    count: 4
+    suit: BAM
+  - code: BM02
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_2.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_2.png
+    value: '2'
+    count: 4
+    suit: BAM
+  - code: BM03
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_3.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_3.png
+    value: '3'
+    count: 4
+    suit: BAM
+  - code: BM04
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_4.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_4.png
+    value: '4'
+    count: 4
+    suit: BAM
+  - code: BM05
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_5.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_5.png
+    value: '5'
+    count: 4
+    suit: BAM
+  - code: BM06
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_6.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_6.png
+    value: '6'
+    count: 4
+    suit: BAM
+  - code: BM07
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_7.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_7.png
+    value: '7'
+    count: 4
+    suit: BAM
+  - code: BM08
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_8.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_8.png
+    value: '8'
+    count: 4
+    suit: BAM
+  - code: BM09
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_9.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/bam_9.png
+    value: '9'
+    count: 4
+    suit: BAM
+
+    # Character
+  - code: CH01
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_1.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_1.png
+    value: '1'
+    count: 4
+    suit: CHR
+  - code: CH02
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_2.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_2.png
+    value: '2'
+    count: 4
+    suit: CHR
+  - code: CH03
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_3.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_3.png
+    value: '3'
+    count: 4
+    suit: CHR
+  - code: CH04
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_4.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_4.png
+    value: '4'
+    count: 4
+    suit: CHR
+  - code: CH05
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_5.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_5.png
+    value: '5'
+    count: 4
+    suit: CHR
+  - code: CH06
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_6.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_6.png
+    value: '6'
+    count: 4
+    suit: CHR
+  - code: CH07
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_7.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_7.png
+    value: '7'
+    count: 4
+    suit: CHR
+  - code: CH08
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_8.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_8.png
+    value: '8'
+    count: 4
+    suit: CHR
+  - code: CH09
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_9.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/char_9.png
+    value: '9'
+    count: 4
+    suit: CHR
+
+    # Dot
+  - code: DT01
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_1.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_1.png
+    value: '1'
+    count: 4
+    suit: DOT
+  - code: DT02
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_2.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_2.png
+    value: '2'
+    count: 4
+    suit: DOT
+  - code: DT03
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_3.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_3.png
+    value: '3'
+    count: 4
+    suit: DOT
+  - code: DT04
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_4.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_4.png
+    value: '4'
+    count: 4
+    suit: DOT
+  - code: DT05
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_5.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_5.png
+    value: '5'
+    count: 4
+    suit: DOT
+  - code: DT06
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_6.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_6.png
+    value: '6'
+    count: 4
+    suit: DOT
+  - code: DT07
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_7.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_7.png
+    value: '7'
+    count: 4
+    suit: DOT
+  - code: DT08
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_8.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_8.png
+    value: '8'
+    count: 4
+    suit: DOT
+  - code: DT09
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_9.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/dot_9.png
+    value: '9'
+    count: 4
+    suit: DOT
+
+    # Colour
+  - code: COGR
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_green.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_green.png
+    value: '1'
+    count: 4
+    suit: COL
+  - code: CORD
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_red.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_red.png
+    value: '1'
+    count: 4
+    suit: COL
+  - code: COWH
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_white.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/col_white.png
+    value: '1'
+    count: 4
+    suit: COL
+       
+    # Wind
+  - code: WNNR
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_north.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_north.png
+    value: '1'
+    count: 4
+    suit: WIN
+  - code: WNET
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_east.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_east.png
+    value: '1'
+    count: 4
+    suit: WIN
+  - code: WNSH
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_south.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_south.png
+    value: '1'
+    count: 4
+    suit: WIN
+  - code: WNWT
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_west.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/wind_west.png
+    value: '1'
+    count: 4
+    suit: WIN
+
+    # Flowers
+  - code: FLBM
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_bamb.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_bamb.png
+    value: '1'
+    suit: FLW
+  - code: FLCH
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_chrys.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_chrys.png
+    value: '1'
+    suit: FLW
+  - code: FLOR
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_orchid.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_orchid.png
+    value: '1'
+    suit: FLW
+  - code: FLPM
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_plum.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/flw_plum.png
+    value: '1'
+    suit: FLW
+
+    # Seasons
+  - code: SESP
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_spring.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_spring.png
+    value: '1'
+    suit: SEA
+  - code: SESU
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_summer.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_summer.png
+    value: '1'
+    suit: SEA
+  - code: SEAU
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_autumn.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_autumn.png
+    value: '1'
+    suit: SEA
+  - code: SEWI
+    image: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_winter.png
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/mahjong/seas_winter.png
+    value: '1'
+    suit: SEA

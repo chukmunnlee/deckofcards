@@ -1,0 +1,188 @@
+apiVersion: deck/v1
+kind: Deck
+metadata:
+  id: 01HGD6P985BBSQ1VSFQ88FZ9FF
+  name: CarcassonneBase
+  description: Carcassonne base deck
+spec:
+  backImage: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BACK.jpg
+  cards:
+    # Row 1
+  - code: BFFRF0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFRF0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFRF0.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+  - code: BFFFF0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFFF0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFFF0.jpg
+    value: '1'
+    suit: BASE
+    count: 4
+  - code: BCCCC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCCC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCCC0.jpg
+    value: '1'
+    suit: BASE
+    count: 1
+  - code: BCRFR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRFR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRFR0.jpg
+    value: '1'
+    suit: BASE
+    count: 4
+  - code: BCFFF0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFF0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFF0.jpg
+    value: '1'
+    suit: BASE
+    count: 5
+
+    # Row 2
+  - code: BFCFC1
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFCFC1.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFCFC1.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+  - code: BFCFC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFCFC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFCFC0.jpg
+    value: '1'
+    suit: BASE
+    count: 1
+  - code: BCFCF0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFCF0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFCF0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCFFC2
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC2.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC2.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+  - code: BCRRF0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRF0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRF0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+      
+    # Row 3
+  - code: BCFRR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFRR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFRR0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCRRR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRR0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCFFC1
+    # BCCFF
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC1.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC1.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+  - code: BCFFC0
+    # BCCFF
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCFFC0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCRRC1
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRC1.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRC1.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+      
+    # Row 4
+  - code: BCRRC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCRRC0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCCFC1
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCFC1.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCFC1.jpg
+    value: '1'
+    suit: BASE
+    count: 1
+  - code: BCCFC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCFC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCFC0.jpg
+    value: '1'
+    suit: BASE
+    count: 3
+  - code: BCCRC1
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCRC1.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCRC1.jpg
+    value: '1'
+    suit: BASE
+    count: 2
+  - code: BCCRC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCRC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BCCRC0.jpg
+    value: '1'
+    suit: BASE
+    count: 1
+      
+    # Row 5
+  - code: BRFRC0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BRFRC0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BRFRC0.jpg
+    value: '1'
+    suit: BASE
+    count: 8
+  - code: BFFRR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFRR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFFRR0.jpg
+    value: '1'
+    suit: BASE
+    count: 9
+  - code: BFRRR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFRRR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BFRRR0.jpg
+    value: '1'
+    suit: BASE
+    count: 4
+  - code: BRRRR0
+    image: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BRRRR0.jpg
+    images:
+      png: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BRRRR0.jpg
+    value: '1'
+    suit: BASE
+    count: 1

@@ -1,0 +1,31 @@
+
+volumes:
+  mongo-data:
+
+networks:
+  docnet:
+
+services:
+  mongo:
+    image: mongo:8.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+    - mongo-data:/data/db
+    networks: 
+    - docnet
+
+    #  deckofcards:
+    #    image: chukmunnlee/deckofcards:v0.0.5
+    #    restart: always
+    #    build: .
+    #    environment:
+    #    - MONGODB_URI=mongodb://root:root@mongo:27017/deckofcards?authSource=admin
+    #    networks: 
+    #    - mynet
+    #    ports:
+    #    - 3000:3000
+    #    depends_on:
+    #    - mongo
