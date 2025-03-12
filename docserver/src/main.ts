@@ -17,6 +17,8 @@ async function bootstrap() {
   if (configSvc.cors)
     nestApp.enableCors()
 
+  app.disable('x-powered-by')
+
   console.info(`Starting application on port ${configSvc.port} at ${new Date()}`)
 
   await nestApp.listen(configSvc.port)
