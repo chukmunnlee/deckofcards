@@ -22,11 +22,8 @@ export class DeckRepository implements OnModuleInit {
   }
 
   insertDecks(decks: Deck[]) {
-    const _decks = decks.map(
-      d => ({ ...d })
-    )
     // @ts-ignore
-    return this.colDecks.insertMany(_decks)
+    return this.colDecks.insertMany(decks)
   }
 
   //getMetadata(): Promise<Metadata[]> {
@@ -51,8 +48,8 @@ export class DeckRepository implements OnModuleInit {
     const decks: Deck[] = loadDecks(this.configSvc.decksDir)
 
     try {
-      await this.colDecks.createIndex({'metadata.id': 1 })
       await this.insertDecks(decks)
+      await this.colDecks.createIndex({'metadata.id': 1 })
       this.configSvc.ready = (new Date()).getTime()
     } catch (err: any) {
       console.error('Cannot save decks\n', err)
