@@ -14,11 +14,11 @@ export class DeckController {
 
   @Get('/deck/:deckId/presets')
   async getDeckPresets(@Param('deckId') deckId: string): Promise<DeckPresets> {
-
-    const presets = await this.deckSvc.getDeckPresetsById(deckId)
-    if (!presets)
-      throw new HttpException(`Deck id ${deckId} not found`, HttpStatus.NOT_FOUND)
-
-    return presets
+    return this.deckSvc.getDeckPresetsById(deckId)
+        .then(presets => {
+          if (!presets)
+            throw new HttpException(`Deck id ${deckId} not found`, HttpStatus.NOT_FOUND)
+          return presets
+        })
   }
 }

@@ -39,7 +39,8 @@ export class DeckRepository implements OnModuleInit {
   }
 
   getDeckById(deckId: string): Promise<Document | null> {
-    return this.colDecks.findOne({ 'metadata.id': deckId })
+    // @ts-ignore
+    return this.colDecks.findOne({ '_id': deckId })
   }
 
   async onModuleInit() {
