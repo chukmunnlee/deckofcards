@@ -23,9 +23,7 @@ export class DeckRepository implements OnModuleInit {
 
   insertDecks(decks: Deck[]) {
     const _decks = decks.map(
-      d => ({
-        ...d, _id: d.metadata.id
-      })
+      d => ({ ...d })
     )
     // @ts-ignore
     return this.colDecks.insertMany(_decks)
@@ -40,21 +38,22 @@ export class DeckRepository implements OnModuleInit {
 
   getDeckById(deckId: string): Promise<Document | null> {
     // @ts-ignore
-    return this.colDecks.findOne({ '_id': deckId })
+    return this.colDecks.findOne({ 'metadata.id': deckId })
   }
 
   async onModuleInit() {
 
     if (!this.configSvc.decksDir) {
-      this.configSvc.ready = true
+      this.configSvc.ready = (new Date()).getTime()
       return
     }
     
     const decks: Deck[] = loadDecks(this.configSvc.decksDir)
 
     try {
+      await this.colDecks.createIndex({'metadata.id': 1 })
       await this.insertDecks(decks)
-      this.configSvc.ready = true
+      this.configSvc.ready = (new Date()).getTime()
     } catch (err: any) {
       console.error('Cannot save decks\n', err)
     }

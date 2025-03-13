@@ -5,20 +5,20 @@ import {ConfigService} from "src/services/config.service";
 @Controller('/app')
 export class AppController {
 
-  constructor(private confiSvc: ConfigService, private factoryRepo: FactoryRepository) { }
+  constructor(private configSvc: ConfigService, private factoryRepo: FactoryRepository) { }
 
   @Get('/config')
   getConfig() {
-    return this.confiSvc.config
+    return this.configSvc.config
   }
 
   @Get('/ready')
   getReady() {
 
-    if (!this.confiSvc.ready)
+    if (!this.configSvc.ready)
       throw new HttpException('The service is not ready', HttpStatus.SERVICE_UNAVAILABLE)
 
-    return { timestamp: (new Date()).getTime() }
+    return { ready: 1, timestamp: (new Date()).getTime() }
   }
 
   @Get('/health')

@@ -4,6 +4,7 @@ metadata:
   id: 01HGD6P985BBSQ1VSFQ88FZ9FF
   name: CarcassonneBase
   description: Carcassonne base deck
+  image: https://cdn.shopify.com/s/files/1/1288/8361/files/Carcassonne_Generic_Logo.png
 spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/carcassonne/BACK.jpg
   cards:

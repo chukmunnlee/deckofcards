@@ -19,7 +19,7 @@ async function bootstrap() {
 
   nestApp.disable('x-powered-by')
   nestApp.setGlobalPrefix(configSvc.prefix, {
-    exclude: [ '/app/*' ]
+    exclude: [ '/app/*path' ]
   })
 
   console.info(`Starting application on port ${configSvc.port} at ${new Date()}`)

@@ -28,28 +28,29 @@ export class ConfigService {
   get database() { return this.argv.database }
   get mongodbUri() { return this.argv.mongodbUri }
 
-  set ready(r: boolean) { this.argv.ready = r }
-  get ready(): boolean { return !!this.argv.ready }
+  set ready(r: number) { this.argv.ready = r }
+  get ready(): number { return this.argv.ready }
 
   get config() {
     return {
       cors: !!this.argv.cors,
       port: this.argv.port,
-      prefix: this.argv.prefix
+      prefix: this.argv.prefix,
+      ready: this.argv.ready
     }
   }
 
   constructor() {
     this.argv = yargs(hideBin(process.argv))
         .usage(USAGE)
-        .boolean([ 'cors' ])
+        .boolean([ 'cors', 'drop' ])
         .default('port', parseInt(process.env.PORT ?? DEFAULT_PORT))
         .default('mongodbUri', process.env.MONGODB_URI || DEFAULT_MONGODB_URI)
         .default('decksDir', process.env.DECKS_DIR || '')
         .default('database', process.env.DATABASE || DEFAULT_DATABASE)
         .default('prefix', process.env.PREFIX || DEFAULT_PREFIX)
-        .default('drop', !!process.env.DROP)
         .parse()
+    this.argv.ready = 0
   }
 
 }
