@@ -17,7 +17,10 @@ async function bootstrap() {
   if (configSvc.cors)
     nestApp.enableCors()
 
-  app.disable('x-powered-by')
+  nestApp.disable('x-powered-by')
+  nestApp.setGlobalPrefix(configSvc.prefix, {
+    exclude: [ '/app/*' ]
+  })
 
   console.info(`Starting application on port ${configSvc.port} at ${new Date()}`)
 

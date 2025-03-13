@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 
 import { ConfigService } from '../services/config.service'
-import {Collection, MongoClient} from "mongodb";
+import {Collection, Document, MongoClient} from "mongodb";
 
 @Injectable()
 export class FactoryRepository {
@@ -31,5 +31,9 @@ export class FactoryRepository {
   collection(colName: string): Collection {
     this.ensureSetup()
     return this.cilent.db(this.configSvc.database).collection(colName)
+  }
+
+  ping(): Promise<Document> {
+    return this.cilent.db(this.configSvc.database).stats()
   }
 }

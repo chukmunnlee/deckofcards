@@ -1,11 +1,12 @@
 import {Injectable, OnModuleInit} from "@nestjs/common";
 import {FactoryRepository} from "./factory.repository";
-import {Collection} from "mongodb";
+import {Collection, Document} from "mongodb";
 
 import {loadDecks} from "src/utils";
 
 import {Deck} from "src/models/deck";
 import {ConfigService} from "src/services/config.service";
+import {Metadata} from "src/models/resource";
 
 const DECK_COLLECTION = 'decks'
 
@@ -30,15 +31,29 @@ export class DeckRepository implements OnModuleInit {
     return this.colDecks.insertMany(_decks)
   }
 
+  //getMetadata(): Promise<Metadata[]> {
+  getMetadata(): Promise<Document[]>  {
+    return this.colDecks.find()
+        .project({ _id: 0, metadata: 1 })
+        .sort({ 'metadata.name': 1 }).toArray()
+  }
+
+  getDeckById(deckId: string): Promise<Document | null> {
+    return this.colDecks.findOne({ 'metadata.id': deckId })
+  }
+
   async onModuleInit() {
 
-    if (!this.configSvc.decksDir)
+    if (!this.configSvc.decksDir) {
+      this.configSvc.ready = true
       return
+    }
     
     const decks: Deck[] = loadDecks(this.configSvc.decksDir)
 
     try {
       await this.insertDecks(decks)
+      this.configSvc.ready = true
     } catch (err: any) {
       console.error('Cannot save decks\n', err)
     }
