@@ -5,7 +5,8 @@ import {ConfigService} from "src/services/config.service";
 @Controller('/app')
 export class AppController {
 
-  constructor(private configSvc: ConfigService, private factoryRepo: FactoryRepository) { }
+  constructor(private readonly configSvc: ConfigService
+      , private readonly factoryRepo: FactoryRepository) { }
 
   @Get('/config')
   getConfig() {

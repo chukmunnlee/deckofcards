@@ -6,7 +6,6 @@ import {loadDecks} from "src/utils";
 
 import {Deck} from "src/models/deck";
 import {ConfigService} from "src/services/config.service";
-import {Metadata} from "src/models/resource";
 
 const DECK_COLLECTION = 'decks'
 
@@ -16,8 +15,8 @@ export class DeckRepository implements OnModuleInit {
 
   private colDecks: Collection
 
-  constructor(private factoryRepo: FactoryRepository
-        , private configSvc: ConfigService) {
+  constructor(private readonly factoryRepo: FactoryRepository
+        , private readonly configSvc: ConfigService) {
     this.colDecks = this.factoryRepo.collection(DECK_COLLECTION)
   }
 
@@ -26,7 +25,6 @@ export class DeckRepository implements OnModuleInit {
     return this.colDecks.insertMany(decks)
   }
 
-  //getMetadata(): Promise<Metadata[]> {
   getMetadata(): Promise<Document[]>  {
     return this.colDecks.find()
         .project({ _id: 0, metadata: 1 })

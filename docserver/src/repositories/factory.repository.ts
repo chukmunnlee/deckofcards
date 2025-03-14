@@ -8,7 +8,7 @@ export class FactoryRepository {
 
   private cilent!: MongoClient
 
-  constructor(private configSvc: ConfigService) { }
+  constructor(private readonly configSvc: ConfigService) { }
 
   async ensureSetup() {
 
