@@ -36,18 +36,28 @@ export class DeckRepository implements OnModuleInit {
     return this.colDecks.findOne({ 'metadata.id': deckId })
   }
 
+  dropDecksCollection() {
+    return this.colDecks.drop()
+  }
+
   async onModuleInit() {
 
     if (!this.configSvc.decksDir) {
       this.configSvc.ready = (new Date()).getTime()
       return
     }
+
+    if (this.configSvc.drop) {
+      console.info('Dropping decks collection')
+      await this.dropDecksCollection()
+    }
     
     const decks: Deck[] = loadDecks(this.configSvc.decksDir)
 
     try {
-      await this.insertDecks(decks)
-      await this.colDecks.createIndex({'metadata.id': 1 })
+      const result = await this.insertDecks(decks)
+      console.info(`Added ${Object.keys(result.insertedIds).length} decks`)
+      await this.colDecks.createIndex({ 'metadata.id': 1 })
       this.configSvc.ready = (new Date()).getTime()
     } catch (err: any) {
       console.error('Cannot save decks\n', err)

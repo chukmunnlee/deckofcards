@@ -18,14 +18,6 @@ export class FactoryRepository {
     console.info('Creating MongoDB client')
 
     this.cilent = new MongoClient(this.configSvc.mongodbUri)
-
-    if (this.configSvc.drop) 
-      try {
-        console.info(`Dropping database ${this.configSvc.database}`)
-        await this.cilent.db(this.configSvc.database).dropDatabase()
-      } catch (e) {
-        console.error(`Failed to drop database\n`, e)
-      }
   }
 
   collection(colName: string): Collection {

@@ -18,6 +18,7 @@ export interface DeckSpec {
 export interface DeckPresets {
   count?: number
   split?: number
+  atomic: boolean
   shuffle?: boolean
   replacement?: boolean
   [ feature: string ]: any

@@ -4,11 +4,14 @@ import {Card, Deck, DeckPresets} from "src/models/deck";
 import {Game, Pile} from "src/models/game";
 import {Metadata} from "src/models/resource";
 import {DeckRepository} from "src/repositories/deck.repository";
+import {shuffleDeck} from "src/utils";
+import {GameRepository} from "src/repositories/game.repository";
 
 @Injectable()
 export class DeckService {
 
-  constructor(private readonly deckRepo: DeckRepository) { }
+  constructor(private readonly deckRepo: DeckRepository
+      , private readonly gameRepo: GameRepository) { }
 
   getDeckMetadata(): Promise<Metadata[]> {
     return this.deckRepo.getMetadata()
@@ -46,38 +49,20 @@ export class DeckService {
 
     const newGame = this.createPlayingDeck(game, deck.spec.cards)
 
+    await this.gameRepo.insertGame(game)
+
     return newGame
   }
 
   private createPlayingDeck(game: Game, cards: Card[]) {
 
-    let _cards: Card[] = []
     const _game: Game = { ...game }
 
-    // Create the number of decks
-    // @ts-ignore
-    for (let i = 0; i < game.presets?.count; i++)
-      _cards = [ ..._cards, ...cards ]
+    if (_game.presets.atomic) 
+      this.createAtomicGameDeck(_game, cards)
 
-    if (game.presets?.shuffle) 
-      for (let i = 0; i < _cards.length; i++) {
-        const j = Math.floor(Math.random() * (i + 1)); 
-        [_cards[i], _cards[j]] = [_cards[j], _cards[i]];
-      }
-
-    // @ts-ignore
-    const pileCount = _cards.length / game.presets.split | 0
-    //
-    // @ts-ignore
-    for (let i = 0; i < game.presets.split; i++) {
-      const name = `pile_${i}`
-      const startIdx = pileCount * i
-      const endIdx = startIdx + pileCount
-      _game.piles[name] = {
-        name,
-        cards: _cards.slice(startIdx, endIdx)
-      } as Pile
-    }
+    else 
+      this.createGameDeck(_game, cards)
 
     _game.createdOn = (new Date()).getTime()
     _game.lastUpdate = _game.createdOn
@@ -85,4 +70,42 @@ export class DeckService {
     return _game
   }
 
+  private createGameDeck(game: Game, cards: Card[]) {
+    let _cards: Card[] = []
+    // Create the number of decks
+    // @ts-ignore
+    for (let i = 0; i < game.presets?.count; i++)
+      _cards = [ ..._cards, ...cards ]
+
+    if (game.presets?.shuffle) 
+      shuffleDeck(_cards)
+
+    // @ts-ignore
+    let pileCount = _cards.length / game.presets.split | 0
+    
+    // @ts-ignore
+    for (let i = 0; i < game.presets.split; i++) {
+      const name = `pile_${i}`
+      const startIdx = pileCount * i
+      const endIdx = startIdx + pileCount
+      game.piles[name] = {
+        name,
+        cards: _cards.slice(startIdx, endIdx)
+      } as Pile
+    }
+
+    return game
+  }
+
+  private createAtomicGameDeck(game: Game, cards: Card[]) {
+    // @ts-ignore
+    for (let i = 0; i < game.presets.count; i++) {
+      const name = `pile_${i}`
+      const _cards = [ ...cards ]
+      if (game.presets.shuffle)
+        shuffleDeck(_cards)
+      game.piles[name] = { name, cards: _cards }
+    }
+    return game
+  }
 }

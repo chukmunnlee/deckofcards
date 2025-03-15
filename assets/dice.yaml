@@ -4,10 +4,12 @@ metadata:
   id: 01HH6GM4RENAWPD5K02SP60MJ0
   name: Dice6Side
   description: Six sided dice
+  image: https://acme.sgp1.digitaloceanspaces.com/dice/dice_logo.png
 spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/dice/back.png
   presets:
     replacement: true
+    atomic: true
   cards:
   - code: D01
     image: https://acme.sgp1.digitaloceanspaces.com/dice/dice1.png

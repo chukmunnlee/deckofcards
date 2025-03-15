@@ -4,6 +4,7 @@ metadata:
   id: 01HH94962764SYCF3A8ATDKMTY
   name: Mahjong
   description: Mahjong with Hong Kong tiles
+  image: https://acme.sgp1.digitaloceanspaces.com/mahjong/mahjong_logo.png
 spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/mahjong/back.png
   presets:

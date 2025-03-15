@@ -4,6 +4,7 @@ metadata:
   id: 01ha1dcg8t3khf1h8bemsc5jk3
   name: Uno
   description: Uno cards
+  image: https://acme.sgp1.digitaloceanspaces.com/uno/uno_logo.png
 spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/uno/back.png
   cards:
