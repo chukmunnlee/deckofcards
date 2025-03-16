@@ -38,13 +38,15 @@ export class DeckService {
     if (!deck)
       return null
 
+    const currTime = Date.now()
+
     const game: Game = {
       gameId: uuidv4().substring(0, 8),
       deckId: deck.metadata.id,
       presets: { ...deck.spec.presets, ...payload },
       piles: {},
-      createdOn: 0,
-      lastUpdate: 0
+      createdOn: currTime, 
+      lastUpdate: currTime,
     }
 
     const newGame = this.createPlayingDeck(game, deck.spec.cards)
@@ -64,8 +66,7 @@ export class DeckService {
     else 
       this.createGameDeck(_game, cards)
 
-    _game.createdOn = (new Date()).getTime()
-    _game.lastUpdate = _game.createdOn
+    _game.piles['discard'] = { name: 'discard', cards: [] }
 
     return _game
   }

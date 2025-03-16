@@ -22,5 +22,16 @@ export class GameRepository {
   insertGame(game: Game): Promise<any> {
     return this.colGames.insertOne(game)
   }
+
+  getGameById(gameId: string) {
+    return this.colGames.findOne({ gameId })
+  }
+
+  getGameIds(): Promise<any[]> {
+    return this.colGames.find()
+        .project({ gameId: 1, createOn: 1, lastUpdate: 1, _id: 0 })
+        .sort({ lastUpdate: -1 })
+        .toArray()
+  }
   
 }
