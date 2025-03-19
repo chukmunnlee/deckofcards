@@ -6,12 +6,17 @@ import {Metadata} from "src/models/resource";
 import {DeckRepository} from "src/repositories/deck.repository";
 import {shuffleDeck} from "src/utils";
 import {GameRepository} from "src/repositories/game.repository";
+import {ConfigService} from "./config.service";
 
 @Injectable()
 export class DeckService {
 
+  readonly inactiveDuration: number
+
   constructor(private readonly deckRepo: DeckRepository
-      , private readonly gameRepo: GameRepository) { }
+      , private readonly gameRepo: GameRepository, private configSvc: ConfigService) { 
+    this.inactiveDuration = this.configSvc.inactive
+  }
 
   getDeckMetadata(): Promise<Metadata[]> {
     return this.deckRepo.getMetadata()
@@ -32,6 +37,8 @@ export class DeckService {
   }
 
   async createGameFromId(deckId: string, payload: DeckPresets) {
+
+    this.gameRepo.cleanInativeGame(this.inactiveDuration)
 
     const deck: Deck = await this.deckRepo.getDeckById(deckId) as Deck;
 

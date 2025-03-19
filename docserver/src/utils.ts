@@ -40,3 +40,18 @@ export const shuffleDeck = (cards: Card[]) => {
     [cards[i], cards[j]] = [cards[j], cards[i]];
   }
 }
+
+export const drawFromTop = (cards: Card[], count = 1) => {
+  return {
+    drawn: cards.slice(0, count),
+    remainder: cards.slice(count)
+  }
+}
+
+export const drawFromBotton = (cards: Card[], count = 1) => {
+  const start = Math.min(0, (cards.length - count))
+  return {
+    drawn: cards.slice(start),
+    remainder: cards.slice(0, start)
+  }
+}

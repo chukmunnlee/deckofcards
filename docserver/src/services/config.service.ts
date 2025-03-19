@@ -3,20 +3,23 @@ import {Injectable} from "@nestjs/common";
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
-const USAGE = `Usage: $0 --cors --port [number] --games [number] 
+const USAGE = `Usage: $0 --cors --port [number] 
+    --games [number]  --inactivity [minutes]
     --decksDir [directory] --staticDir [directory] 
     --prefix [resource prefix]
-    --drop --database [database name]  --mongodbUri [string]`
+    --drop --database [database name] --mongodbUri [string]`
 
 const DEFAULT_PORT = '3000'
 const DEFAULT_MONGODB_URI = 'mongodb://localhost:27017'
 const DEFAULT_DATABASE = 'deckofcards'
 const DEFAULT_PREFIX = '/api'
+const DEFAULT_INACTIVE = '30'
 
 @Injectable()
 export class ConfigService {
 
   private argv!: any
+  private _inactive!: number
 
   get cors() { return this.argv.cors }
   get port() { return this.argv.port }
@@ -25,6 +28,7 @@ export class ConfigService {
   get prefix() { return this.argv.prefix }
   get database() { return this.argv.database }
   get mongodbUri() { return this.argv.mongodbUri }
+  get inactive() { return this._inactive }
 
   set ready(r: number) { this.argv.ready = r }
   get ready(): number { return this.argv.ready }
@@ -47,8 +51,10 @@ export class ConfigService {
         .default('decksDir', process.env.DECKS_DIR || '')
         .default('database', process.env.DATABASE || DEFAULT_DATABASE)
         .default('prefix', process.env.PREFIX || DEFAULT_PREFIX)
+        .default('inactive', parseInt(process.env.INACTIVE || DEFAULT_INACTIVE))
         .parse()
     this.argv.ready = 0
+    this._inactive = this.argv.inactive * 60 * 1000
   }
 
 }

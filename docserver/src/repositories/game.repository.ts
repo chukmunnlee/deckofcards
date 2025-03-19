@@ -19,6 +19,13 @@ export class GameRepository {
       })
   }
 
+  cleanInativeGame(duration: number) {
+    const past = Date.now() - duration
+    this.colGames.deleteMany({
+      lastUpdate: { $lte: past }
+    })
+  }
+
   insertGame(game: Game): Promise<any> {
     return this.colGames.insertOne(game)
   }
