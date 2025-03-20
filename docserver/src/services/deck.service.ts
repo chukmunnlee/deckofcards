@@ -73,7 +73,7 @@ export class DeckService {
     else 
       this.createGameDeck(_game, cards)
 
-    _game.piles['discard'] = { name: 'discard', cards: [] }
+    _game.piles['drawn'] = { name: 'drawn', cards: [] }
 
     return _game
   }

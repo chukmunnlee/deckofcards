@@ -5,7 +5,7 @@ import {GameRepository} from "src/repositories/game.repository";
 
 const DRAW_FROM_DECK_PATCH_DEFAULTS: PatchGame = {
   fromPile: 'pile_0', drawFrom: 'top', 
-  toPile: 'discard', dropTo: 'top',
+  toPile: 'drawn', dropTo: 'top',
   count: 1,
 }
 
