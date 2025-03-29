@@ -55,3 +55,30 @@ export const drawFromBotton = (cards: Card[], count = 1) => {
     remainder: cards.slice(0, start)
   }
 }
+
+export const drawRandomly = (cards: Card[], count = 1) => {
+  const drawn: Card[] = []
+  let remainder = { ...cards }
+  for (let i = 0; i < count; i++) {
+    const idx = Math.floor(Math.random() * remainder.length)
+    drawn.push(remainder[idx])
+    remainder = remainder.splice(idx, 1)
+  }
+
+  return { drawn, remainder }
+}
+
+export const dropToTop = (cards: Card[], toAdd: Card[]) => {
+  return [ ...toAdd, ...cards ]
+}
+export const dropToBottom = (cards: Card[], toAdd: Card[]) => {
+  return [ ...cards, ...toAdd ]
+}
+export const dropRandomly = (cards: Card[], toAdd: Card[]) => {
+  const _cards = [ ...cards ]
+  for (let c of toAdd) {
+    const idx = Math.floor(Math.random() * _cards.length)
+    _cards.splice(idx, 0, c)
+  }
+  return _cards
+}

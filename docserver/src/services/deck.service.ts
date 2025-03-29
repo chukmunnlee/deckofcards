@@ -80,6 +80,11 @@ export class DeckService {
 
   private createGameDeck(game: Game, cards: Card[]) {
     let _cards: Card[] = []
+    // Create full deck 
+    for (let c of cards) 
+      for (let i = 0; i < (c.count ?? 1); i++)
+        _cards = [ ..._cards, c ]
+      //
     // Create the number of decks
     // @ts-ignore
     for (let i = 0; i < game.presets?.count; i++)

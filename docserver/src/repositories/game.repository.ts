@@ -34,6 +34,10 @@ export class GameRepository {
     return this.colGames.findOne({ gameId })
   }
 
+  deleteGameById(gameId: string) {
+    return this.colGames.deleteOne({ gameId })
+  }
+
   getGameIds(): Promise<any[]> {
     return this.colGames.find()
         .project({ gameId: 1, createOn: 1, lastUpdate: 1, _id: 0 })

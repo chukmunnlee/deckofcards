@@ -1,11 +1,12 @@
-import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch} from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch} from "@nestjs/common";
+import {Card} from "src/models/deck";
 import {PatchGame} from "src/models/messages";
 import {GameService} from "src/services/game.service";
 
 // drawFromDeck, dropToDeck, moveFromDeck
 const DRAW_FROM_DECK = 'drawFromDeck'
 const DROP_TO_DECK = 'dropToDeck'
-const MOVE_FROM_DECK = "moveFromDeck'
+const MOVE_FROM_DECK = 'moveFromDeck'
 
 @Controller()
 export class GameController {
@@ -24,10 +25,13 @@ export class GameController {
   }
 
   @Patch('/game/:gameId')
-  patchGameById(@Param('gameId') gameId: string, @Body() payload: PatchGame) {
+  async patchGameById(@Param('gameId') gameId: string, @Body() payload: PatchGame) {
+
+    let drawn: Card[] = []
 
     switch (payload.action) {
       case DRAW_FROM_DECK:
+        drawn = await this.gameSvc.drawFromDeck(gameId, payload)
         break
 
       case DROP_TO_DECK:
@@ -41,6 +45,13 @@ export class GameController {
             , HttpStatus.BAD_REQUEST)
     }
 
-    return { gameId }
+    return { gameId, cards: drawn }
+  }
+
+  @Delete('/game/:gameId')
+  @HttpCode(HttpStatus.OK)
+  async deleteGameById(@Param('gameId') gameId: string) {
+    return this.gameSvc.deleteGameById(gameId)
+        .then(() => ({}))
   }
 }
