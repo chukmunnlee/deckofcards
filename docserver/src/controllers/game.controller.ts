@@ -1,12 +1,12 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch} from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Query} from "@nestjs/common";
 import {Card} from "src/models/deck";
 import {PatchGame} from "src/models/messages";
 import {GameService} from "src/services/game.service";
 
 // drawFromDeck, dropToDeck, moveFromDeck
-const DRAW_FROM_DECK = 'drawFromDeck'
-const DROP_TO_DECK = 'dropToDeck'
-const MOVE_FROM_DECK = 'moveFromDeck'
+const DRAW_FROM_DECK = 'draw'
+const DROP_TO_DECK = 'drop'
+const MOVE_FROM_DECK = 'move'
 
 @Controller()
 export class GameController {
@@ -22,6 +22,17 @@ export class GameController {
   getGameStatusById(@Param('gameId') gameId: string) {
     return this.gameSvc.getStatusById(gameId)
         .catch(err => new HttpException(err, HttpStatus.NOT_FOUND))
+  }
+
+  @Get('/game/:gameId/pile')
+  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1) {
+    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count)
+  }
+
+  @Get('/game/:gameId/pile/:pileName')
+  getGamePileByName(@Param('gameId') gameId: string, @Param('pileName') pileName: string,
+      @Query('count') count = 1) {
+    return this.gameSvc.getGameByIdPile(gameId, pileName, count)
   }
 
   @Patch('/game/:gameId')

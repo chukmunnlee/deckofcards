@@ -38,6 +38,12 @@ export class GameRepository {
     return this.colGames.deleteOne({ gameId })
   }
 
+  updateGameById(game: Game, lastUpdate: number) {
+    game.lastUpdate = Date.now()
+    return this.colGames.replaceOne({ lastUpdate }, game)
+      .then(result => ((result.matchedCount > 0) && (result.modifiedCount > 0)))
+  }
+
   getGameIds(): Promise<any[]> {
     return this.colGames.find()
         .project({ gameId: 1, createOn: 1, lastUpdate: 1, _id: 0 })

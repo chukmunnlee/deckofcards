@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotAcceptableException, NotFoundException} from "@nestjs/common";
+import {BadRequestException, Injectable, NotAcceptableException, NotFoundException, PreconditionFailedException} from "@nestjs/common";
 import {Card} from "src/models/deck";
 import {Game, Pile} from "src/models/game";
 import {PatchGame} from "src/models/messages";
@@ -25,11 +25,25 @@ export class GameService {
     return this.gameRepo.deleteGameById(gameId)
   }
 
+  async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1) {
+    // @ts-ignore
+    const game: Game = await this.gameRepo.getGameById(gameId) 
+    if (!game)
+      throw new NotFoundException(`Cannot find game ${gameId}`)
+
+    if (!game.piles[pileName])
+      return []
+
+    return game.piles[pileName].cards.slice(0, count)
+  }
+
   async drawFromDeck(gameId: string, patch: PatchGame) {
     // @ts-ignore
     const game: Game = await this.gameRepo.getGameById(gameId) 
     if (!game)
       throw new NotFoundException(`Cannot find game ${gameId}`)
+
+    const lastUpdate = game.lastUpdate
 
     const _patch: PatchGame = {
       ...DRAW_FROM_DECK_PATCH_DEFAULTS,
@@ -49,11 +63,11 @@ export class GameService {
     switch (_patch.drawFrom) {
 
       case 'bottom':
-        ({ drawn, remainder } = drawFromBotton(fromPile, _patch.count))
+        ({ drawn, remainder } = drawFromBotton(fromPile.cards, _patch.count))
         break
 
       case 'random':
-        ({ drawn, remainder } = drawRandomly(fromPile, _patch.count))
+        ({ drawn, remainder } = drawRandomly(fromPile.cards, _patch.count))
         break
 
       case 'select':
@@ -61,13 +75,13 @@ export class GameService {
 
       case 'top':
       default:
-        ({ drawn, remainder } = drawFromTop(fromPile, _patch.count))
+        ({ drawn, remainder } = drawFromTop(fromPile.cards, _patch.count))
         break
     }
 
     // Update fromPile
     // @ts-ignore
-    game.piles[_patch.fromPile] = remainder
+    game.piles[_patch.fromPile].cards = remainder
     game.piles['drawn'].cards.push(...drawn)
 
     if (!!_patch.toPile) {
@@ -94,6 +108,10 @@ export class GameService {
 
       game.piles[_patch.toPile] = toPile
     }
+
+    const updated = await this.gameRepo.updateGameById(game, lastUpdate)
+    if (!updated)
+      throw new PreconditionFailedException(`GameId ${game.gameId} has been modified during the ${_patch.action}`)
 
     return drawn
   }

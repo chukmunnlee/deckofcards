@@ -1,7 +1,7 @@
 import {Card} from "./deck"
 
 export interface PatchGame {
-  // drawFromDeck, dropToDeck, moveFromDeck
+  // draw, drop, move
   action: string 
   count?: number
   fromPile?: string
