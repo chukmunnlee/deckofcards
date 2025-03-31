@@ -1,10 +1,10 @@
 import {Injectable} from "@nestjs/common";
 import { v4 as uuidv4 } from 'uuid'
-import {Card, Deck, DeckPresets} from "src/models/deck";
-import {Game, Pile} from "src/models/game";
+import { Deck, DeckPresets} from "src/models/deck";
+import { Game } from "src/models/game";
 import {Metadata} from "src/models/resource";
 import {DeckRepository} from "src/repositories/deck.repository";
-import {shuffleDeck} from "src/utils";
+import { createPlayingDeck} from "src/utils";
 import {GameRepository} from "src/repositories/game.repository";
 import {ConfigService} from "./config.service";
 
@@ -56,13 +56,14 @@ export class DeckService {
       lastUpdate: currTime,
     }
 
-    const newGame = this.createPlayingDeck(game, deck.spec.cards)
+    const newGame = createPlayingDeck(game, deck.spec.cards)
 
-    await this.gameRepo.insertGame(game)
+    await this.gameRepo.insertGame(newGame)
 
     return newGame
   }
 
+  /*
   private createPlayingDeck(game: Game, cards: Card[]) {
 
     const _game: Game = { ...game }
@@ -121,4 +122,5 @@ export class DeckService {
     }
     return game
   }
+  */
 }

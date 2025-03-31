@@ -40,7 +40,12 @@ export class GameRepository {
 
   updateGameById(game: Game, lastUpdate: number) {
     game.lastUpdate = Date.now()
-    return this.colGames.replaceOne({ lastUpdate }, game)
+    return this.colGames.replaceOne({ gameId: game.gameId, lastUpdate }, game)
+      .then(result => ((result.matchedCount > 0) && (result.modifiedCount > 0)))
+  }
+
+  replaceGameById(game: Game) {
+    return this.colGames.replaceOne({ gameId: game.gameId }, game)
       .then(result => ((result.matchedCount > 0) && (result.modifiedCount > 0)))
   }
 

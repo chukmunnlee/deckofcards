@@ -1,9 +1,10 @@
 import {BadRequestException, Injectable, NotAcceptableException, NotFoundException, PreconditionFailedException} from "@nestjs/common";
-import {Card} from "src/models/deck";
+import {Card, Deck} from "src/models/deck";
 import {Game, Pile} from "src/models/game";
 import {PatchGame} from "src/models/messages";
+import {DeckRepository} from "src/repositories/deck.repository";
 import {GameRepository} from "src/repositories/game.repository";
-import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, dropToTop} from "src/utils";
+import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, dropToTop, createPlayingDeck} from "src/utils";
 
 
 const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PatchGame> = {
@@ -15,7 +16,7 @@ const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PatchGame> = {
 @Injectable()
 export class GameService {
 
-  constructor(private gameRepo: GameRepository) { }
+  constructor(private gameRepo: GameRepository, private deckRepo: DeckRepository) { }
 
   getRunningGames() {
     return this.gameRepo.getGameIds()
@@ -23,6 +24,35 @@ export class GameService {
 
   deleteGameById(gameId: string) {
     return this.gameRepo.deleteGameById(gameId)
+  }
+
+  async restartGameById(gameId: string) {
+
+    // @ts-ignore
+    const game: Game = await this.gameRepo.getGameById(gameId)
+    if (!game)
+      return null
+
+    const presets = game.presets
+    const deckId = game.deckId
+    const currTime = Date.now()
+
+    // @ts-ignore
+    const deck: Deck = await this.deckRepo.getDeckById(deckId)
+
+    const _game = {
+      gameId, deckId, presets,
+      piles: {},
+      createdOn: currTime, 
+      lastUpdate: currTime,
+    }
+
+    const newGame = createPlayingDeck(_game, deck.spec.cards)
+
+    await this.gameRepo.replaceGameById(newGame)
+
+    return newGame
+
   }
 
   async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1) {

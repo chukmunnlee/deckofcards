@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Query} from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Query} from "@nestjs/common";
 import {Card} from "src/models/deck";
 import {PatchGame} from "src/models/messages";
 import {GameService} from "src/services/game.service";
@@ -33,6 +33,17 @@ export class GameController {
   getGamePileByName(@Param('gameId') gameId: string, @Param('pileName') pileName: string,
       @Query('count') count = 1) {
     return this.gameSvc.getGameByIdPile(gameId, pileName, count)
+  }
+
+  @Post('/game/:gameId')
+  postGameById(@Param('gameId') gameId: string) {
+    return this.gameSvc.restartGameById(gameId)
+      .then(game => {
+        if (!game)
+          throw new HttpException(`Cannot restart game from ${gameId}. Not found`
+              , HttpStatus.NOT_FOUND)
+        return { gameId: game.gameId }
+      })
   }
 
   @Patch('/game/:gameId')
