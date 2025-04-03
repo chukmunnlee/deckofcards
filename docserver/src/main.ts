@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 
 import * as express from 'express'
 import {ConfigService} from './services/config.service';
+import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
 
 async function bootstrap() {
 
@@ -16,6 +17,8 @@ async function bootstrap() {
 
   if (configSvc.cors)
     nestApp.enableCors()
+
+  nestApp.useLogger(nestApp.get(WINSTON_MODULE_NEST_PROVIDER))
 
   nestApp.disable('x-powered-by')
   nestApp.setGlobalPrefix(configSvc.prefix, {
