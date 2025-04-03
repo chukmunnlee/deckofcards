@@ -3,6 +3,8 @@ import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express
 import { AppModule } from './app.module';
 
 import * as express from 'express'
+import { join } from 'path'
+
 import {ConfigService} from './services/config.service';
 import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
 
@@ -23,8 +25,12 @@ async function bootstrap() {
 
   nestApp.disable('x-powered-by')
   nestApp.setGlobalPrefix(configSvc.prefix, {
-    exclude: [ '/app/*path' ]
+    exclude: [ '/app/*path', '/swagger{/*path}' ]
   })
+
+  nestApp.useStaticAssets(configSvc.swaggerUI)
+  nestApp.setBaseViewsDir(join(__dirname, '..', 'views'))
+  nestApp.setViewEngine('hbs')
 
   loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
 

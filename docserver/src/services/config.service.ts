@@ -2,6 +2,7 @@ import {Injectable} from "@nestjs/common";
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
+import * as swagger from 'swagger-ui-dist'
 
 const USAGE = `Usage: $0 --cors --port [number] 
     --games [number]  --inactivity [minutes]
@@ -29,6 +30,7 @@ export class ConfigService {
   get database() { return this.argv.database }
   get mongodbUri() { return this.argv.mongodbUri }
   get inactive() { return this._inactive }
+  get swaggerUI() { return this._swaggerPath }
 
   set ready(r: number) { this.argv.ready = r }
   get ready(): number { return this.argv.ready }
@@ -41,6 +43,8 @@ export class ConfigService {
       ready: this.argv.ready
     }
   }
+
+  private readonly _swaggerPath: string
 
   constructor() {
     this.argv = yargs(hideBin(process.argv))
@@ -55,6 +59,7 @@ export class ConfigService {
         .parse()
     this.argv.ready = 0
     this._inactive = this.argv.inactive * 60 * 1000
+    this._swaggerPath = swagger.getAbsoluteFSPath()
   }
 
 }

@@ -17,6 +17,8 @@ import {GameService} from './services/game.service';
 import {GameRepository} from './repositories/game.repository';
 import {RequestLogger} from './middlewares/request-logger.middleware';
 
+import { SwaggerController } from './controllers/swagger.controller';
+
 const APP_NAME = 'deckofcards'
 
 @Module({
@@ -36,7 +38,7 @@ const APP_NAME = 'deckofcards'
         })
       ]
     }) ],
-  controllers: [ AppController, DeckController, GameController ],
+  controllers: [ AppController, DeckController, GameController, SwaggerController ],
   providers: [ ConfigService, FactoryRepository, 
     DeckRepository, DeckService, 
     GameRepository, GameService,
