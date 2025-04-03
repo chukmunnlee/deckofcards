@@ -14,6 +14,7 @@ async function bootstrap() {
       , new ExpressAdapter(app))
 
   const configSvc = nestApp.get(ConfigService)
+  const loggerSvc = nestApp.get(WINSTON_MODULE_NEST_PROVIDER)
 
   if (configSvc.cors)
     nestApp.enableCors()
@@ -25,7 +26,7 @@ async function bootstrap() {
     exclude: [ '/app/*path' ]
   })
 
-  console.info(`Starting application on port ${configSvc.port} at ${new Date()}`)
+  loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
 
   await nestApp.listen(configSvc.port)
 }
