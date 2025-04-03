@@ -50,7 +50,7 @@ export const drawFromTop = (cards: Card[], count = 1) => {
 }
 
 export const drawFromBotton = (cards: Card[], count = 1) => {
-  const start = Math.min(0, (cards.length - count))
+  const start = Math.max(0, (cards.length - count))
   return {
     drawn: cards.slice(start),
     remainder: cards.slice(0, start)
@@ -59,11 +59,11 @@ export const drawFromBotton = (cards: Card[], count = 1) => {
 
 export const drawRandomly = (cards: Card[], count = 1) => {
   const drawn: Card[] = []
-  let remainder = { ...cards }
+  let remainder = [ ...cards ]
   for (let i = 0; i < count; i++) {
     const idx = Math.floor(Math.random() * remainder.length)
     drawn.push(remainder[idx])
-    remainder = remainder.splice(idx, 1)
+    remainder.splice(idx, 1)
   }
 
   return { drawn, remainder }
