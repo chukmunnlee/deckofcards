@@ -5,8 +5,7 @@ import { WinstonModule, utilities } from 'nest-winston'
 import * as winston from 'winston';
 
 import { join } from 'path'
-
-const APP_NAME = 'deckofcards'
+import { APP_NAME } from './constants'
 
 const shared: any[] = [
   WinstonModule.forRoot({

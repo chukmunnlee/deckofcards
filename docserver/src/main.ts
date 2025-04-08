@@ -7,6 +7,7 @@ import { join } from 'path'
 
 import {ConfigService} from './services/config.service';
 import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
+import {TelemetryService} from './services/telemetry.service';
 
 async function bootstrap() {
 
@@ -16,6 +17,7 @@ async function bootstrap() {
       , new ExpressAdapter(app))
 
   const configSvc = nestApp.get(ConfigService)
+  const telemetrySvc = nestApp.get(TelemetryService)
   const loggerSvc = nestApp.get(WINSTON_MODULE_NEST_PROVIDER)
 
   if (configSvc.cors)
@@ -34,6 +36,7 @@ async function bootstrap() {
 
   loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
 
-  await nestApp.listen(configSvc.port)
+  await telemetrySvc.start()
+      .then(() => nestApp.listen(configSvc.port))
 }
 bootstrap();
