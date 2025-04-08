@@ -1,4 +1,4 @@
-import { Inject, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 
 import { WinstonModule, utilities } from 'nest-winston'
 import * as winston from 'winston';
@@ -18,11 +18,13 @@ import {GameRepository} from './repositories/game.repository';
 import {RequestLogger} from './middlewares/request-logger.middleware';
 
 import { SwaggerController } from './controllers/swagger.controller';
+import {SupportModule} from './support.module';
 
 const APP_NAME = 'deckofcards'
 
 @Module({
-  imports: [ 
+  imports: [ SupportModule ],
+    /*
     WinstonModule.forRoot({
       level: 'info',
       format: winston.format.json(),
@@ -37,7 +39,8 @@ const APP_NAME = 'deckofcards'
           )
         })
       ]
-    }) ],
+    }) 
+  ], */
   controllers: [ AppController, DeckController, GameController, SwaggerController ],
   providers: [ ConfigService, FactoryRepository, 
     DeckRepository, DeckService, 

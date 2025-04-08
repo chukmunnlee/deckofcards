@@ -25,7 +25,7 @@ async function bootstrap() {
 
   nestApp.disable('x-powered-by')
   nestApp.setGlobalPrefix(configSvc.prefix, {
-    exclude: [ '/app/*path', '/swagger{/*path}' ]
+    exclude: [ '/app/*path', '/swagger{/*path}', '/openapi{/*path}' ]
   })
 
   nestApp.useStaticAssets(configSvc.swaggerUI)
