@@ -16,6 +16,7 @@ import {RequestLogger} from './middlewares/request-logger.middleware';
 import { SwaggerController } from './controllers/swagger.controller';
 import {SupportModule} from './support.module';
 import {TelemetryService} from './services/telemetry.service';
+import {TelemetryInterceptor} from './middlewares/telemetry.interceptor';
 
 @Module({
   imports: [ SupportModule ],
@@ -23,7 +24,8 @@ import {TelemetryService} from './services/telemetry.service';
   providers: [ ConfigService, FactoryRepository, 
     DeckRepository, DeckService, 
     GameRepository, GameService,
-    RequestLogger, TelemetryService
+    RequestLogger, 
+    TelemetryService, TelemetryInterceptor
   ],
 })
 export class AppModule implements NestModule {

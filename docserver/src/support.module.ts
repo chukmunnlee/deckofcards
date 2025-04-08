@@ -31,6 +31,6 @@ const shared: any[] = [
 
 @Module({
   imports: shared,
-  exports: shared
+  exports: shared,
 })
 export class SupportModule { }
