@@ -4,6 +4,134 @@ info:
   summary: Play card games virtually
   version: "0.1-alpha"
 
+tags:
+- name: Decks
+  description: Card deck operations
+- name: Games
+  description: Games in progress operations
+
 servers:
-- url: http://localhost:3000
+- url: http://localhost:{port}/{prefix}
   description: Development server
+  variables:
+    port:
+      default: '3000'
+    prefix:
+      default: 'api'
+
+paths:
+  /decks:
+    get:
+      summary: List of decks on the server
+      operationId: getDecks
+      tags:
+      - Decks
+      responses:
+        200:
+          description: List of decks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: ulid
+                    name: 
+                      type: string
+                    description:
+                      type: string
+                    image:
+                      type: string
+                      format: uri
+                  required: [ id, name, description, image ]
+  /deck/{deckId}/presets:
+    get:
+      summary: Get preset configuration for a deck
+      operationId: getDeckPresetsByDeckId
+      tags:
+      - Decks
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      responses:
+        200:
+          description: Deck preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckPresets'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+  /deck/{deckId}:
+    post:
+      summary: Create a game given by the deck id
+      operationId: createGameByDeckId
+      tags:
+      - Decks
+      - Games
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckPresets'
+      responses:
+        201:
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gameId:
+                    type: string
+                required: [ gameId ]
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+components:
+  schemas:
+    DeckPresets:
+      type: object
+      properties:
+        count:
+          type: integer
+        split:
+          type: integer
+        shuffle:
+          type: boolean
+        atomic:
+          type: boolean
+        replacement:
+          type: boolean
+
+    NotFound:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+

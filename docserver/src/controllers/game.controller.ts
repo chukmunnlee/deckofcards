@@ -1,4 +1,5 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Query} from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Query, UseInterceptors} from "@nestjs/common";
+import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {Card} from "src/models/deck";
 import {PatchGame} from "src/models/messages";
 import {GameService} from "src/services/game.service";
@@ -9,6 +10,7 @@ const DROP_TO_DECK = 'drop'
 const MOVE_FROM_DECK = 'move'
 
 @Controller()
+@UseInterceptors(TelemetryInterceptor)
 export class GameController {
 
   constructor(private gameSvc: GameService) { }

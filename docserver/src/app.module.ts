@@ -13,14 +13,13 @@ import {GameService} from './services/game.service';
 import {GameRepository} from './repositories/game.repository';
 import {RequestLogger} from './middlewares/request-logger.middleware';
 
-import { SwaggerController } from './controllers/swagger.controller';
 import {SupportModule} from './support.module';
 import {TelemetryService} from './services/telemetry.service';
 import {TelemetryInterceptor} from './middlewares/telemetry.interceptor';
 
 @Module({
   imports: [ SupportModule ],
-  controllers: [ AppController, DeckController, GameController, SwaggerController ],
+  controllers: [ AppController, DeckController, GameController ],
   providers: [ ConfigService, FactoryRepository, 
     DeckRepository, DeckService, 
     GameRepository, GameService,
