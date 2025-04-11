@@ -47,6 +47,7 @@ paths:
                       type: string
                       format: uri
                   required: [ id, name, description, image ]
+
   /deck/{deckId}/presets:
     get:
       summary: Get preset configuration for a deck
@@ -74,7 +75,127 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFound'
 
+  /deck/{deckId}/back:
+    get:
+      summary: Get the deck's back image
+      operationId: getDeckBackImage
+      tags:
+      - Decks
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      responses:
+        200:
+          description: Deck image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  backImage:
+                    type: string
+                    format: uri
+                required: [ backImage ]
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+  /deck/{deckId}/codes:
+    get:
+      summary: Get the deck's card codes
+      operationId: getDeckCodesById
+      tags:
+      - Decks
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      responses:
+        200:
+          description: Deck code
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+  /deck/{deckId}/card/{code}:
+    get:
+      summary: Get a card from the deck by code
+      operationId: getDeckCardByCode
+      tags:
+      - Decks
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      responses:
+        200:
+          description: Deck code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
   /deck/{deckId}:
+    get:
+      summary: Get deck details by the deck id
+      operationId: getDeckById
+      tags:
+      - Decks 
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: ulid
+      responses:
+        200:
+          description: Deck see model/deck.ts
+          content:
+            application/json:
+              schema:
+                AnyValue: {}
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
     post:
       summary: Create a game given by the deck id
       operationId: createGameByDeckId
@@ -126,6 +247,26 @@ components:
           type: boolean
         replacement:
           type: boolean
+
+    Card:
+      type: object
+      properties:
+        code:
+          type: string
+        image:
+          type: string
+          format: uri
+        images:
+          type: object
+          schema:
+            AnyValue: {}
+        value: 
+          type: string
+        suit:
+          type: string
+        count:
+          type: integer
+      required: [ code, imge, value, suit, count ]
 
     NotFound:
       type: object

@@ -27,6 +27,23 @@ export class DeckService {
         )
   }
 
+  getCodes(deckId: string): Promise<string[]> {
+    return this.deckRepo.getCode(deckId)
+  }
+
+  getBackImage(deckId: string): Promise<string> {
+    return this.deckRepo.getBackImage(deckId)
+  }
+
+  getDeckCardByCode(deckId: string, code: string) {
+    return this.deckRepo.getDeckCardByCode(deckId, code)
+        .then(result => {
+          if ((null == result) || (result.length <= 0))
+            return null
+          return result[0]
+        })
+  }
+
   getDeckPresetsById(deckId: string) {
     return this.deckRepo.getDeckById(deckId)
         .then(result => {
@@ -34,6 +51,10 @@ export class DeckService {
             return null
           return { ...result.spec.presets } as DeckPresets
         })
+  }
+
+  getDeckById(deckId: string) {
+    return this.deckRepo.getDeckById(deckId)
   }
 
   async createGameFromId(deckId: string, payload: DeckPresets) {
@@ -62,65 +83,4 @@ export class DeckService {
 
     return newGame
   }
-
-  /*
-  private createPlayingDeck(game: Game, cards: Card[]) {
-
-    const _game: Game = { ...game }
-
-    if (_game.presets.atomic) 
-      this.createAtomicGameDeck(_game, cards)
-
-    else 
-      this.createGameDeck(_game, cards)
-
-    _game.piles['drawn'] = { name: 'drawn', cards: [] }
-
-    return _game
-  }
-
-  private createGameDeck(game: Game, cards: Card[]) {
-    let _cards: Card[] = []
-    // Create full deck 
-    for (let c of cards) 
-      for (let i = 0; i < (c.count ?? 1); i++)
-        _cards = [ ..._cards, c ]
-      //
-    // Create the number of decks
-    // @ts-ignore
-    for (let i = 0; i < game.presets?.count; i++)
-      _cards = [ ..._cards, ...cards ]
-
-    if (game.presets?.shuffle) 
-      shuffleDeck(_cards)
-
-    // @ts-ignore
-    let pileCount = _cards.length / game.presets.split | 0
-    
-    // @ts-ignore
-    for (let i = 0; i < game.presets.split; i++) {
-      const name = `pile_${i}`
-      const startIdx = pileCount * i
-      const endIdx = startIdx + pileCount
-      game.piles[name] = {
-        name,
-        cards: _cards.slice(startIdx, endIdx)
-      } as Pile
-    }
-
-    return game
-  }
-
-  private createAtomicGameDeck(game: Game, cards: Card[]) {
-    // @ts-ignore
-    for (let i = 0; i < game.presets.count; i++) {
-      const name = `pile_${i}`
-      const _cards = [ ...cards ]
-      if (game.presets.shuffle)
-        shuffleDeck(_cards)
-      game.piles[name] = { name, cards: _cards }
-    }
-    return game
-  }
-  */
 }

@@ -24,6 +24,46 @@ export class DeckController {
         })
   }
 
+  @Get('/deck/:deckId/codes')
+  getDeckCodes(@Param('deckId') deckId: string) {
+    return this.deckSvc.getCodes(deckId)
+        .then(codes => {
+          if (!codes.length)
+            throw new HttpException(`Deck id ${deckId} not found`, HttpStatus.NOT_FOUND)
+          return codes
+        })
+  }
+
+  @Get('/deck/:deckId/card/:code')
+  getDeckCardByCode(@Param('deckId') deckId: string, @Param('code') code: string) {
+    return this.deckSvc.getDeckCardByCode(deckId, code)
+        .then(result => {
+          if (!result)
+            throw new HttpException(`Deck id ${deckId} or card code ${code} not found`, HttpStatus.NOT_FOUND)
+          return result
+        })
+  }
+
+  @Get('/deck/:deckId/back')
+  getDeckBack(@Param('deckId') deckId: string) {
+    return this.deckSvc.getBackImage(deckId)
+        .then(backImage => {
+          if (!backImage)
+            throw new HttpException(`Deck id ${deckId} not found`, HttpStatus.NOT_FOUND)
+          return { backImage }
+        })
+  }
+
+  @Get('/deck/:deckId')
+  getDeck(@Param('deckId') deckId: string) {
+    return this.deckSvc.getDeckById(deckId)
+        .then(deck => {
+          if (!deck)
+            throw new HttpException(`Deck id ${deckId} not found`, HttpStatus.NOT_FOUND)
+          return deck
+        })
+  }
+
   @Post('/deck/:deckId')
   @HttpCode(HttpStatus.CREATED)
   async postDeck(@Param('deckId') deckId: string, @Body() payload: DeckPresets) {
