@@ -9,7 +9,7 @@ import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, d
 
 const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PatchGame> = {
   fromPile: 'pile_0', drawFrom: 'top', 
-  //toPile: 'drawn', dropTo: 'top',
+  toPile: 'discarded', dropTo: 'top',
   count: 1,
 }
 
@@ -18,8 +18,8 @@ export class GameService {
 
   constructor(private gameRepo: GameRepository, private deckRepo: DeckRepository) { }
 
-  getRunningGames() {
-    return this.gameRepo.getGameIds()
+  getRunningGames(duration: number) {
+    return this.gameRepo.getGameIds(duration)
   }
 
   deleteGameById(gameId: string) {
@@ -52,7 +52,6 @@ export class GameService {
     await this.gameRepo.replaceGameById(newGame)
 
     return newGame
-
   }
 
   async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1) {

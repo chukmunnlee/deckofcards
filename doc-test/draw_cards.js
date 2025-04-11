@@ -29,7 +29,7 @@ const run = async () => {
   resp = await got.patch(`${BASE_URL}/game/${gameId}`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', toPile: PILE_FRED } }).json()
   cards = resp.cards
-  console.info('>> drawn from pile_0 cards: ', cards.map(c => c.code ))
+  console.info('>> drawn from pile_0 cards to pile_fred: ', cards.map(c => c.code ))
 
   cards = await got(`${BASE_URL}/game/${gameId}/pile/drawn`, { searchParams: { count: PEEK_COUNT } }).json()
   console.info('++ drawn cards: ', cards.map(c => c.code ))

@@ -140,6 +140,7 @@ export const createPlayingDeck = (game: Game, cards: Card[]) => {
     createGameDeck(_game, cards)
 
   _game.piles['drawn'] = { name: 'drawn', cards: [] }
+  _game.piles['discarded'] = { name: 'discarded', cards: [] }
 
   return _game
 }

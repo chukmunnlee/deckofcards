@@ -24,14 +24,11 @@ export class AppController {
 
   @Get('/health')
   getHealth() {
-    try {
-      return this.factoryRepo.ping()
-          .then(result => ({
-            db: result.db, ok: result.ok,
-            timestamp: (new Date()).getTime()
-          }))
-    } catch (e) {
-      throw new HttpException(JSON.stringify(e), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+    return this.factoryRepo.ping()
+        .then(result => ({
+          db: result.db, ok: result.ok,
+          timestamp: (new Date()).getTime()
+        }))
+        .catch(e => { throw new HttpException(JSON.stringify(e), HttpStatus.INTERNAL_SERVER_ERROR )} )
   }
 }

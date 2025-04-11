@@ -64,6 +64,11 @@ export class DeckController {
         })
   }
 
+  //@Post('/deck/:deckId/custom')
+  //@HttpCode(HttpStatus.CREATED)
+  //async postDeckCustom(@Param('deckId') deckId: string, @Body() payload: DeckPresets) {
+  //}
+
   @Post('/deck/:deckId')
   @HttpCode(HttpStatus.CREATED)
   async postDeck(@Param('deckId') deckId: string, @Body() payload: DeckPresets) {

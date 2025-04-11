@@ -2,6 +2,7 @@ import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Para
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {Card} from "src/models/deck";
 import {PatchGame} from "src/models/messages";
+import {ConfigService} from "src/services/config.service";
 import {GameService} from "src/services/game.service";
 
 // drawFromDeck, dropToDeck, moveFromDeck
@@ -13,11 +14,11 @@ const MOVE_FROM_DECK = 'move'
 @UseInterceptors(TelemetryInterceptor)
 export class GameController {
 
-  constructor(private gameSvc: GameService) { }
+  constructor(private readonly gameSvc: GameService, private readonly configSvc: ConfigService) { }
 
   @Get('/games')
   getGames() {
-    return this.gameSvc.getRunningGames()
+    return this.gameSvc.getRunningGames(this.configSvc.inactive)
   }
 
   @Get('/game/:gameId/status')

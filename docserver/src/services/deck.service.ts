@@ -11,12 +11,8 @@ import {ConfigService} from "./config.service";
 @Injectable()
 export class DeckService {
 
-  readonly inactiveDuration: number
-
   constructor(private readonly deckRepo: DeckRepository
-      , private readonly gameRepo: GameRepository, private configSvc: ConfigService) { 
-    this.inactiveDuration = this.configSvc.inactive
-  }
+      , private readonly gameRepo: GameRepository, private configSvc: ConfigService) { }
 
   getDeckMetadata(): Promise<Metadata[]> {
     return this.deckRepo.getMetadata()
@@ -59,7 +55,7 @@ export class DeckService {
 
   async createGameFromId(deckId: string, payload: DeckPresets) {
 
-    this.gameRepo.cleanInativeGame(this.inactiveDuration)
+    this.gameRepo.cleanInativeGame(this.configSvc.inactive)
 
     const deck: Deck = await this.deckRepo.getDeckById(deckId) as Deck;
 

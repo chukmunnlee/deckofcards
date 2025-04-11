@@ -49,8 +49,9 @@ export class GameRepository {
       .then(result => ((result.matchedCount > 0) && (result.modifiedCount > 0)))
   }
 
-  getGameIds(): Promise<any[]> {
-    return this.colGames.find()
+  getGameIds(duration: number): Promise<any[]> {
+    const past = Date.now() - duration
+    return this.colGames.find({ lastUpdate: { $gt: past } })
         .project({ gameId: 1, createOn: 1, lastUpdate: 1, _id: 0 })
         .sort({ lastUpdate: -1 })
         .toArray()
