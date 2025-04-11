@@ -27,16 +27,22 @@ async function bootstrap() {
 
   nestApp.disable('x-powered-by')
   nestApp.setGlobalPrefix(configSvc.prefix, {
-    exclude: [ '/app/*path', '/swagger{/*path}', '/openapi{/*path}' ]
+    exclude: [ '/app/*path', '/openapi{/*path}' ]
   })
 
   nestApp.useStaticAssets(configSvc.swaggerUI)
   nestApp.setBaseViewsDir(join(__dirname, '..', 'views'))
   nestApp.setViewEngine('hbs')
 
-  loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
 
-  await telemetrySvc.start()
-      .then(() => nestApp.listen(configSvc.port))
+  await nestApp.listen(configSvc.port)
+      .then(() => {
+        loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
+        if (configSvc.metricsPort > 0) {
+          loggerSvc.log(`Metrics available on port ${configSvc.metricsPort} at ${configSvc.metricsPrefix}`, 'bootstrap')
+          return telemetrySvc.start()
+        }
+      })
+
 }
 bootstrap();
