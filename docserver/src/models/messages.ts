@@ -1,15 +1,26 @@
-import {Card} from "./deck"
-
 export interface PatchGame {
   // draw, drop, move
-  action: string 
-  count?: number
-  fromPile?: string
-  toPile?: string
+  count?: number // default 1
+  fromPile?: string // default pile_0
+  toPile?: string // default discarded
 
   // top, botton, random, select
-  drawFrom?: string
-  dropTo?: string
-  select?: string
-  cards?: Card[]
+  drawFrom?: string // default top
+  dropTo?: string // default top
+  select?: string[]
+}
+
+export interface DeleteCardsFromPile {
+  count?: number // default 1
+  fromPile?: string // default pile_0
+  // top, botton, random, select
+  drawFrom?: string, // default top
+  select?: string[]
+}
+
+export interface PatchCardsToPile {
+  toPile: string // default pile_0
+  // top, botton, random
+  dropTo: string // default top
+  cards: string[] // code
 }

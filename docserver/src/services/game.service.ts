@@ -1,7 +1,7 @@
 import {BadRequestException, Injectable, NotAcceptableException, NotFoundException, PreconditionFailedException} from "@nestjs/common";
 import {Card, Deck} from "src/models/deck";
 import {Game, Pile} from "src/models/game";
-import {PatchGame} from "src/models/messages";
+import {DeleteCardsFromPile, PatchGame} from "src/models/messages";
 import {DeckRepository} from "src/repositories/deck.repository";
 import {GameRepository} from "src/repositories/game.repository";
 import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, dropToTop, createPlayingDeck} from "src/utils";
@@ -11,6 +11,12 @@ const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PatchGame> = {
   fromPile: 'pile_0', drawFrom: 'top', 
   toPile: 'discarded', dropTo: 'top',
   count: 1,
+}
+
+const DEFAULT_DELETE_CARDS_FROM_PILE = {
+  count: 1, 
+  fromPile: 'pile_0', drawFrom: 'top',
+  select: []
 }
 
 @Injectable()
@@ -64,6 +70,58 @@ export class GameService {
       return []
 
     return game.piles[pileName].cards.slice(0, count)
+  }
+
+  async removeFromPile(gameId: string, payload: DeleteCardsFromPile) {
+    // @ts-ignore
+    const game: Game = await this.gameRepo.getGameById(gameId) 
+    if (!game)
+      throw new NotFoundException(`Cannot find game ${gameId}`)
+
+    const _payload: DeleteCardsFromPile = {
+      ...DEFAULT_DELETE_CARDS_FROM_PILE,
+      ...payload
+    }
+
+    // @ts-ignore
+    if (!game.piles[_payload.fromPile])
+      throw new NotFoundException(`Pile ${payload.fromPile} does not exist`)
+
+    // @ts-ignore
+    const fromPile = game.piles[_payload.fromPile]
+    const lastUpdate = game.lastUpdate
+
+    let drawn: Card[] = []
+    let remainder: Card[] = []
+    
+    // top, botton, random, select
+    switch (_payload.drawFrom) {
+
+      case 'bottom':
+        ({ drawn, remainder } = drawFromBotton(fromPile.cards, _payload.count))
+        break
+
+      case 'random':
+        ({ drawn, remainder } = drawRandomly(fromPile.cards, _payload.count))
+        break
+
+      case 'select':
+        throw new NotAcceptableException(`select draw semantics has not been implemented`)
+
+      case 'top':
+      default:
+        ({ drawn, remainder } = drawFromTop(fromPile.cards, _payload.count))
+        break
+    }
+
+    // @ts-ignore
+    game.piles[_payload.fromPile].cards = remainder
+
+    const updated = await this.gameRepo.updateGameById(game, lastUpdate)
+    if (!updated)
+      throw new PreconditionFailedException(`GameId ${game.gameId} has been modified during the draw`)
+
+    return drawn
   }
 
   async drawFromDeck(gameId: string, patch: PatchGame) {
@@ -140,7 +198,7 @@ export class GameService {
 
     const updated = await this.gameRepo.updateGameById(game, lastUpdate)
     if (!updated)
-      throw new PreconditionFailedException(`GameId ${game.gameId} has been modified during the ${_patch.action}`)
+      throw new PreconditionFailedException(`GameId ${game.gameId} has been modified during the draw`)
 
     return drawn
   }

@@ -1,14 +1,15 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Query, UseInterceptors} from "@nestjs/common";
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {Card} from "src/models/deck";
-import {PatchGame} from "src/models/messages";
+import {DeleteCardsFromPile, PatchGame} from "src/models/messages";
 import {ConfigService} from "src/services/config.service";
 import {GameService} from "src/services/game.service";
 
-// drawFromDeck, dropToDeck, moveFromDeck
-const DRAW_FROM_DECK = 'draw'
-const DROP_TO_DECK = 'drop'
-const MOVE_FROM_DECK = 'move'
+const DEFAULT_DELETE_CARDS_FROM_PILE = {
+  count: 1, 
+  fromPile: 'pile_0', drawFrom: 'top',
+  select: []
+}
 
 @Controller()
 @UseInterceptors(TelemetryInterceptor)
@@ -49,28 +50,23 @@ export class GameController {
       })
   }
 
+  //@Patch('/game/:gameId/pile/cards')
   @Patch('/game/:gameId')
   async patchGameById(@Param('gameId') gameId: string, @Body() payload: PatchGame) {
 
-    let drawn: Card[] = []
+    let cards: Card[] = []
+    cards = await this.gameSvc.drawFromDeck(gameId, payload)
 
-    switch (payload.action) {
-      case DRAW_FROM_DECK:
-        drawn = await this.gameSvc.drawFromDeck(gameId, payload)
-        break
+    return { gameId, cards }
+  }
 
-      case DROP_TO_DECK:
-        break
+  //@Delete('/game/:gameId/pile/cards')
+  @Delete('/game/:gameId/cards')
+  async deleteCards(@Param('gameId') gameId: string, @Body() payload: DeleteCardsFromPile) {
+    let cards: Card[] = []
+    cards = await this.gameSvc.removeFromPile(gameId, payload)
 
-      case MOVE_FROM_DECK:
-        break
-
-      default:
-        throw new HttpException(`Illegal patch action: ${payload.action}`
-            , HttpStatus.BAD_REQUEST)
-    }
-
-    return { gameId, cards: drawn }
+    return { gameId, cards }
   }
 
   @Delete('/game/:gameId')
