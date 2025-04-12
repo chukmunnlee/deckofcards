@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Query, UseInterceptors} from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, UseInterceptors} from "@nestjs/common";
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {Card} from "src/models/deck";
-import {DeleteCardsFromPile, PatchGame} from "src/models/messages";
+import {DeleteCardsFromPile, PatchCardsToPile, PutGame} from "src/models/messages";
 import {ConfigService} from "src/services/config.service";
 import {GameService} from "src/services/game.service";
 
@@ -50,9 +50,8 @@ export class GameController {
       })
   }
 
-  //@Patch('/game/:gameId/pile/cards')
-  @Patch('/game/:gameId')
-  async patchGameById(@Param('gameId') gameId: string, @Body() payload: PatchGame) {
+  @Put('/game/:gameId/pile')
+  async putGameById(@Param('gameId') gameId: string, @Body() payload: PutGame) {
 
     let cards: Card[] = []
     cards = await this.gameSvc.drawFromDeck(gameId, payload)
@@ -60,11 +59,16 @@ export class GameController {
     return { gameId, cards }
   }
 
-  //@Delete('/game/:gameId/pile/cards')
-  @Delete('/game/:gameId/cards')
+  @Delete('/game/:gameId/pile')
   async deleteCards(@Param('gameId') gameId: string, @Body() payload: DeleteCardsFromPile) {
-    let cards: Card[] = []
-    cards = await this.gameSvc.removeFromPile(gameId, payload)
+    let cards = await this.gameSvc.removeFromPile(gameId, payload)
+
+    return { gameId, cards }
+  }
+
+  @Patch('/game/:gameId/pile')
+  async patchCards(@Param('gameId') gameId: string, @Body() payload: PatchCardsToPile) {
+    let cards = await this.gameSvc.patchToPile(gameId, payload)
 
     return { gameId, cards }
   }

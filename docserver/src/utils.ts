@@ -65,7 +65,19 @@ export const drawRandomly = (cards: Card[], count = 1) => {
     drawn.push(remainder[idx])
     remainder.splice(idx, 1)
   }
+  return { drawn, remainder }
+}
 
+export const drawSpecific = (cards: Card[], select: string[] | undefined) => {
+  let drawn: Card[] = []
+  let remainder = [ ...cards ]
+  for (let code of select ?? []) {
+    let idx = remainder.findIndex(card => card.code.toLowerCase() == code.toLowerCase())
+    if (idx < 0)
+      continue
+    drawn.push(remainder[idx])
+    remainder.splice(idx, 1)
+  }
   return { drawn, remainder }
 }
 
@@ -84,7 +96,18 @@ export const dropRandomly = (cards: Card[], toAdd: Card[]) => {
   return _cards
 }
 
+export const selectCards = (cards: Card[], select: string[]) => {
+  const selected: Card[] = []
+  for (let code of select) {
+    const idx = cards.findIndex(card => card.code == code)
+    if (idx < 0)
+      continue
+    selected.push({ ...cards[idx] })
+  }
+  return selected
+}
 
+// Private 
 const createGameDeck = (game: Game, cards: Card[]) => {
     let _cards: Card[] = []
     // Create full deck 

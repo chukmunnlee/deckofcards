@@ -1,4 +1,4 @@
-export interface PatchGame {
+export interface PutGame {
   // draw, drop, move
   count?: number // default 1
   fromPile?: string // default pile_0
@@ -19,8 +19,9 @@ export interface DeleteCardsFromPile {
 }
 
 export interface PatchCardsToPile {
-  toPile: string // default pile_0
+  toPile?: string // default pile_0
   // top, botton, random
-  dropTo: string // default top
-  cards: string[] // code
+  dropTo?: string // default top
+  cards?: string[] // code
+  shuffle?: boolean
 }

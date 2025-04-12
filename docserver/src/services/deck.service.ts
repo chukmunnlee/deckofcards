@@ -1,10 +1,10 @@
 import {Injectable} from "@nestjs/common";
 import { v4 as uuidv4 } from 'uuid'
-import { Deck, DeckPresets} from "src/models/deck";
+import { Card, Deck, DeckPresets} from "src/models/deck";
 import { Game } from "src/models/game";
 import {Metadata} from "src/models/resource";
 import {DeckRepository} from "src/repositories/deck.repository";
-import { createPlayingDeck} from "src/utils";
+import { createPlayingDeck, selectCards} from "src/utils";
 import {GameRepository} from "src/repositories/game.repository";
 import {ConfigService} from "./config.service";
 
@@ -62,6 +62,11 @@ export class DeckService {
     if (!deck)
       return null
 
+    let cards: Card[] = deck.spec.cards
+    if (!!payload.select && (payload.select.length > 0))
+      cards = selectCards(deck.spec.cards, payload.select)
+          .map(card => ({ ...card, count: 1 }))
+
     const currTime = Date.now()
 
     const game: Game = {
@@ -73,7 +78,7 @@ export class DeckService {
       lastUpdate: currTime,
     }
 
-    const newGame = createPlayingDeck(game, deck.spec.cards)
+    const newGame = createPlayingDeck(game, cards)
 
     await this.gameRepo.insertGame(newGame)
 

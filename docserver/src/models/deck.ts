@@ -21,6 +21,7 @@ export interface DeckPresets {
   atomic: boolean
   shuffle?: boolean
   replacement?: boolean
+  select?: string[]
   [ feature: string ]: any
 }
 

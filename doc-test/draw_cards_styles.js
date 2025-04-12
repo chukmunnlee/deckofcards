@@ -14,21 +14,21 @@ const run = async () => {
   let status = await got(`${BASE_URL}/game/${gameId}/status`).json()
   console.info('>>> status: ', status)
 
-  let resp = await got.patch(`${BASE_URL}/game/${gameId}`, 
+  let resp = await got.put(`${BASE_URL}/game/${gameId}/pile`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', drawFrom: 'top' } }).json()
   console.info('>> drawn from top pile_0 cards: ', resp.cards.map(c => c.code ))
   status = await got(`${BASE_URL}/game/${gameId}/status`).json()
   console.info('>>> top status: ', status)
   console.info('-----------------------------------------------\n')
 
-  resp = await got.patch(`${BASE_URL}/game/${gameId}`, 
+  resp = await got.put(`${BASE_URL}/game/${gameId}/pile`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', drawFrom: 'bottom' } }).json()
   console.info('>> drawn bottom pile_0 cards: ', resp.cards.map(c => c.code ))
   status = await got(`${BASE_URL}/game/${gameId}/status`).json()
   console.info('>>> bottom status: ', status)
   console.info('-----------------------------------------------\n')
 
-  resp = await got.patch(`${BASE_URL}/game/${gameId}`, 
+  resp = await got.put(`${BASE_URL}/game/${gameId}/pile`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', drawFrom: 'random' } }).json()
   console.info('>> drawn random pile_0 cards: ', resp.cards.map(c => c.code ))
 

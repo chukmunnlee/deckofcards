@@ -26,7 +26,6 @@ export class TelemetryInterceptor implements NestInterceptor {
     return next.handle()
       .pipe(
         tap(() => {
-          console.info('>>>> in measure')
         })
       )
   }

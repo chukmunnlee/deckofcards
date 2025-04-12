@@ -247,6 +247,10 @@ components:
           type: boolean
         replacement:
           type: boolean
+        select:
+          type: array
+          items:
+            type: string
 
     Card:
       type: object
