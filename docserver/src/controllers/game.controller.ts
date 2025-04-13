@@ -5,12 +5,6 @@ import {DeleteCardsFromPile, PatchCardsToPile, PutGame} from "src/models/message
 import {ConfigService} from "src/services/config.service";
 import {GameService} from "src/services/game.service";
 
-const DEFAULT_DELETE_CARDS_FROM_PILE = {
-  count: 1, 
-  fromPile: 'pile_0', drawFrom: 'top',
-  select: []
-}
-
 @Controller()
 @UseInterceptors(TelemetryInterceptor)
 export class GameController {

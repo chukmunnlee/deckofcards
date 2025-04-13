@@ -73,6 +73,7 @@ export class GameService {
   async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1) {
     // @ts-ignore
     const game: Game = await this.gameRepo.getGameById(gameId) 
+
     if (!game)
       throw new NotFoundException(`Cannot find game ${gameId}`)
 
@@ -100,6 +101,8 @@ export class GameService {
     // @ts-ignore
     const fromPile = game.piles[_payload.fromPile]
     const lastUpdate = game.lastUpdate
+    if (!!_payload.select && (_payload.select.length > 0))
+      _payload.drawFrom = 'select'
 
     let drawn: Card[] = []
     let remainder: Card[] = []
@@ -159,7 +162,7 @@ export class GameService {
       }
 
     // @ts-ignore
-    const toPile = game.piles[_payload.fromPile]
+    const toPile = game.piles[_payload.toPile]
     const lastUpdate = game.lastUpdate
     let remainder: Card[] = []
 
@@ -291,6 +294,7 @@ export class GameService {
       }
       for (let k in game.piles)
         status.piles[k] = game.piles[k].cards.length
+
       return status
   }
 }

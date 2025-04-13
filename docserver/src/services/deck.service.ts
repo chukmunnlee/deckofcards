@@ -63,8 +63,8 @@ export class DeckService {
       return null
 
     let cards: Card[] = deck.spec.cards
-    if (!!payload.select && (payload.select.length > 0))
-      cards = selectCards(deck.spec.cards, payload.select)
+    if (!!payload.cards && (payload.cards.length > 0))
+      cards = selectCards(deck.spec.cards, payload.cards)
           .map(card => ({ ...card, count: 1 }))
 
     const currTime = Date.now()

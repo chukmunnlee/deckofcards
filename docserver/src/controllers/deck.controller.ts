@@ -67,7 +67,7 @@ export class DeckController {
   @Post('/deck/:deckId')
   @HttpCode(HttpStatus.CREATED)
   async postDeck(@Param('deckId') deckId: string, @Body() payload: DeckPresets) {
-    const game = await this.deckSvc.createGameFromId(deckId, payload)
+    const game = await this.deckSvc.createGameFromId(deckId, payload ?? {})
     if (!game)
       throw new HttpException(`Cannot create game from ${deckId}. Not found`
           , HttpStatus.NOT_FOUND)

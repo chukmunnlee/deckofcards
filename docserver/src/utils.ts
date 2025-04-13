@@ -109,36 +109,38 @@ export const selectCards = (cards: Card[], select: string[]) => {
 
 // Private 
 const createGameDeck = (game: Game, cards: Card[]) => {
-    let _cards: Card[] = []
-    // Create full deck 
-    for (let c of cards) 
-      for (let i = 0; i < (c.count ?? 1); i++)
-        _cards = [ ..._cards, c ]
-      //
-    // Create the number of decks
-    // @ts-ignore
-    for (let i = 0; i < game.presets?.count; i++)
-      _cards = [ ..._cards, ...cards ]
+  let _proto: Card[] = []
+  let _cards: Card[] = []
 
-    if (game.presets?.shuffle) 
-      shuffleDeck(_cards)
+  // Create full deck 
+  for (let c of cards) 
+    for (let i = 0; i < (c.count ?? 1); i++)
+      _proto = [ ..._proto, c ]
 
-    // @ts-ignore
-    let pileCount = _cards.length / game.presets.split | 0
-    
-    // @ts-ignore
-    for (let i = 0; i < game.presets.split; i++) {
-      const name = `pile_${i}`
-      const startIdx = pileCount * i
-      const endIdx = startIdx + pileCount
-      game.piles[name] = {
-        name,
-        cards: _cards.slice(startIdx, endIdx)
-      } as Pile
-    }
+  // Create the number of decks
+  // @ts-ignore
+  for (let i = 0; i < game.presets?.count; i++)
+    _cards = [ ..._cards, ..._proto ]
 
-    return game
+  if (game.presets?.shuffle) 
+    shuffleDeck(_cards)
+
+  // @ts-ignore
+  let pileCount = _cards.length / game.presets.split | 0
+  
+  // @ts-ignore
+  for (let i = 0; i < game.presets.split; i++) {
+    const name = `pile_${i}`
+    const startIdx = pileCount * i
+    const endIdx = startIdx + pileCount
+    game.piles[name] = {
+      name,
+      cards: _cards.slice(startIdx, endIdx)
+    } as Pile
   }
+
+  return game
+}
 
 const createAtomicGameDeck = (game: Game, cards: Card[]) => {
     // @ts-ignore
