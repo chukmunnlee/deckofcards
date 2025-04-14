@@ -17,7 +17,7 @@ const run = async () => {
 
   const { gameId } = await got.post(`${BASE_URL}/deck/${deckId}`, { json: { cards } }).json()
 
-  let status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  let status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   cards = await got(`${BASE_URL}/game/${gameId}/pile`, { searchParams: { count: 10 } }).json()

@@ -9,7 +9,7 @@ const run = async () => {
 
   const gameUrl = `${BASE_URL}/game/${gameId}`
 
-  let status = await got(`${gameUrl}/status`).json()
+  let status = await got(`${gameUrl}`).json()
 
   console.info('>>>> status: ', status)
 
@@ -29,14 +29,14 @@ const run = async () => {
   codes = result.cards.map(c => c.code)
   console.info('>>> after pick cards: ', codes)
 
-  status = await got(`${gameUrl}/status`).json()
+  status = await got(`${gameUrl}`).json()
   console.info('>>>> after pick status: ', status)
 
   result = await got.patch(`${gameUrl}/pile`, { json: { cards: codes, toPile: 'fred', shuffle: true } }).json()
   codes = result.cards.map(c => c.code)
   console.info('>>> after drop cards: ', codes)
 
-  status = await got(`${gameUrl}/status`).json()
+  status = await got(`${gameUrl}`).json()
   console.info('>>>> after drop status: ', status)
 
   cards = await got(`${gameUrl}/pile/fred`, { searchParams: { count: 20 } }).json()

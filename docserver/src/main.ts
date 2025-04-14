@@ -3,7 +3,6 @@ import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express
 import { AppModule } from './app.module';
 
 import * as express from 'express'
-import { join } from 'path'
 
 import {ConfigService} from './services/config.service';
 import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
@@ -31,9 +30,6 @@ async function bootstrap() {
   })
 
   nestApp.useStaticAssets(configSvc.swaggerUI)
-  nestApp.setBaseViewsDir(join(__dirname, '..', 'views'))
-  nestApp.setViewEngine('hbs')
-
 
   await nestApp.listen(configSvc.port)
       .then(() => {

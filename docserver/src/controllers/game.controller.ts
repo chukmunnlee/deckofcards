@@ -15,25 +15,16 @@ export class GameController {
   getGames() {
     return this.gameSvc.getRunningGames(this.configSvc.inactive)
   }
-
-  @Get('/game/:gameId/status')
+  //
+  //@Get('/game/:gameId/status')
+  @Get('/game/:gameId')
   getGameStatusById(@Param('gameId') gameId: string) {
     return this.gameSvc.getStatusById(gameId)
         .catch(err => new HttpException(err, HttpStatus.NOT_FOUND))
   }
 
-  @Get('/game/:gameId/pile')
-  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1) {
-    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count)
-  }
-
-  @Get('/game/:gameId/pile/:pileName')
-  getGamePileByName(@Param('gameId') gameId: string, @Param('pileName') pileName: string,
-      @Query('count') count = 1) {
-    return this.gameSvc.getGameByIdPile(gameId, pileName, count)
-  }
-
   @Post('/game/:gameId')
+  @HttpCode(HttpStatus.CREATED)
   postGameById(@Param('gameId') gameId: string) {
     return this.gameSvc.restartGameById(gameId)
       .then(game => {
@@ -42,6 +33,18 @@ export class GameController {
               , HttpStatus.NOT_FOUND)
         return { gameId: game.gameId }
       })
+  }
+
+  @Delete('/game/:gameId')
+  @HttpCode(HttpStatus.OK)
+  async deleteGameById(@Param('gameId') gameId: string) {
+    return this.gameSvc.deleteGameById(gameId)
+        .then(() => ({}))
+  }
+
+  @Get('/game/:gameId/pile')
+  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1) {
+    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count)
   }
 
   @Put('/game/:gameId/pile')
@@ -67,10 +70,10 @@ export class GameController {
     return { gameId, cards }
   }
 
-  @Delete('/game/:gameId')
-  @HttpCode(HttpStatus.OK)
-  async deleteGameById(@Param('gameId') gameId: string) {
-    return this.gameSvc.deleteGameById(gameId)
-        .then(() => ({}))
+  @Get('/game/:gameId/pile/:pileName')
+  getGamePileByName(@Param('gameId') gameId: string, @Param('pileName') pileName: string,
+      @Query('count') count = 1) {
+    return this.gameSvc.getGameByIdPile(gameId, pileName, count)
   }
+
 }

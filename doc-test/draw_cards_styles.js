@@ -11,20 +11,20 @@ const run = async () => {
   const { gameId } = await got.post(`${BASE_URL}/deck/${deckId}`, { json: { split: 2 } }).json()
 
   // Check status
-  let status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  let status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   let resp = await got.put(`${BASE_URL}/game/${gameId}/pile`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', drawFrom: 'top' } }).json()
   console.info('>> drawn from top pile_0 cards: ', resp.cards.map(c => c.code ))
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> top status: ', status)
   console.info('-----------------------------------------------\n')
 
   resp = await got.put(`${BASE_URL}/game/${gameId}/pile`, 
       { json: { action: 'draw', count: DRAW_COUNT, fromPile: 'pile_0', drawFrom: 'bottom' } }).json()
   console.info('>> drawn bottom pile_0 cards: ', resp.cards.map(c => c.code ))
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> bottom status: ', status)
   console.info('-----------------------------------------------\n')
 
@@ -35,7 +35,7 @@ const run = async () => {
   cards = await got(`${BASE_URL}/game/${gameId}/pile/drawn`, { searchParams: { count: PEEK_COUNT } }).json()
   console.info('++ drawn cards: ', cards.map(c => c.code ))
 
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   await got.delete(`${BASE_URL}/game/${gameId}`)

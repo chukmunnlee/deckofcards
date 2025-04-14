@@ -52,7 +52,7 @@ export class GameRepository {
   getGameIds(duration: number): Promise<any[]> {
     const past = Date.now() - duration
     return this.colGames.find({ lastUpdate: { $gt: past } })
-        .project({ gameId: 1, createOn: 1, lastUpdate: 1, _id: 0 })
+        .project({ gameId: 1, deckId: 1, createdOn: 1, lastUpdate: 1, _id: 0 })
         .sort({ lastUpdate: -1 })
         .toArray()
   }

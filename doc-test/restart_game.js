@@ -8,7 +8,7 @@ const PEEK_COUNT = 8
 const run = async () => {
   const { gameId } = await got.post(`${BASE_URL}/deck/${deckId}`, { json: { split: 2 } }).json()
 
-  let status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  let status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   let cards = await got(`${BASE_URL}/game/${gameId}/pile`, { searchParams: { count: PEEK_COUNT } }).json()
@@ -19,12 +19,12 @@ const run = async () => {
   cards = resp.cards
   console.info('>> drawn from pile_0 cards: ', cards.map(c => c.code ))
 
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   cards = await got.post(`${BASE_URL}/game/${gameId}`).json()
 
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> restart status: ', status)
 
   await got.delete(`${BASE_URL}/game/${gameId}`)

@@ -11,7 +11,7 @@ const run = async () => {
   const { gameId } = await got.post(`${BASE_URL}/deck/${deckId}`, { json: { split: 2 } }).json()
 
   // Check status
-  let status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  let status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   let cards = await got(`${BASE_URL}/game/${gameId}/pile/pile_1`, { searchParams: { count: 10 } }).json()
@@ -25,13 +25,13 @@ const run = async () => {
       { json: { action: 'draw', fromPile: 'pile_1', drawFrom: 'select', select } }).json()
   console.info('>> drawn from select pile_1 cards: ', resp.cards.map(c => c.code ))
 
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
 
   cards = await got(`${BASE_URL}/game/${gameId}/pile/pile_1`, { searchParams: { count: 10 } }).json()
   cards = cards.map(c => c.code)
   console.info('>> pile_1 top 10 cards: ', cards)
 
-  status = await got(`${BASE_URL}/game/${gameId}/status`).json()
+  status = await got(`${BASE_URL}/game/${gameId}`).json()
   console.info('>>> status: ', status)
 
   await got.delete(`${BASE_URL}/game/${gameId}`)
