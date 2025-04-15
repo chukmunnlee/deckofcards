@@ -353,7 +353,39 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 
   /game/{gameId}/pile:
-    get: {}
+    get: 
+      summary: Get cards from the pile
+      operationId: getCardsFromPile
+      tags:
+      - Games
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: count
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: drawFrom
+        in: query
+        schema:
+          type: string
+          enum:
+          - top
+          - bottom
+          default: top
+      responses:
+        200:
+          description: List of cards from the pile
+          content:
+            application/json: 
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
 
 components:
   schemas:

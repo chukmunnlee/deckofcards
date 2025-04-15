@@ -43,8 +43,8 @@ export class GameController {
   }
 
   @Get('/game/:gameId/pile')
-  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1) {
-    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count)
+  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1, @Query('drawFrom') drawFrom = 'top') {
+    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count, drawFrom)
   }
 
   @Put('/game/:gameId/pile')

@@ -70,7 +70,7 @@ export class GameService {
     return newGame
   }
 
-  async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1) {
+  async getGameByIdPile(gameId: string, pileName = 'pile_0', count = 1, drawFrom = 'top') {
     // @ts-ignore
     const game: Game = await this.gameRepo.getGameById(gameId) 
 
@@ -79,6 +79,11 @@ export class GameService {
 
     if (!game.piles[pileName])
       return []
+
+    if (drawFrom = 'bottom') {
+      const startPos = Math.max(0, game.piles[pileName].cards.length - count)
+      return game.piles[pileName].cards.slice(startPos, startPos + count)
+    }
 
     return game.piles[pileName].cards.slice(0, count)
   }
