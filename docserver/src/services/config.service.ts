@@ -20,7 +20,7 @@ const DEFAULT_MONGODB_URI = 'mongodb://localhost:27017'
 const DEFAULT_DATABASE = 'deckofcards'
 const DEFAULT_PREFIX = '/api'
 const DEFAULT_INACTIVE = '30'
-const DEFAULT_METRICS_PORT = '9464'
+const DEFAULT_METRICS_PORT = '-1' // 9464
 const DEFAULT_METRICS_PREFIX = '/metrics'
 const DEFAULT_EXPORT_INTERVAL = '30'
 

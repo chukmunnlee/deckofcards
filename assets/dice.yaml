@@ -9,7 +9,7 @@ spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/dice/back.png
   presets:
     replacement: true
-    atomic: true
+    combine: false
   cards:
   - code: D01
     image: https://acme.sgp1.digitaloceanspaces.com/dice/dice1.png

@@ -4,19 +4,20 @@ import * as yaml from 'js-yaml'
 
 import { Deck, DeckPresets, Card } from 'src/models/deck'
 import {Game, Pile} from "src/models/game";
+import {LoggerService} from '@nestjs/common';
 
 const PRESETS_DEFAULT:  DeckPresets = {
-  count: 1, split: 1, shuffle: true, atomic: false, replacement: false
+  count: 1, split: 1, shuffle: true, combine: true, replacement: false
 }
 
-export const loadDecks = (decksDir: string): Deck[] => {
+export const loadDecks = (decksDir: string, logger: LoggerService): Deck[] => {
 
   if (!existsSync(decksDir)) {
-    console.error(`Decks directory does not exists: ${decksDir}`)
+    logger.error(`Decks directory does not exists: ${decksDir}`, 'loadDecks')
     process.exit(-1)
   }
 
-  console.info(`Loading decks from ${decksDir}`)
+  logger.log(`Loading decks from ${decksDir}`, 'loadDecks')
 
   return readdirSync(decksDir)
     .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
@@ -30,7 +31,7 @@ export const loadDecks = (decksDir: string): Deck[] => {
             ...PRESETS_DEFAULT,
             ...deck.spec.presets
           }
-        console.info(`[Loading] Id: ${deck.metadata.id}, Kind: ${deck.kind}, Name: ${deck.metadata.name}`)
+        logger.log(`[Loading] Id: ${deck.metadata.id}, Kind: ${deck.kind}, Name: ${deck.metadata.name}`, 'loadDecks')
         return deck
     })
 }
@@ -142,7 +143,7 @@ const createGameDeck = (game: Game, cards: Card[]) => {
   return game
 }
 
-const createAtomicGameDeck = (game: Game, cards: Card[]) => {
+const createSeparateGameDeck = (game: Game, cards: Card[]) => {
     // @ts-ignore
     for (let i = 0; i < game.presets.count; i++) {
       const name = `pile_${i}`
@@ -158,11 +159,11 @@ export const createPlayingDeck = (game: Game, cards: Card[]) => {
 
   const _game: Game = { ...game }
 
-  if (_game.presets.atomic) 
-    createAtomicGameDeck(_game, cards)
+  if (_game.presets.combine) 
+    createGameDeck(_game, cards)
 
   else 
-    createGameDeck(_game, cards)
+    createSeparateGameDeck(_game, cards)
 
   _game.piles['drawn'] = { name: 'drawn', cards: [] }
   _game.piles['discarded'] = { name: 'discarded', cards: [] }

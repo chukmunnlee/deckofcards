@@ -446,14 +446,19 @@ components:
       properties:
         count:
           type: integer
+          default: 1
         split:
           type: integer
+          default: 1
         shuffle:
           type: boolean
-        atomic:
+          default: true
+        combine:
           type: boolean
+          default: true
         replacement:
           type: boolean
+          default: false
         select:
           type: array
           items:
