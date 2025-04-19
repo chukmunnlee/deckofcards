@@ -16,7 +16,7 @@ const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PutGame> = {
 const DEFAULT_DELETE_CARDS_FROM_PILE: DeleteCardsFromPile = {
   count: 1, 
   fromPile: 'pile_0', drawFrom: 'top',
-  select: []
+  cards: []
 }
 
 const DEFAULT_PATCH_CARDS_TO_PILE: PatchCardsToPile = {
@@ -60,8 +60,8 @@ export class GameService {
     }
 
     let cards: Card[] = deck.spec.cards
-    if (!!presets.select && (presets.select.length > 0))
-      cards = selectCards(deck.spec.cards, presets.select)
+    if (!!presets.cards && (presets.cards.length > 0))
+      cards = selectCards(deck.spec.cards, presets.cards)
 
     const newGame = createPlayingDeck(_game, cards)
 
@@ -106,7 +106,7 @@ export class GameService {
     // @ts-ignore
     const fromPile = game.piles[_payload.fromPile]
     const lastUpdate = game.lastUpdate
-    if (!!_payload.select && (_payload.select.length > 0))
+    if (!!_payload.cards && (_payload.cards.length > 0))
       _payload.drawFrom = 'select'
 
     let drawn: Card[] = []
@@ -124,7 +124,7 @@ export class GameService {
         break
 
       case 'select':
-        ({ drawn, remainder } = drawSpecific(fromPile.cards, _payload.select))
+        ({ drawn, remainder } = drawSpecific(fromPile.cards, _payload.cards))
         break
 
       case 'top':
@@ -235,7 +235,7 @@ export class GameService {
         break
 
       case 'select':
-        ({ drawn, remainder } = drawSpecific(fromPile.cards, _patch.select))
+        ({ drawn, remainder } = drawSpecific(fromPile.cards, _patch.cards))
         break
 
       case 'top':

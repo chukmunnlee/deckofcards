@@ -43,32 +43,30 @@ export class GameController {
   }
 
   @Get('/game/:gameId/pile')
-  getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1, @Query('drawFrom') drawFrom = 'top') {
-    return this.gameSvc.getGameByIdPile(gameId, 'pile_0', count, drawFrom)
+  async getGamePileById(@Param('gameId') gameId: string, @Query('count') count = 1, @Query('drawFrom') drawFrom = 'top') {
+    let cards: Card[] = await this.gameSvc.getGameByIdPile(gameId, 'pile_0', count, drawFrom)
+    return { gameId, cards }
   }
 
   @Put('/game/:gameId/pile')
   async putGameById(@Param('gameId') gameId: string, @Body() payload: PutGame) {
 
-    let cards: Card[] = []
-    cards = await this.gameSvc.drawFromDeck(gameId, payload)
-
-    return { gameId, cards }
-  }
-
-  @Delete('/game/:gameId/pile')
-  async deleteCards(@Param('gameId') gameId: string, @Body() payload: DeleteCardsFromPile) {
-    let cards = await this.gameSvc.removeFromPile(gameId, payload)
-
+    let cards: Card[] = await this.gameSvc.drawFromDeck(gameId, payload)
     return { gameId, cards }
   }
 
   @Patch('/game/:gameId/pile')
   async patchCards(@Param('gameId') gameId: string, @Body() payload: PatchCardsToPile) {
     let cards = await this.gameSvc.patchToPile(gameId, payload)
-
     return { gameId, cards }
   }
+
+  @Delete('/game/:gameId/pile')
+  async deleteCards(@Param('gameId') gameId: string, @Body() payload: DeleteCardsFromPile) {
+    let cards = await this.gameSvc.removeFromPile(gameId, payload)
+    return { gameId, cards }
+  }
+
 
   @Get('/game/:gameId/pile/:pileName')
   getGamePileByName(@Param('gameId') gameId: string, @Param('pileName') pileName: string,

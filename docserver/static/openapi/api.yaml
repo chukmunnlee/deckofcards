@@ -354,7 +354,7 @@ paths:
 
   /game/{gameId}/pile:
     get: 
-      summary: Get cards from pile_0 pile
+      summary: Peek cards from pile_0 pile
       operationId: getCardsFromPile
       tags:
       - Games
@@ -383,9 +383,100 @@ paths:
           content:
             application/json: 
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Card'
+                $ref: '#/components/schemas/UpdatePileResponse'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+    put: 
+      summary: Draw and drop cards from piles, drawn cards are added to discarded pile
+      operationId: drawCardsFromPile
+      tags:
+      - Games
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DrawCardsOption'
+      responses:
+        200:
+          description: List of cards from the pile
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/UpdatePileResponse'
+                    
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+    patch: 
+      summary: Add cards from pile
+      operationId: addCardsToPile
+      tags:
+      - Games
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCardsOption'
+      responses:
+        200:
+          description: List of cards from the pile
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/UpdatePileResponse'
+                    
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+    delete: #current
+      summary: Remove cards from pile; cards are NOT added to discarded pile
+      operationId: removeCardsFromPile
+      tags:
+      - Games
+      parameters:
+      - name: gameId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveCardsOption'
+      responses:
+        200:
+          description: List of cards from the pile
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/UpdatePileResponse'
+                    
         404:
           description: Not found
           content:
@@ -396,7 +487,7 @@ paths:
   /game/{gameId}/pile/{pileName}:
     get: 
       summary: Get cards from the pile
-      operationId: getCardsFromPile
+      operationId: getCardsFromNamedPile
       tags:
       - Games
       parameters:
@@ -459,10 +550,79 @@ components:
         replacement:
           type: boolean
           default: false
-        select:
+        cards:
           type: array
           items:
             type: string
+
+    DrawCardsOption:
+      type: object
+      properties:
+        count:
+          type: integer
+          default: 1
+        fromPile:
+          type: string
+          default: pile_0
+        toPile:
+          type: string
+          default: discarded
+        drawFrom:
+          type: string
+          default: top
+        dropTo:
+          type: string
+          default: top
+        cards:
+          type: array
+          items:
+            type: string
+
+    RemoveCardsOption:
+      type: object
+      properties:
+        count:
+          type: integer
+          default: 1
+        fromPile:
+          type: string
+          default: pile_0
+        drawFrom:
+          type: string
+          default: top
+        cards:
+          type: array
+          items:
+            type: string
+      required: [ cards ]
+
+    AddCardsOption:
+      type: object
+      properties:
+        toPile:
+          type: string
+          default: discarded
+        dropTo:
+          type: string
+          default: top
+        cards:
+          type: array
+          items:
+            type: string
+        shuffle:
+          type: boolean
+          default: false
+
+    UpdatePileResponse:
+      type: object
+      properties:
+        gameId:
+          type: string
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+      required: [ gameId, cards ]
 
     Card:
       type: object

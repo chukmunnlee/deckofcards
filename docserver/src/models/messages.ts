@@ -7,15 +7,8 @@ export interface PutGame {
   // top, botton, random, select
   drawFrom?: string // default top
   dropTo?: string // default top
-  select?: string[]
-}
-
-export interface DeleteCardsFromPile {
-  count?: number // default 1
-  fromPile?: string // default pile_0
-  // top, botton, random, select
-  drawFrom?: string, // default top
-  select?: string[]
+  //select?: string[]
+  cards?: string[]
 }
 
 export interface PatchCardsToPile {
@@ -25,3 +18,12 @@ export interface PatchCardsToPile {
   cards?: string[] // code
   shuffle?: boolean
 }
+
+export interface DeleteCardsFromPile {
+  count?: number // default 1
+  fromPile?: string // default pile_0
+  // top, botton, random, select
+  drawFrom?: string, // default top
+  cards?: string[]
+}
+
