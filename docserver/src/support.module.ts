@@ -3,6 +3,7 @@ import {ServeStaticModule} from '@nestjs/serve-static';
 
 import { WinstonModule, utilities } from 'nest-winston'
 import * as winston from 'winston';
+import * as swagger from 'swagger-ui-dist'
 
 import { join } from 'path'
 import { APP_NAME } from './constants'
@@ -24,9 +25,16 @@ const shared: any[] = [
     ]
   }),
   ServeStaticModule.forRoot({
-    serveRoot: '/openapi',
-    rootPath: join(__dirname, '..', 'static/openapi')
-  })
+    serveRoot: '',
+    renderPath: '/',
+    rootPath: join(__dirname, '..', 'static/openapi'),
+  }),
+  ServeStaticModule.forRoot({
+    serveRoot: '',
+    renderPath: '/',
+    rootPath: swagger.getAbsoluteFSPath()
+  }),
+
 ]
 
 @Module({

@@ -32,6 +32,11 @@ export class TelemetryService {
   constructor(@Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService, 
       private readonly configSvc: ConfigService) { 
 
+    if (this.configSvc.metricsPort < 0) {
+      this.logger.log('Telemetry is not enabled')
+      return
+    }
+
     this.prom = new PrometheusExporter(
       { port: this.configSvc.metricsPort, endpoint: this.configSvc.metricsPrefix,
         preventServerStart: true },

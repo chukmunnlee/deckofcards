@@ -5,7 +5,6 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 import { v4 as uuidv4 } from 'uuid'
-import * as swagger from 'swagger-ui-dist'
 
 import { APP_NAME, APP_VERSION } from '../constants'
 
@@ -38,7 +37,6 @@ export class ConfigService {
   get database() { return this.argv.database }
   get mongodbUri() { return this.argv.mongodbUri }
   get inactive() { return this._inactive }
-  get swaggerUI() { return this._swaggerPath }
   get metricsPort() { return this.argv.metricsPort }
   get metricsPrefix() { return this.argv.metricsPrefix }
   get exportInterval() { return this.argv.exportInterval }
@@ -67,8 +65,6 @@ export class ConfigService {
     }
   }
 
-  private readonly _swaggerPath: string
-
   constructor() {
     this.argv = yargs(hideBin(process.argv))
         .usage(USAGE)
@@ -86,7 +82,6 @@ export class ConfigService {
         .parse()
     this.argv.ready = 0
     this._inactive = this.argv.inactive * 60 * 1000
-    this._swaggerPath = swagger.getAbsoluteFSPath()
   }
 
 }

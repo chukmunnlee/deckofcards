@@ -80,7 +80,7 @@ export class GameService {
     if (!game.piles[pileName])
       return []
 
-    if (drawFrom = 'bottom') {
+    if (drawFrom == 'bottom') {
       const startPos = Math.max(0, game.piles[pileName].cards.length - count)
       return game.piles[pileName].cards.slice(startPos, startPos + count)
     }

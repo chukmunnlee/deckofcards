@@ -50,7 +50,6 @@ export class GameController {
 
   @Put('/game/:gameId/pile')
   async putGameById(@Param('gameId') gameId: string, @Body() payload: PutGame) {
-
     let cards: Card[] = await this.gameSvc.drawFromDeck(gameId, payload)
     return { gameId, cards }
   }

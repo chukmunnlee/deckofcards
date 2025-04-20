@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="SwaggerUI" />
     <title>Deck of Cards</title>
-    <link rel="stylesheet" href="/swagger-ui.css" />
+    <link rel="stylesheet" href="swagger-ui.css" />
   </head>
   <body>
   <div id="swagger-ui"></div>
-  <script src="/swagger-ui-bundle.js" crossorigin></script>
+  <script src="swagger-ui-bundle.js" crossorigin></script>
   <script>
     window.onload = () => {
       window.ui = SwaggerUIBundle({
-        url: '/openapi/api.yaml',
+        url: 'api.yaml',
         dom_id: '#swagger-ui',
       });
     };

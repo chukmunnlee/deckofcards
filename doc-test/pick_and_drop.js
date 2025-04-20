@@ -11,9 +11,7 @@ const run = async () => {
 
   let status = await got(`${gameUrl}`).json()
 
-  console.info('>>>> status: ', status)
-
-  let cards = await got(`${gameUrl}/pile`, { searchParams: { count: 20 } }).json()
+  let { cards } = await got(`${gameUrl}/pile`, { searchParams: { count: 20 } }).json()
   let codes = cards.map(card => card.code)
 
   let selected = []

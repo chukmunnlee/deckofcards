@@ -29,8 +29,6 @@ async function bootstrap() {
     exclude: [ '/app/*path', '/openapi{/*path}' ]
   })
 
-  nestApp.useStaticAssets(configSvc.swaggerUI)
-
   await nestApp.listen(configSvc.port)
       .then(() => {
         loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
