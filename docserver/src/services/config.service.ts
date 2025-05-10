@@ -7,6 +7,7 @@ import { hideBin } from 'yargs/helpers'
 import { v4 as uuidv4 } from 'uuid'
 
 import { APP_NAME, APP_VERSION } from '../constants'
+const { name, version } = require('../../package.json')
 
 const USAGE = `Usage: $0 --cors --id [string|random]
     --port [number|3000] --prefix [string|/api]
@@ -19,7 +20,7 @@ const DEFAULT_MONGODB_URI = 'mongodb://localhost:27017'
 const DEFAULT_DATABASE = 'deckofcards'
 const DEFAULT_PREFIX = '/api'
 const DEFAULT_INACTIVE = '30'
-const DEFAULT_METRICS_PORT = '-1' // 9464
+const DEFAULT_METRICS_PORT = '9464' // 9464
 const DEFAULT_METRICS_PREFIX = '/metrics'
 const DEFAULT_EXPORT_INTERVAL = '30'
 
@@ -43,8 +44,8 @@ export class ConfigService {
   get hash() { return this.argv.hash }
   get metadata() {
     return {
-      [ATTR_SERVICE_NAME]: APP_NAME,
-      [ATTR_SERVICE_VERSION]: APP_VERSION,
+      [ATTR_SERVICE_NAME]: name,
+      [ATTR_SERVICE_VERSION]: version,
       'hash': this.argv.hash
     }
   }

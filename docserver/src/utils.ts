@@ -170,3 +170,32 @@ export const createPlayingDeck = (game: Game, cards: Card[]) => {
 
   return _game
 }
+
+export const forwarded = (headers: any) => {
+  const httpHeaders = [ 'x-forwarded-for', 'forwarded', 'host' ]
+  for (let h of httpHeaders) {
+    if (!headers[h])
+      continue
+
+    let terms: string[] 
+
+    switch (h) {
+      case 'x-forwarded-for':
+        terms = headers[h].split(',')
+        return terms[0]
+
+      case 'forwarded':
+        terms = headers[h].split(',')
+        for (let t of terms) {
+          const h = t.trim().toLowerCase()
+          if ((h.startsWith("by=")) || (h.startsWith("for=")))
+            return t.trim().split('=')[1]
+        }
+        break
+
+      default:
+        return headers[h]
+    }
+    return 'unknown'
+  }
+}

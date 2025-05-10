@@ -4,23 +4,22 @@ import {WINSTON_MODULE_NEST_PROVIDER} from "nest-winston";
 
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus'
 import {MeterProvider, PeriodicExportingMetricReader} from "@opentelemetry/sdk-metrics";
-import {Counter, Gauge, Histogram, Meter} from "@opentelemetry/api";
+import {Counter, Histogram, Meter, ObservableGauge} from "@opentelemetry/api";
 import {NodeSDK} from "@opentelemetry/sdk-node";
 import {resourceFromAttributes} from "@opentelemetry/resources";
 import {getNodeAutoInstrumentations} from "@opentelemetry/auto-instrumentations-node";
 
 import {ConfigService} from "./config.service";
-import { GAME_CURRENT_TOTAL, GAME_DURATION_SECONDS, GAME_TOTAL, HTTP_REQUEST_CURRENT_TOTAL, HTTP_REQUEST_DURATION_MS, HTTP_REQUEST_TOTAL } from '../constants'
+import { GAME_CURRENT_TOTAL, GAME_TOTAL, HTTP_REQUEST_DURATION_MS, HTTP_REQUEST_TOTAL } from '../constants'
+import {GameService} from "./game.service";
 
 @Injectable()
 export class TelemetryService {
 
   httpRequestTotal: Counter
-  httpRequestCurrentTotal: Gauge
   httpRequestDurationMs: Histogram
   gameTotal: Counter
-  gameCurrentTotal: Gauge
-  gameDurationSeconds: Histogram
+  gameCurrentTotal: ObservableGauge
 
   private prom: PrometheusExporter
   private meterProv: MeterProvider
@@ -30,7 +29,7 @@ export class TelemetryService {
   private readonly metrics = {}
 
   constructor(@Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService, 
-      private readonly configSvc: ConfigService) { 
+      private readonly configSvc: ConfigService, private readonly gameSvc: GameService) { 
 
     if (this.configSvc.metricsPort < 0) {
       this.logger.log('Telemetry is not enabled')
@@ -74,17 +73,18 @@ export class TelemetryService {
     // HTTP metrics
     this.httpRequestTotal = this.meter.createCounter(HTTP_REQUEST_TOTAL, 
       { description: 'Total number of request', unit: 'int' })
-    this.httpRequestCurrentTotal = this.meter.createGauge(HTTP_REQUEST_CURRENT_TOTAL,
-      { description: 'Total number of inflight request', unit: 'int' })
     this.httpRequestDurationMs = this.meter.createHistogram(HTTP_REQUEST_DURATION_MS,
       { description: 'Request duration in milliseconds', unit: 'int' })
 
     // Game metrics
     this.gameTotal = this.meter.createCounter(GAME_TOTAL,
       { description: 'Total number of games', unit: 'int' })
-    this.gameCurrentTotal = this.meter.createGauge(GAME_CURRENT_TOTAL,
-      { description: 'Total number of running games', unit: 'int' })
-    this.gameDurationSeconds = this.meter.createHistogram(GAME_DURATION_SECONDS,
-      { description: 'Game duration in seconds', unit: 'int' })
+    this.gameCurrentTotal = this.meter.createObservableGauge(GAME_CURRENT_TOTAL, {
+      unit: 'int', description: 'Total number of running games'
+    })
+    this.gameCurrentTotal.addCallback((result) => 
+      this.gameSvc.getRunningGames(this.configSvc.inactive)
+        .then(games => result.observe(games.length, this.configSvc.metadata))
+    )
   }
 }

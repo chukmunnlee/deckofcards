@@ -2,12 +2,14 @@ import {Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post,
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {DeckPresets} from "src/models/deck";
 import {DeckService} from "src/services/deck.service";
+import {TelemetryService} from "src/services/telemetry.service";
 
 @Controller()
 @UseInterceptors(TelemetryInterceptor)
 export class DeckController {
 
-  constructor(private readonly deckSvc: DeckService) { }
+  constructor(private readonly deckSvc: DeckService
+      , private readonly telemetrySvc: TelemetryService) { }
 
   @Get('/decks')
   getDecks() {
@@ -71,6 +73,7 @@ export class DeckController {
     if (!game)
       throw new HttpException(`Cannot create game from ${deckId}. Not found`
           , HttpStatus.NOT_FOUND)
+    this.telemetrySvc.gameTotal.add(1)
     return { gameId: game.gameId }
   }
 }

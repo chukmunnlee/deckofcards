@@ -3,6 +3,7 @@ import {Observable, tap} from "rxjs";
 import {ConfigService} from "src/services/config.service";
 
 import {TelemetryService} from "src/services/telemetry.service";
+import {forwarded} from "src/utils";
 
 @Injectable()
 export class TelemetryInterceptor implements NestInterceptor {
@@ -14,7 +15,6 @@ export class TelemetryInterceptor implements NestInterceptor {
       this.interceptor = this.passthru
     else
       this.interceptor = this.measure
-
   }
 
   private passthru(_: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
@@ -22,10 +22,16 @@ export class TelemetryInterceptor implements NestInterceptor {
   }
 
   private measure(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-    const meta = { ...this.configSvc.metadata }
+    const http = context.switchToHttp()
+    const { method, url } = http.getRequest() 
+    const host = forwarded(http.getRequest().headers)
+    const start = Date.now()
     return next.handle()
       .pipe(
         tap(() => {
+          this.telemetrySvc.httpRequestDurationMs.record(Date.now() - start, this.configSvc.metadata)
+          const status = http.getResponse().statusCode
+          this.telemetrySvc.httpRequestTotal.add(1, { ...this.configSvc.metadata, host, method, url, status })
         })
       )
   }
