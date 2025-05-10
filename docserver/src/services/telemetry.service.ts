@@ -12,6 +12,7 @@ import {getNodeAutoInstrumentations} from "@opentelemetry/auto-instrumentations-
 import {ConfigService} from "./config.service";
 import { GAME_CURRENT_TOTAL, GAME_TOTAL, HTTP_REQUEST_DURATION_MS, HTTP_REQUEST_TOTAL } from '../constants'
 import {GameService} from "./game.service";
+import {ConsoleSpanExporter, SimpleSpanProcessor} from "@opentelemetry/sdk-trace-node";
 
 @Injectable()
 export class TelemetryService {
@@ -57,16 +58,30 @@ export class TelemetryService {
     this.sdk = new NodeSDK({
       resource: resourceFromAttributes(this.configSvc.metadata),
       metricReader: this.metricReader,
-      instrumentations: [ getNodeAutoInstrumentations() ]
+      spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
+      instrumentations: [ 
+        getNodeAutoInstrumentations({
+          '@opentelemetry/instrumentation-fs': { enabled: false },
+          '@opentelemetry/instrumentation-http': { enabled: true,
+            applyCustomAttributesOnSpan: (span) => {
+              console.info('>>> in applyCustomAttributesOnSpan')
+              span.setAttribute('abc', 123)
+            }
+          },
+          //'@opentelemetry/instrumentation-mongodb': { enabled: true }
+        }) 
+      ]
     })
   }
 
   start() {
     this.makeMetrics()
-    return this.prom.startServer()
+    this.sdk.start()
+    //return this.prom.startServer()
   }
   stop() {
-    return this.prom.shutdown()
+    return this.sdk.shutdown()
+    //return this.prom.shutdown()
   }
 
   private makeMetrics() {
