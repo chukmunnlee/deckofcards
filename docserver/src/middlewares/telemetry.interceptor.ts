@@ -1,5 +1,6 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor} from "@nestjs/common";
-import {Observable, tap} from "rxjs";
+import {Span, context as otelContext, trace } from "@opentelemetry/api";
+import {catchError, finalize, Observable, of, tap, throwError} from "rxjs";
 import {ConfigService} from "src/services/config.service";
 
 import {TelemetryService} from "src/services/telemetry.service";
@@ -21,19 +22,39 @@ export class TelemetryInterceptor implements NestInterceptor {
     return next.handle()
   }
 
+  private createSpan(name: string): Span {
+    const tracer = this.telemetrySvc.getTracer();
+    return tracer.startSpan(name)
+  }
+
   private measure(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
     const http = context.switchToHttp()
     const { method, url } = http.getRequest() 
     const host = forwarded(http.getRequest().headers)
     const start = Date.now()
-    return next.handle()
-      .pipe(
-        tap(() => {
-          this.telemetrySvc.httpRequestDurationMs.record(Date.now() - start, this.configSvc.metadata)
-          const status = http.getResponse().statusCode
-          this.telemetrySvc.httpRequestTotal.add(1, { ...this.configSvc.metadata, host, method, url, status })
-        })
-      )
+    const span = this.createSpan(`${method}.${url}`)
+    let status = 200
+    return otelContext.with(
+      trace.setSpan(otelContext.active(), span),
+      () => next.handle()
+        .pipe(
+          tap(() => { 
+            status = http.getResponse().statusCode
+          }),
+          catchError(err => {
+            status = err.status
+            span.recordException(err)
+            return throwError(() => err)
+          }),
+          finalize(() => { 
+            this.telemetrySvc.httpRequestDurationMs.record(Date.now() - start, this.configSvc.metadata)
+            const spanId = span.spanContext().spanId
+            span.setStatus({ code: status })
+            this.telemetrySvc.httpRequestTotal.add(1, { ...this.configSvc.metadata, host, method, url, status, span_id: spanId })
+            span.end()
+          })
+        )
+    )
   }
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

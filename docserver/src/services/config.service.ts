@@ -46,12 +46,14 @@ export class ConfigService {
     return {
       [ATTR_SERVICE_NAME]: name,
       [ATTR_SERVICE_VERSION]: version,
-      'hash': this.argv.hash
+      'hash': this.argv.hash,
+      'environment': this.env
     }
   }
 
   set ready(r: number) { this.argv.ready = r }
   get ready(): number { return this.argv.ready }
+  get env(): string { return process.env.NODE_ENV || 'development' }
 
   get config() {
     return {
