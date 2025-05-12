@@ -32,7 +32,7 @@ export class TelemetryInterceptor implements NestInterceptor {
     const { method, url } = http.getRequest() 
     const host = forwarded(http.getRequest().headers)
     const start = Date.now()
-    const span = this.createSpan(`${method}.${url}`)
+    const span = this.createSpan(url)
     let status = 200
     return otelContext.with(
       trace.setSpan(otelContext.active(), span),
