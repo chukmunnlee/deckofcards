@@ -1,0 +1,63 @@
+networks:
+  docnet:
+
+services:
+  jaeger:
+    # https://www.jaegertracing.io/docs/1.42/getting-started/
+    image: jaegertracing/jaeger:2.6.0
+    restart: always
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+      LOG_LEVEL: debug
+    ports:
+    # serve configs
+    - 5778:5778
+    # web console
+    - 16686:16686
+    # OTLP over gRPC
+    #- 4317:4317
+    # OTLP over HTTP
+    #- 4318:4318
+    networks: 
+    - docnet
+  otel:
+    image: otel/opentelemetry-collector-contrib:0.123.0-amd64
+    restart: always
+    volumes:
+    - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+    # pprof extension
+    - 1888:1888 
+    # Prometheus metrics exposed by the Collector
+    - 8888:8888 
+    # Prometheus exporter metrics
+    - 8889:8889 
+    # health_check extension
+    - 13133:13133 
+    # OTLP gRPC receiver
+    - 4317:4317 
+    # OTLP http receiver
+    - 4318:4318 
+    # zpages extension
+    - 55679:55679
+    networks: 
+    - docnet
+    depends_on:
+    - jaeger
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    environment:
+      CADDY_PORT: "8080"
+    volumes:
+    - ./html:/html
+    - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+    - 8080:8080
+    networks:
+    - docnet
+    depends_on:
+    - jaeger
+    - otel
+
+
