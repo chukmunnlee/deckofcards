@@ -8,14 +8,15 @@ import {Counter, Histogram, Meter, ObservableGauge, trace, Tracer} from "@opente
 import {NodeSDK} from "@opentelemetry/sdk-node";
 import {resourceFromAttributes} from "@opentelemetry/resources";
 import {getNodeAutoInstrumentations} from "@opentelemetry/auto-instrumentations-node";
+import {registerInstrumentations} from "@opentelemetry/instrumentation";
 import {BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor} from "@opentelemetry/sdk-trace-node";
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
 import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from "@opentelemetry/semantic-conventions";
+import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb";
 
 import {ConfigService} from "./config.service";
 import { GAME_CURRENT_TOTAL, GAME_TOTAL, HTTP_REQUEST_DURATION_MS, HTTP_REQUEST_TOTAL } from '../constants'
 import {GameService} from "./game.service";
-import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb";
 
 @Injectable()
 export class TelemetryService {
@@ -79,18 +80,11 @@ export class TelemetryService {
           '@opentelemetry/instrumentation-mongodb': { 
             enabled: true, enhancedDatabaseReporting: true,
             responseHook: (span, info) => {
-              console.info('>>>> response hook span: ', span)
-              console.info('>>>> response hook info: ', info)
-            },
-            //@ts-ignore
-            dbStatementSerializer: (cmd) => {
-              console.info('>>>> mongo db statement: ', cmd)
-              return JSON.stringify(cmd)
+              span.setAttribute('hash', this.configSvc.hash)
             }
           },
           '@opentelemetry/instrumentation-nestjs-core': { enabled: true }
         }),
-        new MongoDBInstrumentation({ enhancedDatabaseReporting: true })
       ]
     })
   }
