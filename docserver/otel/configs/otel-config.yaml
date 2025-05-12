@@ -19,6 +19,14 @@ exporters:
     sampling_initial: 5
     sampling_thereafter: 200
 
+  otlp/prometheus:
+    endpoint: 0.0.0.0:9090
+    namespace: otel
+    const_label:
+      env: doc
+    send_timestamp: true
+    metric_expiration: 180m
+
 extensions:
   health_check:
     endpoint: 0.0.0.0:13133
@@ -35,3 +43,7 @@ service:
       receivers: [ otlp ]
       processors: [ batch ]
       exporters: [ otlp/jaeger, debug ]
+    metrics:
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters: [ otlp/prometheus, debug ]

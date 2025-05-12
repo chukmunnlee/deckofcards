@@ -20,11 +20,18 @@ services:
     #- 4318:4318
     networks: 
     - docnet
+  prometheus:
+    image: prom/prometheus:v3.3.1
+    restart: always
+    ports:
+    - 9090:9090
+    volumes: 
+    - ./configs/prometheus.yaml:/etc/prometheus/prometheus.yml
   otel:
     image: otel/opentelemetry-collector-contrib:0.123.0-amd64
     restart: always
     volumes:
-    - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
+    - ./configs/otel-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
     # pprof extension
     - 1888:1888 
@@ -51,7 +58,7 @@ services:
       CADDY_PORT: "8080"
     volumes:
     - ./html:/html
-    - ./Caddyfile:/etc/caddy/Caddyfile
+    - ./configs/Caddyfile:/etc/caddy/Caddyfile
     ports:
     - 8080:8080
     networks:
