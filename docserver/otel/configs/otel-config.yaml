@@ -5,6 +5,10 @@ receivers:
         endpoint: 0.0.0.0:4317
       http: 
         endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+          - http://*
+          - https://*
 
 processors:
   batch:
@@ -19,12 +23,12 @@ exporters:
     sampling_initial: 5
     sampling_thereafter: 200
 
-  otlp/prometheus:
+  prometheus:
     endpoint: 0.0.0.0:9090
     namespace: otel
-    const_label:
+    const_labels:
       env: doc
-    send_timestamp: true
+    send_timestamps: true
     metric_expiration: 180m
 
 extensions:
@@ -46,4 +50,4 @@ service:
     metrics:
       receivers: [ otlp ]
       processors: [ batch ]
-      exporters: [ otlp/prometheus, debug ]
+      exporters: [ prometheus, debug ]
