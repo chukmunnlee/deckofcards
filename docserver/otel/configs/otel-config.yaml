@@ -30,6 +30,8 @@ exporters:
       env: doc
     send_timestamps: true
     metric_expiration: 180m
+    resource_to_telemetry_conversion:
+      enabled: true
 
 extensions:
   health_check:

@@ -2,7 +2,7 @@ import {Inject, Injectable, OnModuleInit, LoggerService} from "@nestjs/common";
 import {FactoryRepository} from "./factory.repository";
 import {Collection, Document} from "mongodb";
 
-import {loadDecks} from "src/utils";
+import {loadDecks} from "src/utils/utils";
 
 import {Deck} from "src/models/deck";
 import {ConfigService} from "src/services/config.service";

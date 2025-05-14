@@ -1,6 +1,9 @@
 export const APP_NAME = 'deckofcards'
 export const APP_VERSION = 'v1'
 
+export const CLI_OPTIONS = 'cli-options'
+export const TELEMETRY = 'telemetry'
+
 export const HTTP_REQUEST_TOTAL = 'http_request_total'
 export const HTTP_REQUEST_CURRENT_TOTAL = 'http_request_current_total'
 export const HTTP_REQUEST_DURATION_MS = 'http_request_duration_ms'

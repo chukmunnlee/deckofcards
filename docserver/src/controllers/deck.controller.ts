@@ -1,4 +1,5 @@
 import {Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, ServiceUnavailableException, UseInterceptors} from "@nestjs/common";
+import {context, trace} from "@opentelemetry/api";
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {DeckPresets} from "src/models/deck";
 import {DeckService} from "src/services/deck.service";

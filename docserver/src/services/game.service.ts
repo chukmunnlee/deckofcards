@@ -4,7 +4,7 @@ import {Game, Pile} from "src/models/game";
 import {DeleteCardsFromPile, PatchCardsToPile, PutGame} from "src/models/messages";
 import {DeckRepository} from "src/repositories/deck.repository";
 import {GameRepository} from "src/repositories/game.repository";
-import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, dropToTop, createPlayingDeck, drawSpecific, selectCards, shuffleDeck} from "src/utils";
+import {drawFromBotton, drawFromTop, drawRandomly, dropRandomly, dropToBottom, dropToTop, createPlayingDeck, drawSpecific, selectCards, shuffleDeck} from "src/utils/utils";
 
 
 const DRAW_FROM_DECK_PATCH_DEFAULTS: Partial<PutGame> = {

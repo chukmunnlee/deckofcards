@@ -16,6 +16,9 @@ import {RequestLogger} from './middlewares/request-logger.middleware';
 import {SupportModule} from './support.module';
 import {TelemetryService} from './services/telemetry.service';
 import {TelemetryInterceptor} from './middlewares/telemetry.interceptor';
+import {CLI_OPTIONS, TELEMETRY} from './constants';
+import {parseCLI} from './utils/cliopt';
+import {telemetry} from './otel';
 
 @Module({
   imports: [ SupportModule ],
@@ -24,7 +27,9 @@ import {TelemetryInterceptor} from './middlewares/telemetry.interceptor';
     DeckRepository, DeckService, 
     GameRepository, GameService,
     RequestLogger, 
-    TelemetryService, TelemetryInterceptor
+    TelemetryService, TelemetryInterceptor, 
+    { provide: CLI_OPTIONS, useFactory: parseCLI },
+    { provide: TELEMETRY, useValue: telemetry }
   ],
 })
 export class AppModule implements NestModule {

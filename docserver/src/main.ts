@@ -6,9 +6,12 @@ import * as express from 'express'
 
 import {ConfigService} from './services/config.service';
 import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
-import {TelemetryService} from './services/telemetry.service';
+import {loadTelemetry} from './otel';
 
 async function bootstrap() {
+
+  // IMPORTANT: loadTelemetry MUST start before the main application
+  loadTelemetry()
 
   const app = express()
 
@@ -16,7 +19,6 @@ async function bootstrap() {
       , new ExpressAdapter(app))
 
   const configSvc = nestApp.get(ConfigService)
-  const telemetrySvc = nestApp.get(TelemetryService)
   const loggerSvc = nestApp.get(WINSTON_MODULE_NEST_PROVIDER)
 
   if (configSvc.cors)
@@ -32,11 +34,8 @@ async function bootstrap() {
   await nestApp.listen(configSvc.port)
       .then(() => {
         loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
-        if (configSvc.metricsPort > 0) {
-          loggerSvc.log(`Metrics available on port ${configSvc.metricsPort} at ${configSvc.metricsPrefix}`, 'bootstrap')
-          return telemetrySvc.start()
-        }
       })
 
 }
+
 bootstrap();

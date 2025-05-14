@@ -1,10 +1,10 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor} from "@nestjs/common";
 import {Span, context as otelContext, trace } from "@opentelemetry/api";
-import {catchError, finalize, Observable, of, tap, throwError} from "rxjs";
+import {catchError, finalize, Observable, tap, throwError} from "rxjs";
 import {ConfigService} from "src/services/config.service";
 
 import {TelemetryService} from "src/services/telemetry.service";
-import {forwarded} from "src/utils";
+import {forwarded} from "src/utils/utils";
 
 @Injectable()
 export class TelemetryInterceptor implements NestInterceptor {

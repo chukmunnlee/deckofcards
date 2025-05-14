@@ -4,7 +4,7 @@ import { Card, Deck, DeckPresets} from "src/models/deck";
 import { Game } from "src/models/game";
 import {Metadata} from "src/models/resource";
 import {DeckRepository} from "src/repositories/deck.repository";
-import { createPlayingDeck, selectCards} from "src/utils";
+import { createPlayingDeck, selectCards} from "src/utils/utils";
 import {GameRepository} from "src/repositories/game.repository";
 import {ConfigService} from "./config.service";
 
