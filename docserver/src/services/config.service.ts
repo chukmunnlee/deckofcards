@@ -16,10 +16,10 @@ export class ConfigService {
   get database() { return this.argv.database }
   get mongodbUri() { return this.argv.mongodbUri }
   get inactive() { return this._inactive }
-  get metricsPort() { return this.argv.metricsPort }
-  get metricsPrefix() { return this.argv.metricsPrefix }
   get exportInterval() { return this.argv.exportInterval }
   get hash() { return this.argv.hash }
+  get instrumentation() { return this.argv.instrumentation }
+  get otelUri() { return this.argv.otelUri }
   get metadata() { return this.argv.metadata }
 
   set ready(r: number) { this.argv.ready = r }

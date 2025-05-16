@@ -6,12 +6,12 @@ import * as express from 'express'
 
 import {ConfigService} from './services/config.service';
 import {WINSTON_MODULE_NEST_PROVIDER} from 'nest-winston';
-import {loadTelemetry} from './otel';
+//import {loadTelemetry} from './otel';
 
 async function bootstrap() {
 
   // IMPORTANT: loadTelemetry MUST start before the main application
-  loadTelemetry()
+  //loadTelemetry()
 
   const app = express()
 
@@ -34,6 +34,10 @@ async function bootstrap() {
   await nestApp.listen(configSvc.port)
       .then(() => {
         loggerSvc.log(`Starting application on port ${configSvc.port} at ${new Date()}`, 'bootstrap')
+        if (configSvc.instrumentation)
+          loggerSvc.log(`OTel endpoint at ${configSvc.otelUri}`)
+        else
+          loggerSvc.log('Instrumentation is not enabled')
       })
 
 }

@@ -12,10 +12,10 @@ export class TelemetryInterceptor implements NestInterceptor {
   private readonly interceptor: (_ctx: ExecutionContext, _next: CallHandler<any>) => Observable<any> | Promise<Observable<any>>
 
   constructor(private readonly telemetrySvc: TelemetryService, private readonly configSvc: ConfigService) { 
-    if (configSvc.metricsPort <= 0)
-      this.interceptor = this.passthru
-    else
+    if (configSvc.instrumentation)
       this.interceptor = this.measure
+    else
+      this.interceptor = this.passthru
   }
 
   private passthru(_: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {

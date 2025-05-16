@@ -17,70 +17,65 @@ import {NestInstrumentation} from "@opentelemetry/instrumentation-nestjs-core";
 
 export const telemetry: { [key: string]: any } = {}
 
+// IMPORTANT: This library MUST be executed with --required before the main program
+// Otherwise auto instrumentation will not work
+
 export const loadTelemetry = () => {
 
   const argv = parseCLI()
-  const OTEL_ENDPOINT = 'http://localhost:4317'
+  const OTEL_ENDPOINT = argv.otelUri
 
-  const resource = resourceFromAttributes(argv.metadata)
+  let sdk: NodeSDK | null = null
 
-  const metricExporter = new OTLPMetricExporter({ 
-    //url: `${OTEL_ENDPOINT}/v1/metrics`, // HTTP
-    url: `${OTEL_ENDPOINT}`, // gRPC
-    concurrencyLimit: 5
-  })
+  if (argv.instrumentation) {
 
-  const metricReader = new PeriodicExportingMetricReader({
-    exporter: metricExporter,
-    exportIntervalMillis: argv.exportInterval * 1000,
-  })
+    const resource = resourceFromAttributes(argv.metadata)
 
-  const traceExporter = new OTLPTraceExporter({
-    url: `${OTEL_ENDPOINT}`,
-    //url: `${OTEL_ENDPOINT}/v1/traces`,
-    concurrencyLimit: 5
-  })
+    const metricExporter = new OTLPMetricExporter({ 
+      //url: `${OTEL_ENDPOINT}/v1/metrics`, // HTTP
+      url: `${OTEL_ENDPOINT}`, // gRPC
+      concurrencyLimit: 5
+    })
 
-  const spanProcessor = new BatchSpanProcessor(traceExporter)
+    const metricReader = new PeriodicExportingMetricReader({
+      exporter: metricExporter,
+      exportIntervalMillis: argv.exportInterval * 1000,
+    })
 
-  const sdk = new NodeSDK({
-    resource,
-    metricReader,
-    spanProcessor,
-    instrumentations: [
-      new HttpInstrumentation({
-        applyCustomAttributesOnSpan: (span) => {
-          span.setAttribute('hash', argv.hash)
-        }
-      }),
-      new MongoDBInstrumentation({ enhancedDatabaseReporting: true, enabled: true,
-        dbStatementSerializer: (cmd) => {
-          console.info('>>> cmd: ', cmd)
-          return 'abc'
-        }
-      }),
-      new ExpressInstrumentation({ enabled: true,
-        requestHook: (span, info) => {
-          console.info('express: span: ', span)
-          console.info('express: info: ', info)
-        }
-      }),
-      new NestInstrumentation({ enabled: true })
-    ]
-  })
+    const traceExporter = new OTLPTraceExporter({
+      url: `${OTEL_ENDPOINT}`,
+      //url: `${OTEL_ENDPOINT}/v1/traces`,
+      concurrencyLimit: 5
+    })
 
-  sdk.start()
+    const spanProcessor = new BatchSpanProcessor(traceExporter)
+
+    sdk = new NodeSDK({
+      resource,
+      metricReader,
+      spanProcessor,
+      instrumentations: [
+        new HttpInstrumentation({
+          applyCustomAttributesOnSpan: (span) => { span.setAttribute('hash', argv.hash) }
+        }),
+        new MongoDBInstrumentation({ enhancedDatabaseReporting: true, enabled: true }),
+        new ExpressInstrumentation({ enabled: true,
+          requestHook: (span, _) => { span.setAttribute('hash', argv.hash) }
+        }),
+        new NestInstrumentation({ enabled: false })
+      ]
+    })
+
+    sdk.start()
+  }
 
   const meter = metrics.getMeter(argv[ATTR_SERVICE_NAME], argv[ATTR_SERVICE_VERSION])
   const tracer = trace.getTracer(argv[ATTR_SERVICE_NAME], argv[ATTR_SERVICE_VERSION])
 
-
-  telemetry['metricExporter'] = metricExporter
   telemetry['meter'] = meter
   telemetry['tracer'] = tracer
-  telemetry['metricReader'] = metricReader
   telemetry['sdk'] = sdk
 
-  return sdk
 }
 
+loadTelemetry()

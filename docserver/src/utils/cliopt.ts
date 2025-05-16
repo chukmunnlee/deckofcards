@@ -8,17 +8,16 @@ const { name, version } = require('../../package.json')
 const USAGE = `Usage: $0 --cors --id [string|random]
     --port [number|3000] --prefix [string|/api]
     --games [number] --decksDir [directory] --inactivity [minutes|30]
-    --metricsPort [number|9464] --metricsPrefix [string|/metrics] --exportInterval [seconds|30]
-    --drop --database [database name|deckofcards] --mongodbUri [string]`
+    --instrumentation [boolean|false] --otelUri [string|http://localhost:4317] --exportInterval [seconds|30]
+    --drop --database [database name|deckofcards] --mongodbUri [string|mongodb://localhost:27017]`
 
 const DEFAULT_PORT = '3000'
 const DEFAULT_MONGODB_URI = 'mongodb://localhost:27017'
 const DEFAULT_DATABASE = 'deckofcards'
 const DEFAULT_PREFIX = '/api'
 const DEFAULT_INACTIVE = '30'
-const DEFAULT_METRICS_PORT = '9464' // 9464
-const DEFAULT_METRICS_PREFIX = '/metrics'
 const DEFAULT_EXPORT_INTERVAL = '30'
+const DEFAULT_OTEL_ENDPOINT = 'http://localhost:4317'
 
 export const parseCLI = (): any => {
   const opts = yargs(hideBin(process.argv))
@@ -30,8 +29,8 @@ export const parseCLI = (): any => {
         .default('database', process.env.DATABASE || DEFAULT_DATABASE)
         .default('prefix', process.env.PREFIX || DEFAULT_PREFIX)
         .default('inactive', parseInt(process.env.INACTIVE || DEFAULT_INACTIVE))
-        .default('metricsPort', parseInt(process.env.METRICS_PORT || DEFAULT_METRICS_PORT))
-        .default('metricsPrefix', process.env.METRICS_PREFIX || DEFAULT_METRICS_PREFIX)
+        .default('instrumentation', !!process.env.INSTRUMENTATION)
+        .default('otelUri', process.env.OTEL_ENDPOINT || DEFAULT_OTEL_ENDPOINT)
         .default('exportInterval', parseInt(process.env.EXPORT_INTERVAL || DEFAULT_EXPORT_INTERVAL))
         .default('hash', process.env.HASH || uuidv4().toString().substring(0, 8)) 
         .parse()
@@ -44,7 +43,7 @@ export const parseCLI = (): any => {
     [ATTR_SERVICE_NAME]: name,
     [ATTR_SERVICE_VERSION]: version,
     'hash': opts['hash'],
-    'environment': opts['env']
+    'env': opts['env']
   }
 
   return opts
