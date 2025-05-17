@@ -11,7 +11,7 @@ const USAGE = `Usage: $0 --cors --id [string|random]
     --instrumentation [boolean|false] --otelUri [string|http://localhost:4317] --exportInterval [seconds|30]
     --drop --database [database name|deckofcards] --mongodbUri [string|mongodb://localhost:27017]`
 
-const DEFAULT_PORT = '3000'
+const DEFAULT_PORT = '5000'
 const DEFAULT_MONGODB_URI = 'mongodb://localhost:27017'
 const DEFAULT_DATABASE = 'deckofcards'
 const DEFAULT_PREFIX = '/api'

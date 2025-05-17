@@ -1,6 +1,10 @@
 networks:
   docnet:
 
+volumes:
+  log-data:
+  grafana-data:
+
 services:
   jaeger:
     # https://www.jaegertracing.io/docs/1.42/getting-started/
@@ -29,6 +33,17 @@ services:
     - ./configs/prometheus.yaml:/etc/prometheus/prometheus.yml
     networks: 
     - docnet
+  loki:
+    image: grafana/loki:3.5.0
+    restart: always
+    ports:
+    - 3100:3100
+    volumes:
+    - ./configs/loki.yaml:/etc/loki/local-config.yaml
+    - log-data:/loki
+    networks:
+    - docnet
+
   otel:
     image: otel/opentelemetry-collector-contrib:0.123.0-amd64
     restart: always
@@ -53,6 +68,22 @@ services:
     - docnet
     depends_on:
     - jaeger
+    - prometheus
+    - loki
+
+  grafana:
+    image: grafana/grafana
+    ports:
+    - 3000:3000
+    networks:
+    - docnet
+    volumes:
+    - grafana-data:/var/lib/grafana
+    - ./configs/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    depends_on:
+    - jaeger
+    - prometheus
+    - loki
   caddy:
     image: caddy:2-alpine
     restart: always

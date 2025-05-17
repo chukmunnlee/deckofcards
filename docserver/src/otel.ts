@@ -14,6 +14,7 @@ import {MongoDBInstrumentation} from "@opentelemetry/instrumentation-mongodb";
 import {ExpressInstrumentation} from "@opentelemetry/instrumentation-express";
 import {HttpInstrumentation} from "@opentelemetry/instrumentation-http";
 import {NestInstrumentation} from "@opentelemetry/instrumentation-nestjs-core";
+import {WinstonInstrumentation} from "@opentelemetry/instrumentation-winston";
 
 export const telemetry: { [key: string]: any } = {}
 
@@ -62,7 +63,12 @@ export const loadTelemetry = () => {
         new ExpressInstrumentation({ enabled: true,
           requestHook: (span, _) => { span.setAttribute('hash', argv.hash) }
         }),
-        new NestInstrumentation({ enabled: false })
+        new NestInstrumentation({ enabled: false }),
+        new WinstonInstrumentation({
+          disableLogSending: false,
+          disableLogCorrelation: false,
+          logHook: (span, record) => { record['hash'] = argv.hash }
+        })
       ]
     })
 

@@ -33,6 +33,7 @@
     "@opentelemetry/instrumentation-http": "^0.200.0",
     "@opentelemetry/instrumentation-mongodb": "^0.53.0",
     "@opentelemetry/instrumentation-nestjs-core": "^0.46.0",
+    "@opentelemetry/instrumentation-winston": "^0.46.0",
     "@opentelemetry/resources": "^2.0.0",
     "@opentelemetry/sdk-metrics": "^2.0.0",
     "@opentelemetry/sdk-node": "^0.200.0",
