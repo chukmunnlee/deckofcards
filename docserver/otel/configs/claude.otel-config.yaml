@@ -13,8 +13,17 @@ receivers:
 processors:
   batch:
   memory_limiter:
-    limit_mib: 2048
-    spike_limit_percentage: 30
+    limit_mib: 512
+  resource:
+    attributes:
+    - key: service.instance.id
+      value: ${HOSTNAME}
+      action: insert
+  attributes:
+    actions:
+    - key: environment  
+      value: production
+      action: insert
 
 exporters:
   otlp/jaeger:
@@ -55,13 +64,13 @@ service:
   pipelines:
     traces:
       receivers: [ otlp ]
-      processors: [ batch ]
+      processors: [ memory_limiter, resource, attributes, batch ]
       exporters: [ otlp/jaeger, debug ]
     metrics:
       receivers: [ otlp ]
-      processors: [ batch ]
+      processors: [ memory_limiter, resource, attributes, batch ]
       exporters: [ prometheus, debug ]
     logs:
       receivers: [ otlp ]
-      processors: [ batch ]
+      processors: [ memory_limiter, resource, attributes, batch ]
       exporters: [ otlphttp/logs, debug ]
