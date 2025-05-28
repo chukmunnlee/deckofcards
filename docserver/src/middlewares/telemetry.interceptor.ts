@@ -29,7 +29,8 @@ export class TelemetryInterceptor implements NestInterceptor {
 
   private measure(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
     const http = context.switchToHttp()
-    const { method, url } = http.getRequest() 
+    const req = http.getRequest()
+    const { method, url, params } = req
     const host = forwarded(http.getRequest().headers)
     const start = Date.now()
     const span = this.createSpan(url)
@@ -50,7 +51,12 @@ export class TelemetryInterceptor implements NestInterceptor {
             this.telemetrySvc.httpRequestDurationMs.record(Date.now() - start, this.configSvc.metadata)
             const spanId = span.spanContext().spanId
             span.setStatus({ code: status })
-            this.telemetrySvc.httpRequestTotal.add(1, { ...this.configSvc.metadata, host, method, url, status, span_id: spanId })
+            const attrs = { ...this.configSvc.metadata, host, method, url, status, span_id: spanId }
+            if (!!params?.deckId)
+              attrs['deck_id'] = params?.deckId
+            if (!!params?.gameId)
+              attrs['game_id'] = params?.gameId
+            this.telemetrySvc.httpRequestTotal.add(1, attrs)
             span.end()
           })
         )

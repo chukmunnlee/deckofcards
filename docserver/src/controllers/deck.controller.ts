@@ -1,7 +1,7 @@
-import {Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, ServiceUnavailableException, UseInterceptors} from "@nestjs/common";
-import {context, trace} from "@opentelemetry/api";
+import {Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, UseInterceptors} from "@nestjs/common";
 import {TelemetryInterceptor} from "src/middlewares/telemetry.interceptor";
 import {DeckPresets} from "src/models/deck";
+import {ConfigService} from "src/services/config.service";
 import {DeckService} from "src/services/deck.service";
 import {TelemetryService} from "src/services/telemetry.service";
 
@@ -9,7 +9,7 @@ import {TelemetryService} from "src/services/telemetry.service";
 @UseInterceptors(TelemetryInterceptor)
 export class DeckController {
 
-  constructor(private readonly deckSvc: DeckService
+  constructor(private readonly deckSvc: DeckService, private readonly configSvc: ConfigService
       , private readonly telemetrySvc: TelemetryService) { }
 
   @Get('/decks')
@@ -74,7 +74,9 @@ export class DeckController {
     if (!game)
       throw new HttpException(`Cannot create game from ${deckId}. Not found`
           , HttpStatus.NOT_FOUND)
-    this.telemetrySvc.gameTotal.add(1)
+    const span = this.telemetrySvc.getActiveSpan()
+    this.telemetrySvc.gameTotal.add(1, 
+        { deck_id: deckId, game_id: game.gameId, span_id: span?.spanContext().spanId, ...this.configSvc.metadata })
     return { gameId: game.gameId }
   }
 }

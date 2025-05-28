@@ -3,7 +3,6 @@ import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {WINSTON_MODULE_NEST_PROVIDER} from "nest-winston";
 
 import {Counter, Histogram, Meter, ObservableGauge, trace, Tracer} from "@opentelemetry/api";
-import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from "@opentelemetry/semantic-conventions";
 
 import {ConfigService} from "./config.service";
 import { GAME_CURRENT_TOTAL, GAME_TOTAL, HTTP_REQUEST_DURATION_MS, HTTP_REQUEST_TOTAL, TELEMETRY } from '../constants'
@@ -32,6 +31,10 @@ export class TelemetryService {
 
   getTracer(): Tracer {
     return this.tracer
+  }
+
+  getActiveSpan() {
+    return trace.getActiveSpan()
   }
 
   stop() {

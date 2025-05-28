@@ -25,7 +25,7 @@ services:
     networks: 
     - docnet
   prometheus:
-    image: prom/prometheus:v3.3.1
+    image: prom/prometheus:v3.4.0
     restart: always
     ports:
     - 9090:9090
@@ -34,7 +34,7 @@ services:
     networks: 
     - docnet
   loki:
-    image: grafana/loki:3.5.0
+    image: grafana/loki:3.5.1
     restart: always
     ports:
     - 3100:3100
@@ -45,7 +45,7 @@ services:
     - docnet
 
   otel:
-    image: otel/opentelemetry-collector-contrib:0.123.0-amd64
+    image: otel/opentelemetry-collector-contrib:0.127.0-amd64
     restart: always
     volumes:
     - ./configs/otel-config.yaml:/etc/otelcol-contrib/config.yaml
